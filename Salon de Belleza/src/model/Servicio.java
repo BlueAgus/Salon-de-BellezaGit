@@ -30,7 +30,7 @@ public class Servicio {
         timer.schedule(new TimerTask() { //se crea una nueva instancia de Timer, que se usará para gestionar la duración del mantenimiento.
             @Override //TimerTask es una clase abstracta que debe ser extendida para definir una tarea que se va a ejecutar por el Timer.
             public void run() { //Aquí se crea una nueva tarea (anónima) que se ejecutará después de un retraso especificado.
-               // Método sobrescrito run() de la clase TimerTask. Contiene el código que se ejecutará cuando el temporizador expire.
+               // Mét odo sobrescrito run() de la clase TimerTask. Contiene el código que se ejecutará cuando el temporizador expire.
                 // Cambia el estado a DISPONIBLE después de la duración especificada
                 disponibilidad = Disponibilidad.DISPONIBLE;
                 timer.cancel(); // Finaliza el temporizador. cancel() de la clase Timer. Detiene el temporizador y libera los recursos asociados.
@@ -38,10 +38,11 @@ public class Servicio {
         }, duracionMantenimientoMs); //es el parámetro que determina cuánto tiempo, en milisegundos, el servicio estará en mantenimiento.
     }
     //long unaHoraEnMs = 60 * 60 * 1000; // 1 hora = 60 minutos * 60 segundos * 1000 milisegundos
-    //limpiezaDelLugar(unaHoraEnMs); // Llama al método con la duración de una hora
+    //limpiezaDelLugar(unaHoraEnMs); // Llama al mét odo con la duración de una hora
     // o si no pasarle directamente una hora en milisegundo que es 3600000
 
-    public abstract double calcularPrecio();
+    /*
+    public double calcularPrecio();*/
 
     private String generarIDEunico() {
         long numeroUnico = (long) (Math.random() * 10000000L);  // Genera un número entre 0 y 9999999999
