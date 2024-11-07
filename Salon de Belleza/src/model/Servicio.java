@@ -6,7 +6,7 @@ import enumeraciones.TipoServicio;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Servicio {
+public abstract class Servicio {
 
     private String codigo_servicio ; // esto es para que cada instancia de las clases hijas tenga una clave unica, centralizando la creacion en la clase madre
     private TipoServicio tipoService;

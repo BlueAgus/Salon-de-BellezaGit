@@ -1,7 +1,8 @@
 package gestores;
 
-import enumeraciones.Disponibilidad;
-import enumeraciones.TipoServicio;
+import enumeraciones.*;
+import model.Depilacion;
+import model.Pestanias;
 import model.Servicio;
 
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -32,7 +33,22 @@ public class GestorServicio {
             modificarServicio(servicio);
         }
 
-        almacenServicios.agregar(servicio);
+        if(tipoService == TipoServicio.DEPILACION)
+        {
+            TipoDepilacion tipoDepilacion= pedirTipoDepilacion();
+            Depilacion depilacion= new Depilacion(tipoService,precio,duracion,disponibilidad,tipoDepilacion);
+            almacenServicios.agregar(depilacion);
+        }
+        else if ( tipoService== TipoServicio.PESTANIAS )
+        {
+            TipoPestanias tipoPestanias=pedirTipoPestanias();
+            Pestanias pestanias= new Pestanias(tipoService,precio,duracion,disponibilidad,tipoPestanias);
+            almacenServicios.agregar(pestanias);
+        }
+        else if (tipoService== TipoServicio.MANICURA)
+        {
+
+        }
 
         return servicio;
     }
@@ -163,6 +179,146 @@ public class GestorServicio {
 
         almacenServicios.mostrar();
     }
+
+    public TipoDepilacion pedirTipoDepilacion() {
+
+        Scanner scanner = new Scanner(System.in);
+
+        // Opciones para el tipo de depilación
+        System.out.println("Selecciona el tipo de depilación:");
+        System.out.println("1. Cera");
+        System.out.println("2. Láser");
+
+        // Pedir al usuario una opción
+        int opcion = -1;  // Inicializamos con un valor no válido
+        boolean opcionValida = false;
+
+        // Bucle hasta que el usuario ingrese una opción válida
+        while (!opcionValida) {
+            System.out.print("Ingresa el número de la opción: ");
+
+            // Comprobar si la entrada es un número entero
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                // Verificar si la opción está en el rango válido
+                if (opcion >= 1 && opcion <= 2) {
+
+                    opcionValida = true;// Opción válida, salimos del bucle
+
+                } else {
+                    System.out.println("Opción no válida. Por favor, selecciona un número entre 1 y 2.");
+                }
+            } else {
+                // Si no es un número, mostrar un mensaje de error
+                System.out.println("Entrada no válida. Por favor, ingresa un número.");
+                scanner.nextLine();
+            }
+        }
+
+        // Devolver el tipo de depilación correspondiente según la opción seleccionada
+        switch (opcion) {
+            case 1:
+                return TipoDepilacion.CERA;
+            case 2:
+                return TipoDepilacion.LASER;
+            default:
+        }
+    }
+
+    public TipoPestanias pedirTipoPestanias() {
+
+        Scanner scanner = new Scanner(System.in);
+        int opcion = -1;
+        boolean opcionValida = false;
+
+        System.out.println("Selecciona el tipo de pestañas:");
+        System.out.println("1. Clásicas");
+        System.out.println("2. 2D");
+        System.out.println("3. 3D");
+
+        // Bucle hasta que el usuario ingrese una opción válida
+        while (!opcionValida) {
+
+            System.out.print("Ingresa el número de la opción: ");
+
+            // Verificar si la entrada es un número entero
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                // Verificar si la opción está en el rango válido
+                if (opcion >= 1 && opcion <= 3) {
+
+                    opcionValida = true;
+
+                } else {
+                    System.out.println("Opción no válida. Por favor, selecciona un número entre 1 y 3.");
+                }
+            } else {
+                // Si no es un número, mostrar un mensaje de error
+                System.out.println("Entrada no válida. Por favor, ingresa un número.");
+                scanner.nextLine();  // Limpiar el buffer para seguir pidiendo
+            }
+        }
+
+        // Devolver el tipo de pestañas correspondiente según la opción seleccionada
+        switch (opcion) {
+            case 1: return TipoPestanias.CLASICAS;
+            case 2: return TipoPestanias.DOS_D;  // 2D
+            case 3: return TipoPestanias.TRES_D; // 3D
+            default:
+
+        }
+    }
+    public TipoManicura pedirTipoManicura() {
+        Scanner scanner = new Scanner(System.in);
+
+        // Mostrar opciones para el tipo de manicura
+        System.out.println("Selecciona el tipo de manicura:");
+        System.out.println("1. Esculpidas");
+        System.out.println("2. Gel");
+        System.out.println("3. Semipermanente");
+
+        // Pedir al usuario que ingrese la opción
+        int opcion = -1;
+        boolean opcionValida = false;
+
+        // Bucle hasta que el usuario ingrese una opción válida
+        while (!opcionValida) {
+            System.out.print("Ingresa el número de la opción: ");
+
+            // Verificar si la entrada es un número entero
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                // Verificar si la opción está en el rango válido
+                if (opcion >= 1 && opcion <= 3) {
+
+                    opcionValida = true;
+
+                } else {
+                    System.out.println("Opción no válida. Por favor, selecciona un número entre 1 y 3.");
+                }
+            } else {
+                // Si no es un número, mostrar un mensaje de error
+                System.out.println("Entrada no válida. Por favor, ingresa un número.");
+                scanner.nextLine();  // Limpiar el buffer para seguir pidiendo
+            }
+        }
+
+        // Devolver el tipo de manicura correspondiente según la opción seleccionada
+        switch (opcion) {
+            case 1: return TipoManicura.ESCULPIDAS;
+            case 2: return TipoManicura.GEL;
+            case 3: return TipoManicura.SEMIPERMANENTE;
+            default:
+
+        }
+    }
+
 }
 
 
