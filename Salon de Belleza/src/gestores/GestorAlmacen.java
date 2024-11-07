@@ -6,23 +6,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serial;
 
-public class GestorAlmacen {
+public class GestorAlmacen <T>{
 
-    private AlmacenGenerico<Servicio> almacen = new AlmacenGenerico<>();
+    private AlmacenGenerico<T> almacen = new AlmacenGenerico<>();
     private Gson gson = new Gson();
 
     public GestorAlmacen() {
     }
 
-    public void agregarServicio(Servicio servicio) {
+    public boolean agregar(T elemento) {
 
-        this.almacen.agregar(servicio);
+        return  almacen.agregar(elemento);
 
     }
 
-    public void eliminarServicio(Servicio servicio)
+    public boolean eliminar(T elemento)
     {
-        this.eliminarServicio(servicio);
+        return almacen.eliminar(elemento);
 
     }
 
@@ -38,5 +38,11 @@ public class GestorAlmacen {
         }
     }
 
+    public AlmacenGenerico<T> getAlmacen() {
+        return almacen;
+    }
 
+    public void setAlmacen(AlmacenGenerico<T> almacen) {
+        this.almacen = almacen;
+    }
 }

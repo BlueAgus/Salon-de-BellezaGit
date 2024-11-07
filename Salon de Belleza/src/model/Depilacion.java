@@ -8,12 +8,11 @@ import enumeraciones.TipoServicio;
 public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
-    public Depilacion(TipoServicio tipoService, double precio, double duracion, Disponibilidad disponibilidad, TipoDepilacion tipoDepilacion) {
-        super(tipoService, precio, duracion, disponibilidad);
+    public Depilacion(TipoServicio tipoService, double precio, double duracion, TipoDepilacion tipoDepilacion) {
+        super(tipoService, precio, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
 
-    //////////////////////////////////////getter y setter
 
     public TipoDepilacion getTipoDepilacion() {
         return tipoDepilacion;

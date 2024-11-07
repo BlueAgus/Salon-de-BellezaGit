@@ -26,7 +26,7 @@ public class Turno {
         this.profesional = profesional;
         this.cliente = cliente;
         this.tipoDePago = tipoDePago;
-        this.pagoTotal = pagoTotal;
+
 
         // Calcular el total con el tipo de pago
         this.pagoTotal = tipoDePago.calcularPagoTotal(servicio.getPrecio());

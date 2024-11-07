@@ -14,7 +14,7 @@ public abstract class Servicio {
     private double duracion;
     private Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
 
-    public Servicio(TipoServicio tipoService, double precio, double duracion, Disponibilidad disponibilidad) {
+    public Servicio(TipoServicio tipoService, double precio, double duracion) {
 
         this.tipoService = tipoService;
         this.precio = precio;

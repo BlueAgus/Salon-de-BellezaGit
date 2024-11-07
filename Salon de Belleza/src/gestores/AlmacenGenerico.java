@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+///solo el gestor Almacen usa esta clase
 public class AlmacenGenerico<T> {
 
     private List<T> lista= new ArrayList<>();
@@ -11,12 +12,12 @@ public class AlmacenGenerico<T> {
     public AlmacenGenerico(){
     }
 
-    public void agregar(T elemento){
-        lista.add(elemento);
+    public boolean agregar(T elemento){
+        return lista.add(elemento);
     }
 
-    public void eliminar(T elemento){
-        lista.remove(elemento);
+    public boolean eliminar(T elemento){
+        return lista.remove(elemento);
     }
 
     public List<T> getLista() {
