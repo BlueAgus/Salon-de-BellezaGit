@@ -6,10 +6,9 @@ import java.util.function.Predicate;
 
 public class AlmacenGenerico<T> {
 
-    private List<T> lista;
+    private List<T> lista= new ArrayList<>();
 
-    public AlmacenGenerico(List<T> lista) {
-        this.lista = new ArrayList<>();
+    public AlmacenGenerico(){
     }
 
     public void agregar(T elemento){
@@ -35,4 +34,13 @@ public class AlmacenGenerico<T> {
         return resultado;
     }
 
+    public void mostrar() {
+        if (lista.isEmpty()) {
+            System.out.println("No hay servicios en el almacén.");
+        } else {
+            for (T item : lista) {
+                System.out.println(item);
+            }
+        }
+    }
 }

@@ -4,12 +4,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Persona {
+
     private String nombre;
     private String apellido;
     private String dni;
     private char genero; // esto si no se hace con un enum
 
     public Persona(String nombre, String apellido, String dni, char genero) {
+
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -18,14 +20,14 @@ public abstract class Persona {
     //////////////////////////////////////ToString e Equals//////////////////////////////////////////////////////////////////////////////////
 
     @Override
-        public String toString() {
-            return
-                    "| Nombre : " + nombre + "\n" +
-                    "| Apellido : " + apellido + "\n" +
-                    "| DNI : " + dni + "\n" +
-                    "| Genero : " + genero + "\n" +
-                    "=========================================\n";
-        }
+    public String toString() {
+        return
+                "| Nombre : " + nombre + "\n" +
+                        "| Apellido : " + apellido + "\n" +
+                        "| DNI : " + dni + "\n" +
+                        "| Genero : " + genero + "\n" +
+                        "=========================================\n";
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -36,15 +38,6 @@ public abstract class Persona {
     }
 
 //////////////////////////////////////GETTERS Y SETTERS//////////////////////////////////////////////////////////////////////////////////
-
-
-    public char getGenero() {
-        return genero;
-    }
-
-    public void setGenero(char genero) {
-        this.genero = genero;
-    }
 
     public String getDni() {
         return dni;
@@ -69,4 +62,13 @@ public abstract class Persona {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public char getGenero() {
+        return genero;
+    }
+
+    public void setGenero(char genero) {
+        this.genero = genero;
+    }
+
 }
