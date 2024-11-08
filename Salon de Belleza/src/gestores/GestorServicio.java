@@ -20,6 +20,7 @@ public class GestorServicio {
         TipoServicio tipoService = pedirTipoServicio();
         double precio = pedirPrecio();
         double duracion = pedirDuracion();
+        boolean disenio = false;
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
@@ -37,7 +38,7 @@ public class GestorServicio {
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(tipoService, precio, duracion, tipoManicura);
+            Manicura manicura = new Manicura(tipoService, precio, duracion, tipoManicura, disenio);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);

@@ -7,10 +7,13 @@ import enumeraciones.TipoServicio;
 
 public class Manicura extends Servicio implements MantenimientoMaquinas {
 private TipoManicura tipoManicura;
+private boolean disenio;
+private static double precioDisenio = 10.0;
 
-    public Manicura(TipoServicio tipoService, double precio, double duracion, TipoManicura tipoManicura) {
+    public Manicura(TipoServicio tipoService, double precio, double duracion, TipoManicura tipoManicura, boolean disenio) {
         super(TipoServicio.MANICURA, precio, duracion); // definimos por defecto que va a ser manicura
         this.tipoManicura = tipoManicura;
+        this.disenio = disenio;
     }
 
 
@@ -27,6 +30,27 @@ private TipoManicura tipoManicura;
 
     @Override
     public double calcularPrecio() {
-        return this.precio + this.tipoManicura.getPrecio();
+        double precioFinal =  this.precio + this.tipoManicura.getPrecio();
+        if(disenio = true){
+            precioFinal += precioDisenio;
+
+        }
+        return precioFinal;
+    }
+
+    public boolean isDisenio() {
+        return disenio;
+    }
+
+    public void setDisenio(boolean disenio) {
+        this.disenio = disenio;
+    }
+
+    public static double getPrecioDisenio() {
+        return precioDisenio;
+    }
+
+    public static void setPrecioDisenio(double precioDisenio) {
+        Manicura.precioDisenio = precioDisenio;
     }
 }
