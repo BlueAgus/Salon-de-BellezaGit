@@ -9,7 +9,7 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
 private TipoManicura tipoManicura;
 
     public Manicura(TipoServicio tipoService, double precio, double duracion, TipoManicura tipoManicura) {
-        super(tipoService, precio, duracion);
+        super(TipoServicio.MANICURA, precio, duracion); // definimos por defecto que va a ser manicura
         this.tipoManicura = tipoManicura;
     }
 
@@ -24,4 +24,9 @@ private TipoManicura tipoManicura;
         System.out.println("aca ira el metodo ");
     }
 
+
+    @Override
+    public double calcularPrecio() {
+        return this.precio + this.tipoManicura.getPrecio();
+    }
 }

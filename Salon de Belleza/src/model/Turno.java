@@ -5,6 +5,7 @@ import enumeraciones.TipoDePago;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Objects;
 
 public class Turno {
 
@@ -13,23 +14,30 @@ public class Turno {
     private Servicio servicio;       // El servicio a realizar
     private Profesional profesional; // Profesional que atenderá el servicio
     private Cliente cliente;         // Cliente que recibirá el servicio
-    private TipoDePago tipoDePago;   // Tipo de pago (Efectivo, Tarjeta, etc.)
-    private double pagoTotal;        // Total del pago por el servicio
+
 
     // Constructor de la clase Turno
     public Turno(LocalDate fecha, LocalTime horario, Servicio servicio,
-                 Profesional profesional, Cliente cliente,
-                 TipoDePago tipoDePago, double pagoTotal) {
+                 Profesional profesional, Cliente cliente) {
         this.fecha = fecha;
         this.horario = horario;
         this.servicio = servicio;
         this.profesional = profesional;
         this.cliente = cliente;
-        this.tipoDePago = tipoDePago;
 
+    }
 
-        // Calcular el total con el tipo de pago
-        this.pagoTotal = tipoDePago.calcularPagoTotal(servicio.getPrecio());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Turno turno = (Turno) o;
+        return Objects.equals(fecha, turno.fecha) && Objects.equals(horario, turno.horario) && Objects.equals(servicio, turno.servicio);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fecha, horario, servicio);
     }
 
     // Métodos Getters y Setters
@@ -53,14 +61,6 @@ public class Turno {
 
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
-    public TipoDePago getTipoDePago() { return tipoDePago; }
-
-    public void setTipoDePago(TipoDePago tipoDePago) { this.tipoDePago = tipoDePago; }
-
-    public double getPagoTotal() { return pagoTotal; }
-
-    public void setPagoTotal(double pagoTotal) { this.pagoTotal = pagoTotal; }
-
     @Override
     public String toString() {
         return "Turno{" +
@@ -68,10 +68,8 @@ public class Turno {
                 ", horario=" + horario +
                 ", servicio=" + servicio +
                 ", profesional=" + profesional +
-                ", cliente=" + cliente +
-                ", tipoDePago=" + tipoDePago +
-                ", pagoTotal=" + pagoTotal +
-                '}';
+                ", cliente=" + cliente
+                ;
     }
 
 

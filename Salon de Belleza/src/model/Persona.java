@@ -4,12 +4,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Persona {
-
-    private String nombre;
-    private String apellido;
-    private String dni;
-    private String genero; // esto si no se hace con un enum
-    private int telefono;
+    /// lo cambio aca y en servicio por portected para que las clases hijas accedan directamente
+    protected String nombre;
+    protected String apellido;
+    protected String dni;
+    protected String genero; // esto si no se hace con un enum
+    protected int telefono;
 
     public Persona(String nombre, String apellido, String dni, String genero, int telefono) {
         this.nombre = nombre;
@@ -28,6 +28,7 @@ public abstract class Persona {
                         "| Apellido : " + apellido + "\n" +
                         "| DNI : " + dni + "\n" +
                         "| Genero : " + genero + "\n" +
+                        "| Telefono : " + telefono + "\n" +
                         "=========================================\n";
     }
 

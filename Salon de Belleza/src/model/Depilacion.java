@@ -9,7 +9,7 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
     public Depilacion(TipoServicio tipoService, double precio, double duracion, TipoDepilacion tipoDepilacion) {
-        super(tipoService, precio, duracion);
+        super(TipoServicio.DEPILACION, precio, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
 
@@ -27,5 +27,10 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
     public void MantenimientoMaquinas(Servicio servicio)
     {
         System.out.println("aca ira el metodo");
+    }
+
+    @Override
+    public double calcularPrecio() {
+        return this.precio + this.tipoDepilacion.getPrecio();
     }
 }
