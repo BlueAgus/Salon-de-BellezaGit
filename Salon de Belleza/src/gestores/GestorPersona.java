@@ -1,5 +1,6 @@
 package gestores;
 
+import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
@@ -12,7 +13,6 @@ public class GestorPersona {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas=new GestorAlmacen<>();
 
-
     //pasamos 1 si es cliente, 2 si es profesional, 3 si es recepcionista, 4 si es administrador
     public boolean agregarPersona(int tipoPersona)
     {
@@ -24,7 +24,6 @@ public class GestorPersona {
         int telefono=0;
         String nombre=pedirNombre();
         String apellido= pedirApellido();
-
         telefono=pedirTelefono();
 
         try{
@@ -43,8 +42,6 @@ public class GestorPersona {
 
         switch (tipoPersona){
             case 1:
-
-
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(cliente);
@@ -71,7 +68,6 @@ public class GestorPersona {
     public int pedirTelefono()
     { int telefono;
 
-
         ///EXCEPCION POR SI NO SON NUMEROS;
         System.out.println(" Ingrese el telefono: ");
         telefono= scanner.nextInt();
@@ -97,7 +93,6 @@ public class GestorPersona {
         return apellido;
     }
 
-
     ///metodo para agregar persona
     public String pedirDNI ()throws DNIyaCargadoException
     {
@@ -106,7 +101,7 @@ public class GestorPersona {
         System.out.println("Ingrese el DNI: ");
         dni=scanner.nextLine();
 
-        for(Persona a: almacenPersonas.getAlmacen().getLista())
+        for(Persona a: almacenPersonas.getAlmacen())
             if (a.getDni().equals(dni)) {
                 throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
             }
@@ -139,10 +134,8 @@ public class GestorPersona {
 
     }
 
-
     public boolean eliminarPersona(String dni)
     {
-
         try {
             Persona p= buscarPersona(dni);
             return almacenPersonas.eliminar(p);
@@ -153,9 +146,10 @@ public class GestorPersona {
         return false;
     }
 
+
     public Persona buscarPersona(String dni)throws DNInoEncontradoException
     {
-        for(Persona p: almacenPersonas.getAlmacen().getLista())
+        for(Persona p: almacenPersonas.getAlmacen())
         {
             if(p.getDni().equals(dni))
             {
@@ -164,7 +158,6 @@ public class GestorPersona {
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
-
 
 
     public void modificarPersona(Persona persona)

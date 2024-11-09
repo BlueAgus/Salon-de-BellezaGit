@@ -5,6 +5,7 @@ import model.Servicio;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serial;
+import java.util.List;
 
 public class GestorAlmacen <T>{
 
@@ -38,7 +39,7 @@ public class GestorAlmacen <T>{
         }
     }
 
-    public AlmacenGenerico<T> getAlmacen() {
+    public List<T> getAlmacen() {
         return almacen;
     }
 

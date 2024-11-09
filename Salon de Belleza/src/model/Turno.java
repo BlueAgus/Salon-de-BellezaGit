@@ -24,7 +24,6 @@ public class Turno {
         this.servicio = servicio;
         this.profesional = profesional;
         this.cliente = cliente;
-
     }
 
     @Override

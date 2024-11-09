@@ -24,7 +24,7 @@ public class GestorServicio {
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion(tipoService, precio, duracion, tipoDepilacion);
+            Depilacion depilacion = new Depilacion(tipoService, duracion, tipoDepilacion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
@@ -261,6 +261,10 @@ public class GestorServicio {
 
         return tipo;
     }
+
+    //atributo UNICO
+    // public void eliminarServicio()
+
 }
 
 
