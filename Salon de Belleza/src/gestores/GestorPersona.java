@@ -35,7 +35,7 @@ public class GestorPersona {
         }
 
         try{
-            genero=pedirGenero();
+            genero = pedirGenero();
         }catch (GeneroInvalidoException e)
         {
             System.out.printf(e.getMessage());
@@ -107,6 +107,8 @@ public class GestorPersona {
                 throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
             }
 
+
+
         return dni;
     }
 
@@ -158,6 +160,7 @@ public class GestorPersona {
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
+
     }
 
 

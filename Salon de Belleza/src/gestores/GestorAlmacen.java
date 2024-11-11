@@ -1,5 +1,6 @@
 package gestores;
 
+import com.google.gson.Gson;
 import model.Servicio;
 
 import java.io.FileWriter;
@@ -41,7 +42,7 @@ public class GestorAlmacen <T>{
     }
 
     public List<T> getAlmacen() {
-        return almacen;
+        return almacen.getLista();
     }
 
     public void setAlmacen(AlmacenGenerico<T> almacen) {

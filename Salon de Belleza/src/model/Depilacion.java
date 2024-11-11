@@ -8,9 +8,7 @@ import enumeraciones.TipoServicio;
 public class Depilacion implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
-    public Depilacion(TipoServicio tipoService, double duracion, TipoDepilacion tipoDepilacion) {
-       double precio= calcularPrecio();
-        super(TipoServicio.DEPILACION,precio,duracion);
+    public Depilacion(TipoDepilacion tipoDepilacion) {
         this.tipoDepilacion = tipoDepilacion;
     }
 
@@ -19,13 +17,13 @@ public class Depilacion implements MantenimientoMaquinas {
         double precio=0.0;
         if(tipoDepilacion== TipoDepilacion.CERA)
         {
-            precio=tipoDepilacion.getPrecio();
-        }
+        precio=tipoDepilacion.getPrecio();
+    }
         else if(tipoDepilacion== TipoDepilacion.LASER)
         {
             precio=tipoDepilacion.getPrecio();
         }
-        return precio;
+        return this.precio;
     }
 
 
