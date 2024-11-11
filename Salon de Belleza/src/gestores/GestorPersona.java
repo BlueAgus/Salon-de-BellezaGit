@@ -6,6 +6,7 @@ import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
 import model.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class GestorPersona {
@@ -210,12 +211,9 @@ public class GestorPersona {
 
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
-
-
     }
 
-
-
-
-
+    public List<Persona> getAlmacenPersonas() {
+        return getAlmacenPersonas().g;
+    }
 }

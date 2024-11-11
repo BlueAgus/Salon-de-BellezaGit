@@ -1,9 +1,7 @@
 package gestores;
 import excepciones.EntradaInvalidaException;
-import model.Cliente;
-import model.Profesional;
-import model.Servicio;
-import model.Turno;
+import excepciones.ServicioNoExistenteException;
+import model.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -113,7 +111,8 @@ public class GestorTurnos {
                     turno.setHorario(pedirHorario());
                     break;
                 case 3:
-                    turno.setServicio(pedirServicio());
+                    //aca le pasas los servicios
+                    turno.setServicio(pedirServicio(serviciosDisponibles));
                     break;
                 case 4:
                     turno.setProfesional(pedirProfesional());
@@ -183,6 +182,53 @@ public class GestorTurnos {
         }
         return horario;
     }
+
+    private Servicio pedirServicio( GestorServicio servicios){
+        boolean valido=false;
+        int aux=0;
+        try{
+            do{
+                System.out.println("Ingrese el tipo de servicio:");
+                System.out.println("1 . manicura");
+                System.out.println("2 . pestanias");
+                System.out.println("3 . depilacion");
+                aux= scanner.nextInt();
+                if(aux!=1 && aux!=2 && aux!=3){
+                    System.out.println("No haz elegido una opcion valida!! Vuelve a ingresar un servicio que si exista por favor.");
+                }
+            }while(aux!=1 && aux!=2 && aux!=3);
+  //no se por que otr atributo buscar.. precio? duracion?
+        }catch(ServicioNoExistenteException e){
+            System.out.println("No existe el turno que buscas.");
+        }
+    }
+
+    private Persona pedirProfesional(GestorPersona profesionales){
+        boolean existe=false;
+        Persona aux=null;
+        do{
+            System.out.println("Ingresa el nombre del profesional");
+            String n=scanner.nextLine();
+            System.out.println("ingresa el apellido del profesional");
+            String a=scanner.nextLine();
+            System.out.println("ingresa el dni del profesional");
+            String d=scanner.nextLine();
+
+            for(Persona e: profesionales.getAlmacenPersonas()) { //esto me devuelve la lista bien?
+                if (e.getNombre().equals(n) && e.getApellido().equals(a) && e.getDni().equals(d)) {
+                    existe = true;
+                    aux = e;
+                    break;
+                }
+            }
+            if(aux==null){
+                System.out.println("No existe este profesional, volvamos a cargarlo.");
+            }
+        }while(!existe);
+
+        return aux;
+    }
+
 
 }
 

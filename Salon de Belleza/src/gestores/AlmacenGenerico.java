@@ -9,8 +9,7 @@ public class AlmacenGenerico<T> {
 
     private List<T> lista= new ArrayList<>();
 
-    public AlmacenGenerico(){
-    }
+    public AlmacenGenerico(){}
 
     public boolean agregar(T elemento){
         return lista.add(elemento);
