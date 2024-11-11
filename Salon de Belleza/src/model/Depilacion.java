@@ -5,23 +5,20 @@ import enumeraciones.Disponibilidad;
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 
-public class Depilacion implements MantenimientoMaquinas {
+public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
-    public Depilacion(TipoDepilacion tipoDepilacion) {
+    public Depilacion(double precio, double duracion, TipoDepilacion tipoDepilacion) {
+        super(TipoServicio.DEPILACION, precio, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
 
-    public double calcularPrecio()
-    {
-        double precio=0.0;
-        if(tipoDepilacion== TipoDepilacion.CERA)
-        {
-        precio=tipoDepilacion.getPrecio();
-    }
-        else if(tipoDepilacion== TipoDepilacion.LASER)
-        {
-            precio=tipoDepilacion.getPrecio();
+    public double calcularPrecio() {
+        double precio = 0.0;
+        if (tipoDepilacion == TipoDepilacion.CERA) {
+            precio = tipoDepilacion.getPrecio();
+        } else if (tipoDepilacion == TipoDepilacion.LASER) {
+            precio = tipoDepilacion.getPrecio();
         }
         return this.precio;
     }
@@ -37,8 +34,7 @@ public class Depilacion implements MantenimientoMaquinas {
 
     ///uso interfaz
     @Override
-    public void MantenimientoMaquinas(Servicio servicio)
-    {
+    public void MantenimientoMaquinas(Servicio servicio) {
         System.out.println("aca ira el metodo");
     }
 /*

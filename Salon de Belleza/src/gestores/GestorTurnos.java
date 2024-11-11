@@ -1,10 +1,20 @@
 package gestores;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+import enumeraciones.TipoManicura;
+import enumeraciones.TipoServicio;
 import excepciones.EntradaInvalidaException;
 import excepciones.ServicioNoExistenteException;
 import model.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Scanner;
 
 public class GestorTurnos {
@@ -19,8 +29,10 @@ public class GestorTurnos {
         while (!turnoAgregado) {
             LocalDate fecha = pedirFecha();
             LocalTime horario = pedirHorario();
-            ///Servicio servicio = pedirServicio();
-            //Profesional profesional = pedirProfesional();
+            Servicio servicio = new Manicura(TipoServicio.DEPILACION,3,3, TipoManicura.SEMIPERMANENTE,true);
+                //    pedirServicio();
+            Profesional profesional = pedirProfesional();
+            Cliente cliente=new Cliente("S","S","3","C",3232);
             //Cliente cliente = pedirCliente();
 
             // Verificar si ya existe un turno para ese profesional en la misma fecha y hora
@@ -112,13 +124,13 @@ public class GestorTurnos {
                     break;
                 case 3:
                     //aca le pasas los servicios
-                    turno.setServicio(pedirServicio(serviciosDisponibles));
+                    //turno.setServicio(pedirServicio(serviciosDisponibles));
                     break;
                 case 4:
-                    turno.setProfesional(pedirProfesional(/*lista o archivo que tenga profesionales*/));
+                    turno.setProfesional(pedirProfesional());
                     break;
                 case 5:
-                    turno.setCliente(pedirCliente(/*lista/archivo que tenga clientes*/));
+                   // turno.setCliente(pedirCliente(/*lista/archivo que tenga clientes*/));
                     break;
                 case 6:
                     continuar = false;
@@ -182,7 +194,7 @@ public class GestorTurnos {
         }
         return horario;
     }
-
+/*
     private Servicio pedirServicio( GestorServicio servicios){
         boolean valido=false;
         int aux=0;
@@ -203,6 +215,9 @@ public class GestorTurnos {
         }
     }
 
+    */
+
+/*
     private Persona pedirProfesional(GestorPersona profesionales){
         boolean existe=false;
         Persona aux=null;
@@ -227,7 +242,7 @@ public class GestorTurnos {
         }while(!existe);
 
         return aux;
-    }
+    }*/
 
 //aca los clientes se deben leer de un archivo? creo yo,
     private Persona pedirCliente(GestorPersona clientes){
@@ -254,6 +269,56 @@ public class GestorTurnos {
         }while(!existe);
 
         return aux;
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public List<Profesional> LeerArchivo(String nombreArchivo) {
+        try {
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
+            }.getType();
+            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
+            fileReader.close();
+            return profesionales;
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private Profesional pedirProfesional() {
+        List<Profesional> profesionales = LeerArchivo("profesionales.json");
+
+        if (profesionales == null || profesionales.isEmpty()) {
+            System.out.println("No hay profesionales disponibles.");
+            return null;
+        }
+
+        int pro = -1;
+        do {
+            System.out.println("Profesionales disponibles:");
+            for (int i = 0; i < profesionales.size(); i++) {
+                System.out.println((i + 1) + ") " + profesionales.get(i).getNombre()+" "+profesionales.get(i).getApellido());
+            }
+
+            System.out.println("Elija por favor el profesional (número):");
+            pro = scanner.nextInt();
+
+            if (pro < 1 || pro > profesionales.size()) {
+                System.out.println("Selección inválida. Inténtelo de nuevo.");
+            }
+
+        } while (pro < 0 || pro > profesionales.size());
+        return profesionales.get(pro - 1);
     }
 
 }
