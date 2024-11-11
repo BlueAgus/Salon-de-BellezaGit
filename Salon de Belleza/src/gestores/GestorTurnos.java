@@ -115,10 +115,10 @@ public class GestorTurnos {
                     turno.setServicio(pedirServicio(serviciosDisponibles));
                     break;
                 case 4:
-                    turno.setProfesional(pedirProfesional());
+                    turno.setProfesional(pedirProfesional(/*lista o archivo que tenga profesionales*/));
                     break;
                 case 5:
-                    turno.setCliente(pedirCliente());
+                    turno.setCliente(pedirCliente(/*lista/archivo que tenga clientes*/));
                     break;
                 case 6:
                     continuar = false;
@@ -222,13 +222,39 @@ public class GestorTurnos {
                 }
             }
             if(aux==null){
-                System.out.println("No existe este profesional, volvamos a cargarlo.");
+                System.out.println("No existe este profesional, volvamos a buscarlo.");
             }
         }while(!existe);
 
         return aux;
     }
 
+//aca los clientes se deben leer de un archivo? creo yo,
+    private Persona pedirCliente(GestorPersona clientes){
+        boolean existe=false;
+        Persona aux=null;
+        do{
+            System.out.println("Ingresa el nombre del cliente");
+            String n=scanner.nextLine();
+            System.out.println("ingresa el apellido del cliente");
+            String a=scanner.nextLine();
+            System.out.println("ingresa el dni del cliente");
+            String d=scanner.nextLine();
+
+            for(Persona e: clientes.getAlmacenPersonas()) {
+                if (e.getNombre().equals(n) && e.getApellido().equals(a) && e.getDni().equals(d)) {
+                    existe = true;
+                    aux = e;
+                    break;
+                }
+            }
+            if(aux==null){
+                System.out.println("No existe este cliente, volvamos a buscarlo.");
+            }
+        }while(!existe);
+
+        return aux;
+    }
 
 }
 
