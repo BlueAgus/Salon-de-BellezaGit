@@ -25,6 +25,14 @@ public class Turno {
         this.profesional = profesional;
         this.cliente = cliente;
     }
+    // Constructor simplificado para crear turnos de disponibilidad sin servicio, profesional y cliente
+    public Turno(LocalDate fecha, LocalTime horario) {
+        this.fecha = fecha;
+        this.horario = horario;
+        this.servicio = null;
+        this.profesional = null;
+        this.cliente = null;
+    }
 
     @Override
     public boolean equals(Object o) {

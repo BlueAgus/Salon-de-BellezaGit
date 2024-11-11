@@ -214,6 +214,6 @@ public class GestorPersona {
     }
 
     public List<Persona> getAlmacenPersonas() {
-        return getAlmacenPersonas().g;
+        return getAlmacenPersonas();
     }
 }
