@@ -1,4 +1,8 @@
 import enumeraciones.TipoManicura;
+
+import enumeraciones.TipoServicio;
+import gestores.GestorPersona;
+
 import gestores.PrototipoGestorTurnos;
 import model.Cliente;
 import model.Manicura;
@@ -11,6 +15,9 @@ public class Main {
        /* System.out.println("HOLA HICE UN CAMBIO ");
         System.out.println("Holi soy agus jeje");*/
 
+        GestorPersona profesionales=new GestorPersona();
+        profesionales.agregarPersona(2);
+        
         PrototipoGestorTurnos turnos = new PrototipoGestorTurnos();
         Manicura manicura= new Manicura(200, TipoManicura.ESCULPIDAS, true);
         Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", 223456346);

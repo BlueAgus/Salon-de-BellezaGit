@@ -107,8 +107,6 @@ public class GestorPersona {
                 throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
             }
 
-
-
         return dni;
     }
 

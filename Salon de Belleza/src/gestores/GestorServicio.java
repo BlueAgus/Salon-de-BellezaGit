@@ -6,6 +6,8 @@ import model.Manicura;
 import model.Pestanias;
 import model.Servicio;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class GestorServicio {
@@ -148,6 +150,7 @@ public class GestorServicio {
         return precio;
     }
 
+    /*
     private double pedirDuracion() {
         double duracion = 0;
         while (duracion <= 0) {
@@ -159,6 +162,22 @@ public class GestorServicio {
                 System.out.println("La duración debe ser mayor a 0.");
             }
         } return duracion;
+    }*/
+
+    private LocalTime pedirDuracion() {
+        int h=-1;
+        int m=-1;
+        while ( m < 0 || m>59 || h>23 || h<0) {
+            System.out.print("Introduce las horas que durara el servicio (0-23):");
+            h = scanner.nextInt();scanner.nextLine();
+            System.out.print("Introduce los minutos que durara el servicio (0-59) ");
+            m = scanner.nextInt();scanner.nextLine();
+            if ( m< 0 || m>59 || h>23 || h<0) {
+                System.out.println("La hora no es valida ! Volvamos a cargarla. ");
+            }
+        }
+        LocalTime duracion=LocalTime.of(h,m);
+        return duracion;
     }
 
     public void mostrarServicios() {
@@ -191,7 +210,6 @@ public class GestorServicio {
                     System.out.println("Opción no válida, selecciona nuevamente.");
             }
         } while (opcion != 1 && opcion != 2);
-
         return tipo;
     }
 

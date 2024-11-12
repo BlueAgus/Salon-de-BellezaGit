@@ -43,11 +43,11 @@ public abstract class Servicio {
         this.precio = precio;
     }
 
-    public int getDuracion() {
+    public Long getDuracion() {
         return duracion;
     }
 
-    public void setDuracion(double duracion) {
+    public void setDuracion(Long duracion) {
         this.duracion = duracion;
     }
 
