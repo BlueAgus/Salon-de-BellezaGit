@@ -34,20 +34,14 @@ public class PrototipoGestorTurnos {
     public void agregarTurno(Servicio servicio, Profesional profesional, Cliente cliente)
     {
         Turno turno= elegirFechaYhorario();
-
         turno.setServicio(servicio);
         turno.setProfesional(profesional);
         turno.setCliente(cliente);
 
         System.out.println(turno);
-
     }
-
-
     public Turno elegirFechaYhorario() {
-
         List<LocalDate> fechas = fechasAunaSemana();
-
         System.out.println("ELIJA UNA FECHA PARA VER LOS TURNOS DISPONIBLES: ");
         for (int i = 0; i < fechas.size(); i++) {//recorre la lista con las fechas de aca a una semana
             if (listaTurnos.obtener(fechas.get(i)) == null || listaTurnos.obtener(fechas.get(i)).size() < 11) {   ///si la fecha no existe en el mapa generico(es decir no hay turnos) o si tiene menos de 11 turnos lo printea
@@ -56,9 +50,7 @@ public class PrototipoGestorTurnos {
             }
         }
 
-
         int indiceDia = -1;
-
         ///seleccion de fecha
         while (true) {
             try {
@@ -114,8 +106,6 @@ public class PrototipoGestorTurnos {
         }
         return fechas;
     }
-
-
     ///el metodo retorna una lista con los horarios disponibles
     public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha) {
         List<Turno> turnosReservados = obtenerTurnosDisponibles(fecha);///retorna el valor que es una lista de turnos, con la clave que es la fecha

@@ -18,6 +18,6 @@ public class Main {
         Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", 223456346);
         Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", 223654789);
 
-        turnos.agregarTurno(manicura, profesional, cliente);
+        turnos.agregarTurno(manicura, profesional, cliente);;
         }
     }

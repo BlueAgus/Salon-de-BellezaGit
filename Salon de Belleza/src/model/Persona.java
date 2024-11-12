@@ -15,7 +15,7 @@ public abstract class Persona {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
-        this.genero = genero;
+        this.genero = genero.toUpperCase(); //mayuscula.
         this.telefono = telefono;
     }
 
