@@ -6,6 +6,8 @@ import model.Manicura;
 import model.Pestanias;
 import model.Servicio;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class GestorServicio {
@@ -18,31 +20,30 @@ public class GestorServicio {
 
         TipoServicio tipoService = pedirTipoServicio();
         double precio = pedirPrecio();
-        double duracion = pedirDuracion();
-        boolean disenio = false;
+        LocalTime duracion = pedirDuracion();
+        boolean disenio = pedirDisenio();
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion( precio, tipoDepilacion);
+            Depilacion depilacion = new Depilacion( precio, tipoDepilacion,duracion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias( precio, tipoPestanias);
+            Pestanias pestanias = new Pestanias( precio, tipoPestanias,duracion);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(precio, tipoManicura);
+            Manicura manicura = new Manicura(precio,duracion,disenio,tipoManicura);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
         }
-
     }
 
     public void verificarCarga(Servicio servicio)
@@ -148,6 +149,7 @@ public class GestorServicio {
         return precio;
     }
 
+    /*
     private double pedirDuracion() {
         double duracion = 0;
         while (duracion <= 0) {
@@ -159,10 +161,25 @@ public class GestorServicio {
                 System.out.println("La duración debe ser mayor a 0.");
             }
         } return duracion;
+    }*/
+
+    private LocalTime pedirDuracion() {
+        int h=-1;
+        int m=-1;
+        while ( m < 0 || m>59 || h>23 || h<0) {
+            System.out.print("Introduce las horas que durara el servicio (0-23):");
+            h = scanner.nextInt();scanner.nextLine();
+            System.out.print("Introduce los minutos que durara el servicio (0-59) ");
+            m = scanner.nextInt();scanner.nextLine();
+            if ( m< 0 || m>59 || h>23 || h<0) {
+                System.out.println("La hora no es valida ! Volvamos a cargarla. ");
+            }
+        }
+        LocalTime duracion=LocalTime.of(h,m);
+        return duracion;
     }
 
     public void mostrarServicios() {
-
         almacenServicios.mostrar();
     }
 
@@ -191,7 +208,6 @@ public class GestorServicio {
                     System.out.println("Opción no válida, selecciona nuevamente.");
             }
         } while (opcion != 1 && opcion != 2);
-
         return tipo;
     }
 
@@ -224,15 +240,12 @@ public class GestorServicio {
                     System.out.println("Opción no válida, selecciona nuevamente.");
             }
         } while (opcion != 1 && opcion != 2 && opcion != 3);
-
         return tipo;
     }
 
 
     public TipoManicura pedirTipoManicura() {
-
         TipoManicura tipo = null;
-
         /// EXEPCION LETRAS INAVLIDA
         int opcion;
         do {
@@ -262,8 +275,33 @@ public class GestorServicio {
         return tipo;
     }
 
-    //atributo UNICO
-    // public void eliminarServicio()
+    //atributo UNICO bueno
+
+     public boolean eliminarServicio(Servicio e){
+        return almacenServicios.eliminar(e);
+     }
+
+     public boolean pedirDisenio(){
+        int opcion=0;
+        boolean disenio=false;
+        do{
+            System.out.println("Desea agregar un disenio?");
+            System.out.println("1) Si");
+            System.out.println("2) No");
+            opcion=scanner.nextInt();scanner.nextLine();
+
+            if(opcion!=1 && opcion!=2){
+                System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+            }
+        }while(opcion!=1 && opcion!=2);
+
+        if(opcion==1){
+            disenio=true;
+        }else{
+            disenio=false;
+        }
+         return disenio;
+     }
 
 }
 

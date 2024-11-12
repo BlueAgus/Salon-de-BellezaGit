@@ -4,11 +4,13 @@ import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 
+import java.time.LocalTime;
+
 public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
-    public Depilacion(double precio, TipoDepilacion tipoDepilacion) {
-        super(TipoServicio.DEPILACION, precio, 1);
+    public Depilacion(double precio, TipoDepilacion tipoDepilacion, LocalTime duracion) {
+        super(TipoServicio.DEPILACION, precio, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
 

@@ -4,6 +4,8 @@ import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoManicura;
 import enumeraciones.TipoServicio;
 
+import java.time.LocalTime;
+
 public class Manicura extends Servicio implements MantenimientoMaquinas {
 
     private TipoManicura tipoManicura;
@@ -12,8 +14,11 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
 
     ///si TipoServicio es por defecto no lo pedimos
     // hay un precio base? VER PRECIO DEPILACION
-    public Manicura( double precio,TipoManicura tipoManicura) {
-        super(TipoServicio.MANICURA, precio, 2); // definimos por defecto que va a ser manicura
+
+
+    public Manicura(double precio, LocalTime duracion, boolean disenio, TipoManicura tipoManicura) {
+        super(TipoServicio.MANICURA , precio, duracion);
+        this.disenio = disenio;
         this.tipoManicura = tipoManicura;
     }
 
