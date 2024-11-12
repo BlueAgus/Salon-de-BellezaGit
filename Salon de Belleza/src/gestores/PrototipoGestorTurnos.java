@@ -3,10 +3,9 @@ package gestores;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import model.Cliente;
-import model.Profesional;
-import model.Servicio;
-import model.Turno;
+import enumeraciones.TipoServicio;
+import excepciones.DNInoEncontradoException;
+import model.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,6 +20,7 @@ import java.util.Scanner;
 
 public class PrototipoGestorTurnos {
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
+   // private GestorPersona clientes = new GestorPersona(); se trabaja directamente con la lista no con el gestor!!
     private static Scanner scanner = new Scanner(System.in);
 
     public PrototipoGestorTurnos() {
@@ -33,7 +33,8 @@ public class PrototipoGestorTurnos {
 
     public void agregarTurno(Servicio servicio, Profesional profesional, Cliente cliente)
     {
-        Turno turno= elegirFechaYhorario();
+
+        Turno turno= elegirFechaYhorario(servicio);
 
         turno.setServicio(servicio);
         turno.setProfesional(profesional);
@@ -41,10 +42,23 @@ public class PrototipoGestorTurnos {
 
         System.out.println(turno);
 
+        Cliente cliente1;
+        while (true)
+        {
+            try {
+                cliente1= (Cliente) clientes.buscarPersona("55555");
+                break;
+            } catch (DNInoEncontradoException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+
     }
 
 
-    public Turno elegirFechaYhorario() {
+
+    public Turno elegirFechaYhorario(Servicio servicio) {
 
         List<LocalDate> fechas = fechasAunaSemana();
 
@@ -76,7 +90,7 @@ public class PrototipoGestorTurnos {
         }
 
         ///guarda los horarios disponibles y los muestra
-        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fechas.get(indiceDia));
+        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fechas.get(indiceDia), servicio);
 
         int indiceHorario = -1;
         ///seleccion de horario
@@ -117,15 +131,17 @@ public class PrototipoGestorTurnos {
 
 
     ///el metodo retorna una lista con los horarios disponibles
-    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha ) {
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, Servicio servicio) {
         List<Turno> turnosReservados = obtenerTurnosDisponibles(fecha);///retorna el valor que es una lista de turnos, con la clave que es la fecha
 
         List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
 
         LocalTime horaInicio = LocalTime.of(9, 0);  // 9 a.m.
-        LocalTime horaFin = LocalTime.of(20, 0);    // 6 p.m.
+        LocalTime horaFin = LocalTime.of(18, 0);    // 6 p.m.
 
         int i = 0; ///para el indice de horarios disponibles
+        long hora = (long) servicio.getDuracion().getHour();
+        long minutos = (long) servicio.getDuracion().getMinute();
 
         System.out.println("Turnos disponibles del dia: " + fecha);
         while (horaInicio.isBefore(horaFin)) {///recorre todos los horarios
@@ -134,11 +150,11 @@ public class PrototipoGestorTurnos {
             if (!siEstaHorario(turnosReservados, horaInicio)) {
                 //si te retorna true es porque ese horario ya esta reservado, si da false lo muestra como horario disponible
                 System.out.println(i + "- " + horaInicio);
-                //i++;
+                i++;
                 horariosDisponibles.add(horaInicio);
             }
             // Avanzamos una hora para el siguiente turno
-            horaInicio = horaInicio.plusHours(1);
+            horaInicio = horaInicio.plusHours(hora).plusMinutes(minutos);
         }
 
         if (i == 0) {
@@ -217,6 +233,12 @@ public class PrototipoGestorTurnos {
 
         } while (opc < 0 || opc > profesionales.size());
         return profesionales.get(opc - 1);
+    }
+
+    public void agregarTurno(){
+
+
+
     }
 
 

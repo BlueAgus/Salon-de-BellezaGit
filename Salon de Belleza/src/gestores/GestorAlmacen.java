@@ -50,6 +50,7 @@ public class GestorAlmacen <T>{
         this.almacen = almacen;
     }
 
+
     public ArrayList<T> filtrarPorCondicion(Predicate<T> condicion){
         ArrayList<T> resultado = new ArrayList<>();
 

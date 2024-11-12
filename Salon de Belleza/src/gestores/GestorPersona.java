@@ -6,6 +6,7 @@ import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
 import model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -219,4 +220,7 @@ public class GestorPersona {
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
     }
+
+
+
 }

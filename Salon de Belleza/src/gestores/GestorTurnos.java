@@ -18,6 +18,7 @@ import java.util.Scanner;
 public class GestorTurnos {
 
     private GestorAlmacen<Turno> listaTurnos = new GestorAlmacen<>();
+   // private GestorPersona clientes = new GestorPersona();
     private Scanner scanner = new Scanner(System.in);
 
     public void agregarTurno() {
