@@ -1,12 +1,22 @@
 package gestores;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
 import model.*;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+>>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,21 +57,28 @@ public class GestorPersona {
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(cliente);
+                System.out.println(cliente);
+
                 break;
             case 2:
                 Profesional profesional= new Profesional(nombre,apellido,dni,genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(profesional);
+                System.out.println(profesional);
+                ManejoArchivos a=new ManejoArchivos();
+                a.EscribirProfesional(profesional);
                 break;
             case 3:
                 Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(recepcionista);
+                System.out.println(recepcionista);
                 break;
             case 4:
                 Administrador administrador= new Administrador(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(administrador);
+                System.out.println(administrador);
                 break;
         }
         return cargado;
@@ -108,8 +125,6 @@ public class GestorPersona {
                 throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
             }
 
-
-
         return dni;
     }
 
@@ -119,7 +134,7 @@ public class GestorPersona {
         String genero;
 
         System.out.println("Ingrese el GÉNERO (M, F, O): ");
-        genero = scanner.next();  // Capturamos la entrada como String
+        genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
 
         // Verificar que la entrada tiene exactamente un carácter
         if (genero.length() != 1) {
@@ -216,11 +231,40 @@ public class GestorPersona {
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
     }
-
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
     }
+<<<<<<< HEAD
 
 
+=======
+/*
+    public void ActualizarArchivo(String nombreArchivo,List<T>){
+        try{
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>();
+            fileReader.close();
+        }catch (JsonSyntaxException e) {
+                System.out.println(e.getMessage());
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+    }
+
+    public List<Profesional> LeerArchivo(String nombreArchivo) {
+        try {
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
+            }.getType();
+            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
+
+            return profesionales;
+        }*/
+>>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
 
 }

@@ -48,7 +48,11 @@ public abstract class Servicio {
         return duracion;
     }
 
+<<<<<<< HEAD
     public LocalTime setDuracion(LocalTime duracion) {
+=======
+    public void setDuracion(LocalTime duracion) {
+>>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
         this.duracion = duracion;
     }
 
