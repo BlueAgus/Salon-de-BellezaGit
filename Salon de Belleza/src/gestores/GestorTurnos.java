@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
-
+/*
 public class GestorTurnos {
 
     private GestorAlmacen<Turno> listaTurnos = new GestorAlmacen<>();
@@ -27,7 +27,7 @@ public class GestorTurnos {
         while (!turnoAgregado) {
             LocalDate fecha = pedirFecha();
             LocalTime horario = pedirHorario();
-            Servicio servicio = new Manicura(3, TipoManicura.SEMIPERMANENTE,true);
+            Servicio servicio = new Manicura(3, TipoManicura.SEMIPERMANENTE,LocalTime.of(1,30) ,true);
                 //    pedirServicio();
             Profesional profesional = pedirProfesional(servicio);
             Cliente cliente=new Cliente("S","S","3","C",3232);
@@ -128,7 +128,7 @@ public class GestorTurnos {
                     ///turno.setProfesional(pedirProfesional());
                     break;
                 case 5:
-                   // turno.setCliente(pedirCliente(/*lista/archivo que tenga clientes*/));
+                   // turno.setCliente(pedirCliente());
                     break;
                 case 6:
                     continuar = false;
@@ -241,7 +241,7 @@ public class GestorTurnos {
 
         return aux;
     }
-*/
+
 //aca los clientes se deben leer de un archivo? creo yo,
     private Persona pedirCliente(GestorPersona clientes){
         boolean existe=false;
@@ -322,5 +322,5 @@ public class GestorTurnos {
 
 }
 
-
+*/
 

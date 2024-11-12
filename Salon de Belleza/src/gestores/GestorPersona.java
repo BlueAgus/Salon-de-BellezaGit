@@ -46,21 +46,26 @@ public class GestorPersona {
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(cliente);
+                System.out.println(cliente);
+
                 break;
             case 2:
                 Profesional profesional= new Profesional(nombre,apellido,dni,genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(profesional);
+                System.out.println(profesional);
                 break;
             case 3:
                 Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(recepcionista);
+                System.out.println(recepcionista);
                 break;
             case 4:
                 Administrador administrador= new Administrador(nombre, apellido, dni, genero, telefono);
                 cargado=true;
                 almacenPersonas.agregar(administrador);
+                System.out.println(administrador);
                 break;
         }
         return cargado;
@@ -116,7 +121,7 @@ public class GestorPersona {
         String genero;
 
         System.out.println("Ingrese el GÉNERO (M, F, O): ");
-        genero = scanner.next();  // Capturamos la entrada como String
+        genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
 
         // Verificar que la entrada tiene exactamente un carácter
         if (genero.length() != 1) {

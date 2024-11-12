@@ -3,6 +3,7 @@ package model;
 import enumeraciones.Disponibilidad;
 import enumeraciones.TipoServicio;
 
+import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,14 +12,14 @@ public abstract class Servicio {
    // private String codigo_servicio ; // me parece que esta al pedo
     protected TipoServicio tipoService;
     protected double precio;
-    protected Long duracion;
+    protected LocalTime duracion;
     protected Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
 
-    public Servicio(TipoServicio tipoService, double precio, int duracion) {
+    public Servicio(TipoServicio tipoService, double precio, LocalTime duracion) {
 
         this.tipoService = tipoService;
         this.precio = precio;
-        this.duracion = (long) duracion;
+        this.duracion = duracion;
         this.disponibilidad = Disponibilidad.DISPONIBLE;
        // this.codigo_servicio = generarIDEunico();
     }
@@ -43,11 +44,11 @@ public abstract class Servicio {
         this.precio = precio;
     }
 
-    public Long getDuracion() {
+    public LocalTime getDuracion() {
         return duracion;
     }
 
-    public void setDuracion(Long duracion) {
+    public void setDuracion(LocalTime duracion) {
         this.duracion = duracion;
     }
 
