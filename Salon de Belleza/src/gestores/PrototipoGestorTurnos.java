@@ -1,10 +1,17 @@
 package gestores;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import model.Cliente;
 import model.Profesional;
 import model.Servicio;
 import model.Turno;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -14,7 +21,7 @@ import java.util.Scanner;
 
 public class PrototipoGestorTurnos {
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
-
+    private static Scanner scanner = new Scanner(System.in);
 
     public PrototipoGestorTurnos() {
         this.listaTurnos = new MapaGenerico<>();
@@ -38,7 +45,7 @@ public class PrototipoGestorTurnos {
 
 
     public Turno elegirFechaYhorario() {
-        Scanner scanner = new Scanner(System.in);
+
         List<LocalDate> fechas = fechasAunaSemana();
 
         System.out.println("ELIJA UNA FECHA PARA VER LOS TURNOS DISPONIBLES: ");
@@ -153,7 +160,62 @@ public class PrototipoGestorTurnos {
         return false;
     }
 
-    //public List<Profesional>
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public List<Profesional> LeerArchivo(String nombreArchivo) {
+        try {
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
+            }.getType();
+            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
+            fileReader.close();
+            return profesionales;
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private Profesional pedirProfesionalXservicio(Servicio servicio) {
+        List<Profesional> profesionales = LeerArchivo("profesionales.json");
+
+        if (profesionales == null || profesionales.isEmpty()) {
+            System.out.println("No hay profesionales disponibles.");
+            return null;
+        }
+
+        int opc = -1;
+        List<Profesional> disponibles= new ArrayList<>();
+
+            System.out.println("Profesionales disponibles:");
+            for (int i = 0; i < profesionales.size(); i++) {
+                if(profesionales.get(i).getProfesiones().contains(servicio))
+                {
+                    System.out.println(i + "- " + profesionales.get(i).getNombre()+" "+profesionales.get(i).getApellido());
+                    disponibles.add(profesionales.get(i));
+                }
+            }
+
+            System.out.println("Elija por favor el profesional (número):");
+            opc = scanner.nextInt();
+            scanner.nextLine();
+
+            if (opc < 1 || opc > profesionales.size()) {
+                System.out.println("Selección inválida. Inténtelo de nuevo.");
+            }
+
+        } while (opc < 0 || opc > profesionales.size());
+        return profesionales.get(opc - 1);
+    }
 
 
 }
