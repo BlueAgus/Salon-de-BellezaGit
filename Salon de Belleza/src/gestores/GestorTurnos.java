@@ -29,7 +29,7 @@ public class GestorTurnos {
         while (!turnoAgregado) {
             LocalDate fecha = pedirFecha();
             LocalTime horario = pedirHorario();
-            Servicio servicio = new Manicura(TipoServicio.DEPILACION,3,3, TipoManicura.SEMIPERMANENTE,true);
+            Servicio servicio = new Manicura(3,3, TipoManicura.SEMIPERMANENTE,true);
                 //    pedirServicio();
             Profesional profesional = pedirProfesional();
             Cliente cliente=new Cliente("S","S","3","C",3232);

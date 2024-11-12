@@ -13,7 +13,7 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
 
     ///si TipoServicio es por defecto no lo pedimos
     // hay un precio base? VER PRECIO DEPILACION
-    public Manicura(TipoServicio tipoService, double precio, double duracion, TipoManicura tipoManicura, boolean disenio) {
+    public Manicura( double precio, double duracion, TipoManicura tipoManicura, boolean disenio) {
         super(TipoServicio.MANICURA, precio, duracion); // definimos por defecto que va a ser manicura
         this.tipoManicura = tipoManicura;
         this.disenio = disenio;

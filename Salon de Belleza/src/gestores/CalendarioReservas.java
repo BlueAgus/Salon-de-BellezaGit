@@ -11,7 +11,7 @@ import java.util.List;
 public class CalendarioReservas {
     private MapaGenerico<LocalDate, List<Turno>> calendarioTurnos;
     private MapaGenerico<LocalDate, List<Turno>> turnosReservados;
-    //private Gson geson;
+    private Gson geson;
 
     public CalendarioReservas() {
         this.calendarioTurnos = new MapaGenerico<>();

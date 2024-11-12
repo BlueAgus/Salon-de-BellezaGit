@@ -17,8 +17,7 @@ public class Turno {
 
 
     // Constructor de la clase Turno
-    public Turno(LocalDate fecha, LocalTime horario, Servicio servicio,
-                 Profesional profesional, Cliente cliente) {
+    public Turno(LocalDate fecha, LocalTime horario, Servicio servicio, Profesional profesional, Cliente cliente) {
         this.fecha = fecha;
         this.horario = horario;
         this.servicio = servicio;
@@ -70,13 +69,13 @@ public class Turno {
 
     @Override
     public String toString() {
-        return "Turno{" +
-                "fecha=" + fecha +
-                ", horario=" + horario +
-                ", servicio=" + servicio +
-                ", profesional=" + profesional +
-                ", cliente=" + cliente
-                ;
+        return "\n        TURNO: " +
+                "\n| FECHA : " + fecha +
+                "\n| HORARIO : " + horario +
+                "\n| SERVICIO : " + servicio.getTipoService() +
+                "\n| PROFESIONAL :" + profesional.getNombre() +
+                "\n| CLIENTE : " + cliente.getNombre() +
+                " DNI : "+ cliente.getDni();
     }
 
 

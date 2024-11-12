@@ -7,7 +7,7 @@ import enumeraciones.TipoServicio;
 public class Pestanias extends Servicio{
     private TipoPestanias tipoPestanias;
 
-    public Pestanias(TipoServicio tipoService, double precio, double duracion, TipoPestanias tipoPestanias) {
+    public Pestanias( double precio, double duracion, TipoPestanias tipoPestanias) {
         super(TipoServicio.PESTANIAS, precio, duracion);
         this.tipoPestanias = tipoPestanias;
     }

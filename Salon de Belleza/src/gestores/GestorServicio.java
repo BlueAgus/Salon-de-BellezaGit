@@ -31,14 +31,14 @@ public class GestorServicio {
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias(tipoService, precio, duracion, tipoPestanias);
+            Pestanias pestanias = new Pestanias( precio, duracion, tipoPestanias);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(tipoService, precio, duracion, tipoManicura, disenio);
+            Manicura manicura = new Manicura(precio, duracion, tipoManicura, disenio);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
