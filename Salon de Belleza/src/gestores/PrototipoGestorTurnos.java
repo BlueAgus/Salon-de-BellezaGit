@@ -117,23 +117,24 @@ public class PrototipoGestorTurnos {
 
 
     ///el metodo retorna una lista con los horarios disponibles
-    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha) {
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha ) {
         List<Turno> turnosReservados = obtenerTurnosDisponibles(fecha);///retorna el valor que es una lista de turnos, con la clave que es la fecha
 
         List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
 
         LocalTime horaInicio = LocalTime.of(9, 0);  // 9 a.m.
-        LocalTime horaFin = LocalTime.of(20, 0);    // 8 p.m.
+        LocalTime horaFin = LocalTime.of(20, 0);    // 6 p.m.
 
         int i = 0; ///para el indice de horarios disponibles
 
         System.out.println("Turnos disponibles del dia: " + fecha);
         while (horaInicio.isBefore(horaFin)) {///recorre todos los horarios
 
+
             if (!siEstaHorario(turnosReservados, horaInicio)) {
                 //si te retorna true es porque ese horario ya esta reservado, si da false lo muestra como horario disponible
                 System.out.println(i + "- " + horaInicio);
-                i++;
+                //i++;
                 horariosDisponibles.add(horaInicio);
             }
             // Avanzamos una hora para el siguiente turno
@@ -194,6 +195,7 @@ public class PrototipoGestorTurnos {
         }
 
         int opc = -1;
+        do{
         List<Profesional> disponibles= new ArrayList<>();
 
             System.out.println("Profesionales disponibles:");

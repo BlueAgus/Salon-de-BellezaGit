@@ -3,9 +3,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoManicura;
-import enumeraciones.TipoServicio;
 import excepciones.EntradaInvalidaException;
-import excepciones.ServicioNoExistenteException;
 import model.*;
 
 import java.io.FileNotFoundException;
@@ -29,9 +27,9 @@ public class GestorTurnos {
         while (!turnoAgregado) {
             LocalDate fecha = pedirFecha();
             LocalTime horario = pedirHorario();
-            Servicio servicio = new Manicura(3,3, TipoManicura.SEMIPERMANENTE,true);
+            Servicio servicio = new Manicura(3, TipoManicura.SEMIPERMANENTE,true);
                 //    pedirServicio();
-            Profesional profesional = pedirProfesional();
+            Profesional profesional = pedirProfesional(servicio);
             Cliente cliente=new Cliente("S","S","3","C",3232);
             //Cliente cliente = pedirCliente();
 
@@ -127,7 +125,7 @@ public class GestorTurnos {
                     //turno.setServicio(pedirServicio(serviciosDisponibles));
                     break;
                 case 4:
-                    turno.setProfesional(pedirProfesional());
+                    ///turno.setProfesional(pedirProfesional());
                     break;
                 case 5:
                    // turno.setCliente(pedirCliente(/*lista/archivo que tenga clientes*/));
@@ -201,9 +199,9 @@ public class GestorTurnos {
         try{
             do{
                 System.out.println("Ingrese el tipo de servicio:");
-                System.out.println("1 . manicura");
-                System.out.println("2 . pestanias");
-                System.out.println("3 . depilacion");
+                System.out.println("1. Manicura");
+                System.out.println("2. Pestanias");
+                System.out.println("3. Depilacion");
                 aux= scanner.nextInt();
                 if(aux!=1 && aux!=2 && aux!=3){
                     System.out.println("No haz elegido una opcion valida!! Vuelve a ingresar un servicio que si exista por favor.");
@@ -218,32 +216,32 @@ public class GestorTurnos {
     */
 
 /*
-    private Persona pedirProfesional(GestorPersona profesionales){
-        boolean existe=false;
-        Persona aux=null;
-        do{
+    private Persona pedirProfesional(GestorPersona profesionales) {
+        boolean existe = false;
+        Persona aux = null;
+        do {
             System.out.println("Ingresa el nombre del profesional");
-            String n=scanner.nextLine();
+            String n = scanner.nextLine();
             System.out.println("ingresa el apellido del profesional");
-            String a=scanner.nextLine();
+            String a = scanner.nextLine();
             System.out.println("ingresa el dni del profesional");
-            String d=scanner.nextLine();
+            String d = scanner.nextLine();
 
-            for(Persona e: profesionales.getAlmacenPersonas()) { //esto me devuelve la lista bien?
+            for (Persona e : profesionales.getAlmacenPersonas()) { //esto me devuelve la lista bien?
                 if (e.getNombre().equals(n) && e.getApellido().equals(a) && e.getDni().equals(d)) {
                     existe = true;
                     aux = e;
                     break;
                 }
             }
-            if(aux==null){
+            if (aux == null) {
                 System.out.println("No existe este profesional, volvamos a buscarlo.");
             }
-        }while(!existe);
+        } while (!existe);
 
         return aux;
-    }*/
-
+    }
+*/
 //aca los clientes se deben leer de un archivo? creo yo,
     private Persona pedirCliente(GestorPersona clientes){
         boolean existe=false;
@@ -251,9 +249,9 @@ public class GestorTurnos {
         do{
             System.out.println("Ingresa el nombre del cliente");
             String n=scanner.nextLine();
-            System.out.println("ingresa el apellido del cliente");
+            System.out.println("Ingresa el apellido del cliente");
             String a=scanner.nextLine();
-            System.out.println("ingresa el dni del cliente");
+            System.out.println("Ingresa el dni del cliente");
             String d=scanner.nextLine();
 
             for(Persona e: clientes.getAlmacenPersonas()) {
@@ -295,7 +293,7 @@ public class GestorTurnos {
         return null;
     }
 
-    private Profesional pedirProfesional() {
+    private Profesional pedirProfesional(Servicio servicio) {
         List<Profesional> profesionales = LeerArchivo("profesionales.json");
 
         if (profesionales == null || profesionales.isEmpty()) {
@@ -306,6 +304,7 @@ public class GestorTurnos {
         int pro = -1;
         do {
             System.out.println("Profesionales disponibles:");
+
             for (int i = 0; i < profesionales.size(); i++) {
                 System.out.println((i + 1) + ") " + profesionales.get(i).getNombre()+" "+profesionales.get(i).getApellido());
             }

@@ -19,7 +19,8 @@ public class Profesional extends Persona{
         return profesiones;
     }
 
-    public void setProfesiones(List<TipoDeProfesional> profesiones) {
-        this.profesiones = profesiones;
+    public void agregarProfesion(TipoDeProfesional tipo)
+    {
+        profesiones.add(tipo);
     }
 }

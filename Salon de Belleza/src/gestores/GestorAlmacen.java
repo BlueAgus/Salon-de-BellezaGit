@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class GestorAlmacen <T>{
 
-    private AlmacenGenerico<T> almacen = new AlmacenGenerico<>();
+    private List<T> almacen= new ArrayList<>();
+
     private Gson gson = new Gson();
 
     public GestorAlmacen() {
@@ -19,14 +21,13 @@ public class GestorAlmacen <T>{
 
     public boolean agregar(T elemento) {
 
-        return  almacen.agregar(elemento);
+        return  almacen.add(elemento);
 
     }
 
     public boolean eliminar(T elemento)
     {
-        return almacen.eliminar(elemento);
-
+        return almacen.remove(elemento);
     }
 
     public void guardarServicioAJSON(String nombreArchivo)
@@ -42,10 +43,31 @@ public class GestorAlmacen <T>{
     }
 
     public List<T> getAlmacen() {
-        return almacen.getLista();
+        return almacen;
     }
 
-    public void setAlmacen(AlmacenGenerico<T> almacen) {
+    public void setAlmacen(List<T> almacen) {
         this.almacen = almacen;
+    }
+
+    public ArrayList<T> filtrarPorCondicion(Predicate<T> condicion){
+        ArrayList<T> resultado = new ArrayList<>();
+
+        for(T elemento : almacen){
+            if(condicion.test(elemento)){
+                resultado.add(elemento);
+            }
+        }
+        return resultado;
+    }
+
+    public void mostrar() {
+        if (almacen.isEmpty()) {
+            System.out.println("No hay elementos en el almacén.");
+        } else {
+            for (T item : almacen) {
+                System.out.println(item);
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package model;
 
 import Interfaces.MantenimientoMaquinas;
-import enumeraciones.Disponibilidad;
 import enumeraciones.TipoManicura;
 import enumeraciones.TipoServicio;
 
@@ -13,10 +12,9 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
 
     ///si TipoServicio es por defecto no lo pedimos
     // hay un precio base? VER PRECIO DEPILACION
-    public Manicura( double precio, double duracion, TipoManicura tipoManicura, boolean disenio) {
-        super(TipoServicio.MANICURA, precio, duracion); // definimos por defecto que va a ser manicura
+    public Manicura( double precio,TipoManicura tipoManicura) {
+        super(TipoServicio.MANICURA, precio, 2); // definimos por defecto que va a ser manicura
         this.tipoManicura = tipoManicura;
-        this.disenio = disenio;
     }
 
     public TipoManicura getTipoManicura() {return tipoManicura;}
@@ -39,13 +37,6 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
         return precioFinal;
     }
 
-    public boolean isDisenio() {
-        return disenio;
-    }
-
-    public void setDisenio(boolean disenio) {
-        this.disenio = disenio;
-    }
 
     public static double getPrecioDisenio() {
         return precioDisenio;

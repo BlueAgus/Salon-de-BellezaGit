@@ -6,13 +6,12 @@ import model.Manicura;
 import model.Pestanias;
 import model.Servicio;
 
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.util.Scanner;
 
 public class GestorServicio {
 
     private static Scanner scanner = new Scanner(System.in);
-    private AlmacenGenerico<Servicio> almacenServicios = new AlmacenGenerico<>();
+    private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
 
 
     public void crearServicio() {
@@ -24,25 +23,26 @@ public class GestorServicio {
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion( precio, duracion, tipoDepilacion);
+            Depilacion depilacion = new Depilacion( precio, tipoDepilacion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias( precio, duracion, tipoPestanias);
+            Pestanias pestanias = new Pestanias( precio, tipoPestanias);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(precio, duracion, tipoManicura, disenio);
+            Manicura manicura = new Manicura(precio, tipoManicura);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
         }
+
     }
 
     public void verificarCarga(Servicio servicio)

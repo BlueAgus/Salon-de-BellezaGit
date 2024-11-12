@@ -11,14 +11,14 @@ public abstract class Servicio {
    // private String codigo_servicio ; // me parece que esta al pedo
     protected TipoServicio tipoService;
     protected double precio;
-    protected double duracion;
+    protected Long duracion;
     protected Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
 
-    public Servicio(TipoServicio tipoService, double precio, double duracion) {
+    public Servicio(TipoServicio tipoService, double precio, int duracion) {
 
         this.tipoService = tipoService;
         this.precio = precio;
-        this.duracion = duracion;
+        this.duracion = (long) duracion;
         this.disponibilidad = Disponibilidad.DISPONIBLE;
        // this.codigo_servicio = generarIDEunico();
     }
@@ -43,7 +43,7 @@ public abstract class Servicio {
         this.precio = precio;
     }
 
-    public double getDuracion() {
+    public int getDuracion() {
         return duracion;
     }
 

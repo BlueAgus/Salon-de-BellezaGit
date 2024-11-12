@@ -1,15 +1,14 @@
 package model;
 
 import Interfaces.MantenimientoMaquinas;
-import enumeraciones.Disponibilidad;
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 
 public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
-    public Depilacion(double precio, double duracion, TipoDepilacion tipoDepilacion) {
-        super(TipoServicio.DEPILACION, precio, duracion);
+    public Depilacion(double precio, TipoDepilacion tipoDepilacion) {
+        super(TipoServicio.DEPILACION, precio, 1);
         this.tipoDepilacion = tipoDepilacion;
     }
 
