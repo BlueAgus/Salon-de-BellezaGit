@@ -1,11 +1,18 @@
 package gestores;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
 import model.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,6 +61,8 @@ public class GestorPersona {
                 cargado=true;
                 almacenPersonas.agregar(profesional);
                 System.out.println(profesional);
+                ManejoArchivos a=new ManejoArchivos();
+                a.EscribirProfesional(profesional);
                 break;
             case 3:
                 Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
@@ -218,8 +227,35 @@ public class GestorPersona {
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
     }
-
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
     }
+/*
+    public void ActualizarArchivo(String nombreArchivo,List<T>){
+        try{
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>();
+            fileReader.close();
+        }catch (JsonSyntaxException e) {
+                System.out.println(e.getMessage());
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+    }
+
+    public List<Profesional> LeerArchivo(String nombreArchivo) {
+        try {
+            FileReader fileReader = new FileReader(nombreArchivo);
+            Gson gson = new Gson();
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
+            }.getType();
+            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
+
+            return profesionales;
+        }*/
+
 }
