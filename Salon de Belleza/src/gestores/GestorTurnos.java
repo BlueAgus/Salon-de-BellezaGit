@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
-/*
+
 public class GestorTurnos {
 
     private GestorAlmacen<Turno> listaTurnos = new GestorAlmacen<>();
@@ -323,5 +323,5 @@ public class GestorTurnos {
 
 }
 
-*/
+
 

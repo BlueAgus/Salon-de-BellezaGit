@@ -9,21 +9,18 @@ import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
 import model.*;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
->>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
 import java.util.List;
 import java.util.Scanner;
 
 public class GestorPersona {
 
     private static Scanner scanner = new Scanner(System.in);
-    private GestorAlmacen<Persona> almacenPersonas=new GestorAlmacen<>();
+    private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
 
     //pasamos 1 si es cliente, 2 si es profesional, 3 si es recepcionista, 4 si es administrador
     public boolean agregarPersona(int tipoPersona)
@@ -128,7 +125,7 @@ public class GestorPersona {
         return dni;
     }
 
-    ///metodo para agregar persona
+
     public String pedirGenero() throws GeneroInvalidoException {
 
         String genero;
@@ -153,19 +150,17 @@ public class GestorPersona {
 
     }
 
-    public boolean eliminarPersona(String dni)
-    {
+
+    public boolean eliminarPersona(String dni) {
         try {
-            Persona p= buscarPersona(dni);
+            Persona p = buscarPersona(dni);
             return almacenPersonas.eliminar(p);
-        }catch (DNInoEncontradoException e)
-        {
+        } catch (DNInoEncontradoException e) {
             System.out.printf(e.getMessage());
         }
         return false;
     }
-
-
+    
     public Persona buscarPersona(String dni)throws DNInoEncontradoException
     {
         for(Persona p: almacenPersonas.getAlmacen())
@@ -178,6 +173,8 @@ public class GestorPersona {
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
 
     }
+
+
 
 
     public void modificarPersona(Persona persona)
@@ -231,13 +228,13 @@ public class GestorPersona {
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
     }
+
+
+
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
     }
-<<<<<<< HEAD
 
-
-=======
 /*
     public void ActualizarArchivo(String nombreArchivo,List<T>){
         try{
@@ -265,6 +262,6 @@ public class GestorPersona {
 
             return profesionales;
         }*/
->>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
+
 
 }

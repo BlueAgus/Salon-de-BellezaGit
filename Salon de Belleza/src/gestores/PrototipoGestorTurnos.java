@@ -20,12 +20,16 @@ import java.util.Scanner;
 
 public class PrototipoGestorTurnos {
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
-   // private GestorPersona clientes = new GestorPersona(); se trabaja directamente con la lista no con el gestor!!
     private static Scanner scanner = new Scanner(System.in);
 
+
+    //Constructor
     public PrototipoGestorTurnos() {
         this.listaTurnos = new MapaGenerico<>();
     }
+
+
+
 
     public List<Turno> obtenerTurnosDisponibles(LocalDate fecha) {
         return listaTurnos.obtener(fecha);
@@ -33,7 +37,6 @@ public class PrototipoGestorTurnos {
 
     public void agregarTurno(Servicio servicio, Profesional profesional, Cliente cliente)
     {
-
         Turno turno= elegirFechaYhorario(servicio);
 
         turno.setServicio(servicio);
@@ -41,7 +44,7 @@ public class PrototipoGestorTurnos {
         turno.setCliente(cliente);
 
         System.out.println(turno);
-
+/*
         Cliente cliente1;
         while (true)
         {
@@ -52,6 +55,16 @@ public class PrototipoGestorTurnos {
                 System.out.println(e.getMessage());
             }
         }
+*/
+
+    }
+
+    public void agregarTurno(){
+        Cliente cliente = null;
+        Servicio servicio = null;
+        Profesional profesional = null;
+
+        // 1. verificar cliente
 
 
     }
@@ -235,11 +248,6 @@ public class PrototipoGestorTurnos {
         return profesionales.get(opc - 1);
     }
 
-    public void agregarTurno(){
-
-
-
-    }
 
 
 }
