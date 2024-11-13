@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -53,32 +54,81 @@ public class GestorPersona {
             case 1:
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
                 cargado=true;
-                almacenPersonas.agregar(cliente);
+                if (almacenPersonas.agregar(cliente))
+                {
+                    System.out.printf("\nCLIENTE AGREGADO EXITOSAMENTE \n");
+                } else {
+                    System.out.printf("\nERROR AL AGREGAR CLIENTE\n");
+                }
                 System.out.println(cliente);
+                verificarCarga(cliente);
 
                 break;
             case 2:
                 Profesional profesional= new Profesional(nombre,apellido,dni,genero, telefono);
                 cargado=true;
-                almacenPersonas.agregar(profesional);
+                if (almacenPersonas.agregar(profesional))
+                {
+                    System.out.printf("\n PROFESIONAL AGREGADO EXITOSAMENTE \n");
+                } else {
+                    System.out.printf("\nERROR AL AGREGAR PROFESIONAL\n");
+                }
                 System.out.println(profesional);
+                verificarCarga(profesional);
                 ManejoArchivos a=new ManejoArchivos();
-                a.EscribirProfesional(profesional);
+                a.EscribirUnProfesional(profesional);
                 break;
             case 3:
                 Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
                 cargado=true;
-                almacenPersonas.agregar(recepcionista);
+                if (almacenPersonas.agregar(recepcionista))
+                {
+                    System.out.printf("\nRECEPCIONISTA AGREGADO EXITOSAMENTE \n");
+                } else {
+                    System.out.printf("\nERROR AL AGREGAR RECEPCIONISTA\n");
+                }
                 System.out.println(recepcionista);
+                verificarCarga(recepcionista);
                 break;
             case 4:
                 Administrador administrador= new Administrador(nombre, apellido, dni, genero, telefono);
                 cargado=true;
+                if (almacenPersonas.agregar(administrador))
+                {
+                    System.out.printf("\nADMINISTRADOR AGREGADO EXITOSAMENTE \n");
+                } else {
+                    System.out.printf("\nERROR AL AGREGAR ADMINISTRADOR\n");
+                }
                 almacenPersonas.agregar(administrador);
                 System.out.println(administrador);
+                verificarCarga(administrador);
                 break;
         }
         return cargado;
+    }
+
+    public void verificarCarga(Persona persona)
+    {
+        int opcion;
+        do {
+            System.out.println("¿Deseas modificar algo de la persona?");
+            System.out.println("1. Sí");
+            System.out.println("2. No");
+
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    modificarPersona(persona);
+                    break;
+                case 2:
+                    System.out.println("....");
+                    break;
+                default:
+                    System.out.println("Opción no válida, selecciona nuevamente.");
+            }
+        } while(opcion !=2 &&opcion!=1);
     }
 
     public int pedirTelefono()
@@ -125,31 +175,31 @@ public class GestorPersona {
         return dni;
     }
 
-
-    public String pedirGenero() throws GeneroInvalidoException {
+    public String pedirGenero() throws GeneroInvalidoException{
 
         String genero;
 
-        System.out.println("Ingrese el GÉNERO (M, F, O): ");
-        genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
+        while(true) {
+            System.out.println("Ingrese el GÉNERO (M, F, O): ");
+            genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
 
-        // Verificar que la entrada tiene exactamente un carácter
-        if (genero.length() != 1) {
-            throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+            // Verificar que la entrada tiene exactamente un carácter
+            if (genero.length() != 1) {
+                throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+            }
+
+            // Convertimos el String a un carácter para la validación
+            char generoChar = genero.charAt(0);
+
+            // Verificar si el carácter es válido
+            if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
+                throw new GeneroInvalidoException("GÉNERO INVÁLIDO");
+            } else {
+                break;
+            }
         }
-
-        // Convertimos el String a un carácter para la validación
-        char generoChar = genero.charAt(0);
-
-        // Verificar si el carácter es válido
-        if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
-            throw new GeneroInvalidoException("GÉNERO INVÁLIDO");
-        }
-
         return genero;  // Retornar el String que contiene el género válido
-
     }
-
 
     public boolean eliminarPersona(String dni) {
         try {
@@ -171,11 +221,7 @@ public class GestorPersona {
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
-
     }
-
-
-
 
     public void modificarPersona(Persona persona)
     {
@@ -207,7 +253,6 @@ public class GestorPersona {
                     } catch (DNIyaCargadoException e) {
                         System.out.printf(e.getMessage());
                     }
-
                     break;
                 case 4:
                     try {
@@ -215,7 +260,6 @@ public class GestorPersona {
                     } catch (GeneroInvalidoException e) {
                         System.out.printf(e.getMessage());
                     }
-
                     break;
                 case 5:
                     continuarModificando = false;
@@ -224,12 +268,9 @@ public class GestorPersona {
                     System.out.println("Opción no válida.");
             }
         }
-
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
     }
-
-
 
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();

@@ -4,21 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManejoArchivos {
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
 
-    public void EscribirProfesional(Profesional profesional) {
+
+    public void EscribirUnProfesional(Profesional profesional) {
         try {
             List<Profesional> profesionales = LeerArchivoProfesionales();
             if (profesionales == null) {
@@ -34,6 +28,7 @@ public class ManejoArchivos {
             }
 
             System.out.println("Profesional agregado exitosamente.");
+
         } catch (IOException e) {
             System.out.println("Error al escribir en el archivo: " + e.getMessage());
         }
@@ -56,6 +51,10 @@ public class ManejoArchivos {
         }
         return new ArrayList<>(); // Devolver una lista vacía en caso de error
     }
+
+
+
+
 }
 
 /*

@@ -1,4 +1,5 @@
 package gestores;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +19,7 @@ import java.util.Scanner;
 public class GestorTurnos {
 
     private GestorAlmacen<Turno> listaTurnos = new GestorAlmacen<>();
-   // private GestorPersona clientes = new GestorPersona();
+    // private GestorPersona clientes = new GestorPersona();
     private Scanner scanner = new Scanner(System.in);
 
     public void agregarTurno() {
@@ -28,11 +29,10 @@ public class GestorTurnos {
         while (!turnoAgregado) {
             LocalDate fecha = pedirFecha();
             LocalTime horario = pedirHorario();
-            Servicio servicio = new Manicura(3, TipoManicura.SEMIPERMANENTE,LocalTime.of(1,30) ,true);
-                //    pedirServicio();
-            Profesional profesional = pedirProfesional(servicio);
-            Cliente cliente=new Cliente("S","S","3","C",3232);
-            //Cliente cliente = pedirCliente();
+            Servicio servicio = new Manicura(3, LocalTime.of(1, 30),true, TipoManicura.SEMIPERMANENTE);
+            //    pedirServicio();
+          //  Profesional profesional = pedirProfesional();
+            Cliente cliente = new Cliente("S", "S", "3", "C", "3232");//Cliente cliente = pedirCliente();
 
             // Verificar si ya existe un turno para ese profesional en la misma fecha y hora
             boolean error = false;
@@ -47,8 +47,8 @@ public class GestorTurnos {
             }
             // Si no hay conflicto, se agrega el turno y se sale del bucle
             if (!error) {
-                Turno turno = new Turno(fecha, horario, servicio, profesional, cliente);
-                listaTurnos.agregar(turno);
+              //  Turno turno = new Turno(fecha, horario, servicio, profesional, cliente);
+              //  listaTurnos.agregar(turno);
                 System.out.println("Turno agregado con éxito.");
                 turnoAgregado = true;
 
@@ -129,7 +129,7 @@ public class GestorTurnos {
                     ///turno.setProfesional(pedirProfesional());
                     break;
                 case 5:
-                   // turno.setCliente(pedirCliente());
+                    // turno.setCliente(pedirCliente());
                     break;
                 case 6:
                     continuar = false;
@@ -193,6 +193,7 @@ public class GestorTurnos {
         }
         return horario;
     }
+}
 /*
     private Servicio pedirServicio( GestorServicio servicios){
         boolean valido=false;
@@ -213,9 +214,6 @@ public class GestorTurnos {
             System.out.println("No existe el turno que buscas.");
         }
     }
-
-    */
-
 /*
     private Persona pedirProfesional(GestorPersona profesionales) {
         boolean existe = false;
@@ -323,5 +321,35 @@ public class GestorTurnos {
 
 }
 
+public boolean pedirDisenio() {
+        int opcion = 0;
+        boolean disenio = false;
 
+        do {
+            try {
+                System.out.println("Desea agregar un diseño al servicio? El valor es .. " );
+                System.out.println("1. Si");
+                System.out.println("2. No");
+                opcion = scanner.nextInt();
+                scanner.nextLine();
 
+                if (opcion != 1 && opcion != 2) {
+                    System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+                }
+
+            } catch (InputMismatchException a) {
+                System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+                scanner.nextLine();
+            }
+        } while (opcion != 1 && opcion != 2);
+
+        if (opcion == 1) {
+            disenio = true;
+        } else {
+            disenio = false;
+        }
+        return disenio;
+    }
+}
+
+*/
