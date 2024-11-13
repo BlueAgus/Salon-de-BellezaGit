@@ -7,6 +7,7 @@ import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
+import excepciones.TelefonoInvalidoException;
 import model.*;
 
 import java.util.ArrayList;
@@ -27,19 +28,21 @@ public class GestorPersona {
     public boolean agregarPersona(int tipoPersona)
     {
         boolean cargado=false;
-        String dni = "";
-        String genero= "";
 
-        try{
-            dni=pedirDNI();
-        }catch (DNIyaCargadoException e)
-        {
-            System.out.printf(e.getMessage());
+        String dni = "";
+        while(true) {
+            try {
+                dni = pedirDNI();
+                break;
+            } catch (DNIyaCargadoException e) {
+                System.out.printf(e.getMessage());
+            }
         }
 
         String nombre=pedirNombre();
         String apellido= pedirApellido();
 
+        String genero= "";
         try{
             genero = pedirGenero();
         }catch (GeneroInvalidoException e)
@@ -47,8 +50,15 @@ public class GestorPersona {
             System.out.printf(e.getMessage());
         }
 
-        String telefono=pedirTelefono();
-
+        String telefono="";
+        while(true) {
+            try {
+                telefono = pedirTelefono();
+                break;
+            } catch (TelefonoInvalidoException e) {
+                throw new RuntimeException(e);
+            }
+        }
         switch (tipoPersona){
             case 1:
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
@@ -130,7 +140,7 @@ public class GestorPersona {
         } while(opcion !=2 &&opcion!=1);
     }
 
-    public String pedirTelefono() {
+    public String pedirTelefono() throws TelefonoInvalidoException {
         String telefono = "";
         boolean telefonoValido = false;
 
@@ -141,7 +151,7 @@ public class GestorPersona {
 
             // Validar que el número tenga exactamente 10 dígitos y solo contenga números
             if (!telefono.matches("\\d{10}")) {
-                System.out.println("El número de teléfono debe tener  10 dígitos y solo contener números.");
+                throw new TelefonoInvalidoException("El número de teléfono debe tener  10 dígitos y solo contener números.");
             } else {
                 // Si es válido, confirmamos y salimos del bucle
                 telefonoValido = true;
