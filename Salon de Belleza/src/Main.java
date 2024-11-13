@@ -17,7 +17,6 @@ public class Main {
        /* System.out.println("HOLA HICE UN CAMBIO ");
         System.out.println("Holi soy agus jeje");*/
 
-
         GestorPersona profesionales=new GestorPersona();
         profesionales.agregarPersona(2);
         System.out.println(profesionales);
@@ -30,3 +29,4 @@ public class Main {
        // turnos.agregarTurno(manicura, profesional, cliente);
         }
     }
+

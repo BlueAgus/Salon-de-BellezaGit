@@ -24,13 +24,16 @@ public class GestorPersona {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
 
-    //pasamos 1 si es cliente, 2 si es profesional, 3 si es recepcionista, 4 si es administrador
+    //pasamos 1 si es cliente,
+    // 2 si es profesional,
+    // 3 si es recepcionista,
+    // 4 si es administrador
+
     public boolean agregarPersona(int tipoPersona) {
         boolean cargado = false;
 
         String dni = "";
-        String genero = "";
-
+        String genero = pedirGenero();
         String nombre = pedirNombre();
         String apellido = pedirApellido();
         String telefono = pedirTelefono();
@@ -38,12 +41,6 @@ public class GestorPersona {
         try {
             dni = pedirDNI();
         } catch (DNIyaCargadoException e) {
-            System.out.printf(e.getMessage());
-        }
-
-        try {
-            genero = pedirGenero();
-        } catch (GeneroInvalidoException e) {
             System.out.printf(e.getMessage());
         }
 
@@ -79,8 +76,11 @@ public class GestorPersona {
         return cargado;
     }
 
+    ///////////////////////////metodos auxiliares /////////////////////////
+
+    ///telefono
     public String pedirTelefono() {
-        String telefono="";
+        String telefono = "";
         boolean telefonoValido = false;
 
         while (!telefonoValido) {
@@ -98,6 +98,7 @@ public class GestorPersona {
         return telefono;
     }
 
+    ///////nombre
     public String pedirNombre() {
         String nombre = "";
         boolean nombreValido = false;
@@ -120,7 +121,8 @@ public class GestorPersona {
 
         return nombre;
     }
-//PASA A MAYUSCULA LOS NOMBRES !
+
+    /////////PASA A MAYUSCULA LOS NOMBRES y apellidos  !
     private String capitalizeWords(String nombre) {
         String[] palabras = nombre.split(" "); // Separar las palabras por espacio
         StringBuilder nombreFormateado = new StringBuilder();
@@ -136,6 +138,8 @@ public class GestorPersona {
         // Eliminar el último espacio vacio
         return nombreFormateado.toString().trim();
     }
+
+    /////////////apellido
     public String pedirApellido() {
         String apellido = "";
         boolean apellidoValido = false;
@@ -158,44 +162,76 @@ public class GestorPersona {
         return apellido;
     }
 
-    ///metodo para agregar persona
     public String pedirDNI() throws DNIyaCargadoException {
-        String dni;
+        String dni = "";
+        boolean dnivalido = false;
 
-        System.out.println("Ingrese el DNI: ");
-        dni = scanner.nextLine();
+        while (!dnivalido) {
+            System.out.println("Ingrese el DNI: ");
+            dni = scanner.nextLine();
 
-        for (Persona a : almacenPersonas.getAlmacen())
-            if (a.getDni().equals(dni)) {
-                throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
+            // no esté vacío
+            if (dni.isEmpty()) {
+                System.out.println("Error: El DNI no puede estar vacío.");
             }
-
+            //  contenga números
+            else if (!dni.matches("\\d+")) {
+                System.out.println("Error: El DNI solo puede contener números.");
+            }
+            //  dígitos
+            else if (dni.length() != 8) {
+                System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            }
+            // Verificar si el DNI ya está cargado en el sistema
+            else {
+                boolean dniRepetido = false;
+                for (Persona a : almacenPersonas.getAlmacen()) {
+                    if (a.getDni().equals(dni)) {
+                        dniRepetido = true;
+                        break;
+                    }
+                }
+                if (dniRepetido) {
+                    throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + dni);
+                } else {
+                    dnivalido = true;
+                }
+            }
+        }
         return dni;
     }
 
+    public String pedirGenero() {
+        String genero = "";
+        boolean generoValido = false;
 
-    public String pedirGenero() throws GeneroInvalidoException {
+        while (!generoValido) {
+            try {
+                System.out.println("Ingrese el GÉNERO (M, F, O): ");
+                genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
 
-        String genero;
+                // Verificar que la entrada tiene exactamente un carácter
+                if (genero.length() != 1) {
+                    throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+                }
 
-        System.out.println("Ingrese el GÉNERO (M, F, O): ");
-        genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
+                // Convertimos el String a un carácter para la validación
+                char generoChar = genero.charAt(0);
 
-        // Verificar que la entrada tiene exactamente un carácter
-        if (genero.length() != 1) {
-            throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+                // Verificar si el carácter es válido
+                if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
+                    throw new GeneroInvalidoException("GÉNERO INVÁLIDO. Debes ingresar M, F, o O.");
+                }
+
+                // Si no se lanza excepción, el género es válido
+                generoValido = true;
+
+            } catch (GeneroInvalidoException e) {
+                System.out.println(e.getMessage());  // Mostrar el mensaje de error y pedir nuevamente
+            }
         }
 
-        // Convertimos el String a un carácter para la validación
-        char generoChar = genero.charAt(0);
-
-        // Verificar si el carácter es válido
-        if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
-            throw new GeneroInvalidoException("GÉNERO INVÁLIDO");
-        }
-
-        return genero;  // Retornar el String que contiene el género válido
-
+        return genero;  // Retornar el género válido
     }
 
 
@@ -218,7 +254,6 @@ public class GestorPersona {
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
 
     }
-
 
     public void modificarPersona(Persona persona) {
         int opcion;
@@ -252,12 +287,7 @@ public class GestorPersona {
 
                     break;
                 case 4:
-                    try {
-                        persona.setGenero(pedirGenero());
-                    } catch (GeneroInvalidoException e) {
-                        System.out.printf(e.getMessage());
-                    }
-
+                    persona.setGenero(pedirGenero());
                     break;
                 case 5:
                     continuarModificando = false;
@@ -275,6 +305,9 @@ public class GestorPersona {
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
     }
+}
+
+
 
 /*
     public void ActualizarArchivo(String nombreArchivo,List<T>){
@@ -305,4 +338,3 @@ public class GestorPersona {
         }*/
 
 
-}
