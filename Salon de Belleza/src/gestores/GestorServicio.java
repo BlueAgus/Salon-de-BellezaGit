@@ -8,6 +8,7 @@ import model.Servicio;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GestorServicio {
@@ -25,49 +26,48 @@ public class GestorServicio {
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion( precio, tipoDepilacion,duracion);
+            Depilacion depilacion = new Depilacion(precio, tipoDepilacion, duracion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias( precio, tipoPestanias,duracion);
+            Pestanias pestanias = new Pestanias(precio, tipoPestanias, duracion);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(precio,duracion,disenio,tipoManicura);
+            Manicura manicura = new Manicura(precio, duracion, disenio, tipoManicura);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
         }
     }
 
-    public void verificarCarga(Servicio servicio)
-    {
-    int opcion;
+    public void verificarCarga(Servicio servicio) {
+        int opcion;
         do {
-        System.out.println("¿Deseas modificar algo del servicio?");
-        System.out.println("1. Sí");
-        System.out.println("2. No");
+            System.out.println("¿Deseas modificar algo del servicio?");
+            System.out.println("1. Sí");
+            System.out.println("2. No");
 
-        opcion = scanner.nextInt();
-        scanner.nextLine();
+            opcion = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (opcion) {
-            case 1:
-                modificarServicio(servicio);
-                break;
-            case 2:
-                System.out.println("....");
-                break;
-            default:
-                System.out.println("Opción no válida, selecciona nuevamente.");
-        }
-    } while(opcion !=2 &&opcion!=1);
+            switch (opcion) {
+                case 1:
+                    modificarServicio(servicio);
+                    break;
+                case 2:
+                    System.out.println("....");
+                    break;
+                default:
+                    System.out.println("Opción no válida, selecciona nuevamente.");
+            }
+        } while (opcion != 2 && opcion != 1);
     }
 
     // Función que permite modificar un servicio existente
@@ -164,18 +164,20 @@ public class GestorServicio {
     }*/
 
     private LocalTime pedirDuracion() {
-        int h=-1;
-        int m=-1;
-        while ( m < 0 || m>59 || h>23 || h<0) {
+        int h = -1;
+        int m = -1;
+        while (m < 0 || m > 59 || h > 23 || h < 0) {
             System.out.print("Introduce las horas que durara el servicio (0-23):");
-            h = scanner.nextInt();scanner.nextLine();
+            h = scanner.nextInt();
+            scanner.nextLine();
             System.out.print("Introduce los minutos que durara el servicio (0-59) ");
-            m = scanner.nextInt();scanner.nextLine();
-            if ( m< 0 || m>59 || h>23 || h<0) {
+            m = scanner.nextInt();
+            scanner.nextLine();
+            if (m < 0 || m > 59 || h > 23 || h < 0) {
                 System.out.println("La hora no es valida ! Volvamos a cargarla. ");
             }
         }
-        LocalTime duracion=LocalTime.of(h,m);
+        LocalTime duracion = LocalTime.of(h, m);
         return duracion;
     }
 
@@ -184,30 +186,33 @@ public class GestorServicio {
     }
 
     public TipoDepilacion pedirTipoDepilacion() {
-
         TipoDepilacion tipo = null;
-
         /// EXEPCION LETRAS INAVLIDA
         int opcion;
-        do {
-            System.out.println("Selecciona el tipo de depilación:");
-            System.out.println("1. Cera");
-            System.out.println("2. Láser");
+        try {
+            do {
+                System.out.println("Selecciona el tipo de depilación:");
+                System.out.println("1. Cera");
+                System.out.println("2. Láser");
 
-            opcion = scanner.nextInt();
-            scanner.nextLine();
+                opcion = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (opcion) {
-                case 1:
-                    tipo = TipoDepilacion.CERA;
-                    break;
-                case 2:
-                    tipo = TipoDepilacion.LASER;
-                    break;
-                default:
-                    System.out.println("Opción no válida, selecciona nuevamente.");
-            }
-        } while (opcion != 1 && opcion != 2);
+                switch (opcion) {
+                    case 1:
+                        tipo = TipoDepilacion.CERA;
+                        break;
+                    case 2:
+                        tipo = TipoDepilacion.LASER;
+                        break;
+                    default:
+                        System.out.println("Opción no válida, selecciona nuevamente.");
+                }
+            } while (opcion != 1 && opcion != 2);
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Debes ingresar un número entero.");
+            scanner.next();
+        }
         return tipo;
     }
 
@@ -277,31 +282,32 @@ public class GestorServicio {
 
     //atributo UNICO bueno
 
-     public boolean eliminarServicio(Servicio e){
+    public boolean eliminarServicio(Servicio e) {
         return almacenServicios.eliminar(e);
-     }
+    }
 
-     public boolean pedirDisenio(){
-        int opcion=0;
-        boolean disenio=false;
-        do{
+    public boolean pedirDisenio() {
+        int opcion = 0;
+        boolean disenio = false;
+        do {
             System.out.println("Desea agregar un disenio?");
             System.out.println("1) Si");
             System.out.println("2) No");
-            opcion=scanner.nextInt();scanner.nextLine();
+            opcion = scanner.nextInt();
+            scanner.nextLine();
 
-            if(opcion!=1 && opcion!=2){
+            if (opcion != 1 && opcion != 2) {
                 System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
             }
-        }while(opcion!=1 && opcion!=2);
+        } while (opcion != 1 && opcion != 2);
 
-        if(opcion==1){
-            disenio=true;
-        }else{
-            disenio=false;
+        if (opcion == 1) {
+            disenio = true;
+        } else {
+            disenio = false;
         }
-         return disenio;
-     }
+        return disenio;
+    }
 
 }
 

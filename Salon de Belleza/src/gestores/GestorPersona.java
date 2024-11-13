@@ -7,6 +7,7 @@ import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
+import excepciones.TelefonoInvalidoException;
 import model.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,57 +25,53 @@ public class GestorPersona {
     private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
 
     //pasamos 1 si es cliente, 2 si es profesional, 3 si es recepcionista, 4 si es administrador
-    public boolean agregarPersona(int tipoPersona)
-    {
-        boolean cargado=false;
+    public boolean agregarPersona(int tipoPersona) {
+        boolean cargado = false;
 
         String dni = "";
-        String genero= "";
+        String genero = "";
 
-        int telefono=0;
-        String nombre=pedirNombre();
-        String apellido= pedirApellido();
-        telefono=pedirTelefono();
+        String nombre = pedirNombre();
+        String apellido = pedirApellido();
+        String telefono = pedirTelefono();
 
-        try{
-            dni=pedirDNI();
-        }catch (DNIyaCargadoException e)
-        {
+        try {
+            dni = pedirDNI();
+        } catch (DNIyaCargadoException e) {
             System.out.printf(e.getMessage());
         }
 
-        try{
+        try {
             genero = pedirGenero();
-        }catch (GeneroInvalidoException e)
-        {
+        } catch (GeneroInvalidoException e) {
             System.out.printf(e.getMessage());
         }
 
-        switch (tipoPersona){
+        switch (tipoPersona) {
             case 1:
-                Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
-                cargado=true;
+                Cliente cliente = new Cliente(nombre, apellido, dni, genero, telefono);
+                cargado = true;
                 almacenPersonas.agregar(cliente);
                 System.out.println(cliente);
 
                 break;
             case 2:
-                Profesional profesional= new Profesional(nombre,apellido,dni,genero, telefono);
-                cargado=true;
+                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
+                cargado = true;
                 almacenPersonas.agregar(profesional);
                 System.out.println(profesional);
-                ManejoArchivos a=new ManejoArchivos();
+                ManejoArchivos a = new ManejoArchivos();
                 a.EscribirProfesional(profesional);
                 break;
             case 3:
-                Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
-                cargado=true;
+                Recepcionista recepcionista = new Recepcionista(nombre, apellido, dni, genero, telefono);
+                cargado = true;
                 almacenPersonas.agregar(recepcionista);
                 System.out.println(recepcionista);
                 break;
             case 4:
-                Administrador administrador= new Administrador(nombre, apellido, dni, genero, telefono);
-                cargado=true;
+                Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono);
+                cargado = true;
                 almacenPersonas.agregar(administrador);
                 System.out.println(administrador);
                 break;
@@ -81,43 +79,93 @@ public class GestorPersona {
         return cargado;
     }
 
-    public int pedirTelefono()
-    { int telefono;
+    public String pedirTelefono() {
+        String telefono="";
+        boolean telefonoValido = false;
 
-        ///EXCEPCION POR SI NO SON NUMEROS;
-        System.out.println(" Ingrese el telefono: ");
-        telefono= scanner.nextInt();
-        scanner.nextLine();
-    return telefono;
+        while (!telefonoValido) {
+            System.out.print("Ingrese el teléfono: ");
+            telefono = scanner.nextLine();
+
+            // Validar que el número tenga exactamente 10 dígitos y solo contenga números
+            if (!telefono.matches("\\d{10}")) {
+                System.out.println("Error: El número de teléfono debe tener exactamente 10 dígitos y solo contener números.");
+            } else {
+                // Si es válido, confirmamos y salimos del bucle
+                telefonoValido = true;
+            }
+        }
+        return telefono;
     }
 
-    public String pedirNombre()
-    {
-        String nombre;
-        System.out.println("Ingrese el nombre: ");
-        nombre=scanner.nextLine();
+    public String pedirNombre() {
+        String nombre = "";
+        boolean nombreValido = false;
+
+        while (!nombreValido) {
+            System.out.print("Ingrese el nombre: ");
+            nombre = scanner.nextLine();
+
+            // Validar que el nombre no esté vacío y que contenga solo letras y espacios
+            if (nombre.isEmpty()) {
+                System.out.println("Error: El nombre no puede estar vacío. Por favor ingresa un nombre válido.");
+            } else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
+                System.out.println("Error: El nombre solo puede contener letras y espacios entre palabras.");
+            } else {
+                // Si el nombre es válido, formatearlo con la primera letra en mayúscula
+                nombre = capitalizeWords(nombre);
+                nombreValido = true;
+            }
+        }
 
         return nombre;
     }
+//PASA A MAYUSCULA LOS NOMBRES !
+    private String capitalizeWords(String nombre) {
+        String[] palabras = nombre.split(" "); // Separar las palabras por espacio
+        StringBuilder nombreFormateado = new StringBuilder();
 
-    public String pedirApellido()
-    {
-        String apellido;
-        System.out.println("Ingrese el apellido: ");
-        apellido=scanner.nextLine();
+        for (String palabra : palabras) {
+            // Poner la primera letra en mayúscula y las demás en minúscula
+            if (palabra.length() > 0) {
+                nombreFormateado.append(palabra.substring(0, 1).toUpperCase()) // Primera letra en mayúscula
+                        .append(palabra.substring(1).toLowerCase()) // Resto de la palabra en minúscula
+                        .append(" "); // Agregar espacio entre palabras
+            }
+        }
+        // Eliminar el último espacio vacio
+        return nombreFormateado.toString().trim();
+    }
+    public String pedirApellido() {
+        String apellido = "";
+        boolean apellidoValido = false;
 
+        while (!apellidoValido) {
+            System.out.print("Ingrese el apellido: ");
+            apellido = scanner.nextLine();
+
+            // Validar que el apellido no esté vacío y que contenga solo letras y espacios
+            if (apellido.isEmpty()) {
+                System.out.println("Error: El apellido no puede estar vacío. Por favor ingresa un apellido válido.");
+            } else if (!apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
+                System.out.println("Error: El apellido solo puede contener letras y espacios entre palabras.");
+            } else {
+                // Si el apellido es válido, formatearlo con la primera letra en mayúscula
+                apellido = capitalizeWords(apellido);
+                apellidoValido = true;
+            }
+        }
         return apellido;
     }
 
     ///metodo para agregar persona
-    public String pedirDNI ()throws DNIyaCargadoException
-    {
+    public String pedirDNI() throws DNIyaCargadoException {
         String dni;
 
         System.out.println("Ingrese el DNI: ");
-        dni=scanner.nextLine();
+        dni = scanner.nextLine();
 
-        for(Persona a: almacenPersonas.getAlmacen())
+        for (Persona a : almacenPersonas.getAlmacen())
             if (a.getDni().equals(dni)) {
                 throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + a.toString());
             }
@@ -160,13 +208,10 @@ public class GestorPersona {
         }
         return false;
     }
-    
-    public Persona buscarPersona(String dni)throws DNInoEncontradoException
-    {
-        for(Persona p: almacenPersonas.getAlmacen())
-        {
-            if(p.getDni().equals(dni))
-            {
+
+    public Persona buscarPersona(String dni) throws DNInoEncontradoException {
+        for (Persona p : almacenPersonas.getAlmacen()) {
+            if (p.getDni().equals(dni)) {
                 return p;
             }
         }
@@ -175,10 +220,7 @@ public class GestorPersona {
     }
 
 
-
-
-    public void modificarPersona(Persona persona)
-    {
+    public void modificarPersona(Persona persona) {
         int opcion;
 
         boolean continuarModificando = true;
@@ -191,7 +233,7 @@ public class GestorPersona {
             System.out.println("3. DNI");
             System.out.println("4. Genero");
             System.out.println("5. Salir");
-            opcion= scanner.nextInt();
+            opcion = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
@@ -202,7 +244,7 @@ public class GestorPersona {
                     persona.setApellido(pedirApellido());
                     break;
                 case 3:
-                    try{
+                    try {
                         persona.setDni(pedirDNI());
                     } catch (DNIyaCargadoException e) {
                         System.out.printf(e.getMessage());
@@ -228,7 +270,6 @@ public class GestorPersona {
         System.out.println("MODIFICADO EXITOSAMENTE!");
         System.out.println(persona.toString());
     }
-
 
 
     public List<Persona> getAlmacenPersonas() {
