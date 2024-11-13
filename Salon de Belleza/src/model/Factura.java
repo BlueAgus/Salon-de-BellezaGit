@@ -7,9 +7,12 @@ import excepciones.FacturaSinTurnosException;
 import excepciones.TurnoExistenteException;
 import excepciones.TurnoNoExistenteException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Factura {
 
@@ -18,7 +21,8 @@ public class Factura {
     private double precioFinal;
     private Cliente cliente;
     private List<Turno> turnosPorCliente;
-    private LocalDateTime fecha_hora; // fecha y hora de la creacion de la factura
+    private LocalDate fecha; // fecha y hora de la creacion de la factura
+    private LocalTime hora;
 
 
     public Factura(TipoDePago tipoPago, Cliente cliente) {
@@ -28,7 +32,8 @@ public class Factura {
         this.precioFinal = 0.0;
         this.turnosPorCliente = new ArrayList<>();
         this.cliente = cliente;
-        this.fecha_hora = LocalDateTime.now();
+        this.fecha = LocalDate.now();
+        this.hora = LocalTime.now();
     }
 
 @Override
@@ -39,7 +44,8 @@ public String toString() {
             "| Precio final : " + precioFinal+ "\n" +
             "| Servicios aplicados : " + detallesDeServicios() + "\n" +
             "| Datos del cliente : " + cliente.toString()+"\n" +
-            "| Fecha y hora : " + fecha_hora+"\n" +
+            "| Fecha : " + fecha +"\n" +
+            "| Hora : " + hora +"\n" +
             "=========================================\n";
 }
 
@@ -98,9 +104,9 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
         }
         //ahora que lo pienso, puede pasar que por ejemplo me pague el turno a mi y a una amiga por ej,
         // en ese caso esto no seria necesario, despues lo hablamos porque no se
-        if(!turno.getCliente().equals(this.cliente)){
-            throw new ClienteInvalidoException("El turno que desea ingresar no coincide con el cliente "+this.cliente.getDni()+" asociado a esta factura");
-        }
+       // if(!turno.getCliente().equals(this.cliente)){
+        //    throw new ClienteInvalidoException("El turno que desea ingresar no coincide con el cliente "+this.cliente.getDni()+" asociado a esta factura");
+     //   }
         turnosPorCliente.add(turno);
         System.out.println("La informacion del turno se agrego con exito a la factura!");
     }
@@ -129,6 +135,20 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
         return String.valueOf(numeroUnico);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Factura factura = (Factura) o;
+        return Objects.equals(fecha, factura.fecha) && Objects.equals(hora, factura.hora);
+    }
+
+
+
+    public String getCodigoFactura() {
+        return codigoFactura;
+    }
+
     public TipoDePago getTipoPago() {
         return tipoPago;
     }
@@ -151,5 +171,29 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
 
     public void setTurnosPorCliente(List<Turno> turnosPorCliente) {
         this.turnosPorCliente = turnosPorCliente;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 }

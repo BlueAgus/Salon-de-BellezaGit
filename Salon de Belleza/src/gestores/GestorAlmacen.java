@@ -15,7 +15,6 @@ public class GestorAlmacen <T>{
 
     public GestorAlmacen() {
     }
-// por qué boleados? no es mejor void 
     public boolean agregar(T elemento) {
 
         return  almacen.add(elemento);
@@ -58,7 +57,8 @@ public class GestorAlmacen <T>{
         }
         return resultado;
     }
-//Esto me parece que no va a funcionar porque este clase no tiene toString 
+
+
     public void mostrar() {
         if (almacen.isEmpty()) {
             System.out.println("No hay elementos en el almacén.");
