@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 public abstract class Servicio {
 
-   // private String codigo_servicio ; // me parece que esta al pedo
+    private String codigo_servicio ; // me parece que esta al pedo
     protected TipoServicio tipoService;
     protected double precio;
     protected LocalTime duracion;
@@ -21,12 +21,20 @@ public abstract class Servicio {
         this.precio = precio;
         this.duracion = duracion;
         this.disponibilidad = Disponibilidad.DISPONIBLE;
-       // this.codigo_servicio = generarIDEunico();
+        this.codigo_servicio = generarIDEunico();
     }
 
     public abstract double calcularPrecio();
 
+    private String generarIDEunico() {
+        long numeroUnico = (long) (Math.random() * 100L);  // Genera un número entre 0 y 100
+        return String.valueOf(numeroUnico);
+    }
+
     ////////////////////////////////////////////////////////get y set ////////////////////////////////////////////////////
+
+
+    public String getCodigo_servicio() {return codigo_servicio;}
 
     public TipoServicio getTipoService() {
         return tipoService;
@@ -48,11 +56,7 @@ public abstract class Servicio {
         return duracion;
     }
 
-<<<<<<< HEAD
-    public LocalTime setDuracion(LocalTime duracion) {
-=======
     public void setDuracion(LocalTime duracion) {
->>>>>>> 09cf3186b58d19a6812560ad7e91e5903e41c51c
         this.duracion = duracion;
     }
 

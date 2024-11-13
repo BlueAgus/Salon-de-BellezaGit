@@ -22,10 +22,11 @@ public class Factura {
 
 
     public Factura(TipoDePago tipoPago, Cliente cliente) {
+
+        this.codigoFactura = generarIDEunico();
         this.tipoPago = tipoPago;
         this.precioFinal = 0.0;
         this.turnosPorCliente = new ArrayList<>();
-        this.codigoFactura = generarIDEunico();
         this.cliente = cliente;
         this.fecha_hora = LocalDateTime.now();
     }

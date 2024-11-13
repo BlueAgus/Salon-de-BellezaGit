@@ -323,5 +323,34 @@ public class GestorTurnos {
 
 }
 
+public boolean pedirDisenio() {
+        int opcion = 0;
+        boolean disenio = false;
 
+        do {
+            try {
+                System.out.println("Desea agregar un diseño al servicio? El valor es .. " );
+                System.out.println("1. Si");
+                System.out.println("2. No");
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                if (opcion != 1 && opcion != 2) {
+                    System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+                }
+
+            } catch (InputMismatchException a) {
+                System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+                scanner.nextLine();
+            }
+        } while (opcion != 1 && opcion != 2);
+
+        if (opcion == 1) {
+            disenio = true;
+        } else {
+            disenio = false;
+        }
+        return disenio;
+    }
+}
 
