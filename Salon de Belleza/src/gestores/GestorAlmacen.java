@@ -61,7 +61,7 @@ public class GestorAlmacen <T>{
         }
         return resultado;
     }
-
+//Esto me parece que no va a funcionar porque este clase no tiene toString 
     public void mostrar() {
         if (almacen.isEmpty()) {
             System.out.println("No hay elementos en el almacén.");
