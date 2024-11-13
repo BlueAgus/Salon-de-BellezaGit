@@ -19,12 +19,14 @@ public class Main {
 
         GestorPersona profesionales=new GestorPersona();
         profesionales.agregarPersona(2);
+        System.out.println(profesionales);
 
         PrototipoGestorTurnos turnos = new PrototipoGestorTurnos();
         Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);
-        Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", 223456346);
-        Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", 223654789);
+        Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", "223456346");
+        Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", "223654789");
 
        // turnos.agregarTurno(manicura, profesional, cliente);
         }
     }
+

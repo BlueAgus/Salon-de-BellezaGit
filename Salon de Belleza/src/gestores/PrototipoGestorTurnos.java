@@ -38,11 +38,9 @@ public class PrototipoGestorTurnos {
     public void agregarTurno(Servicio servicio, Profesional profesional, Cliente cliente)
     {
         Turno turno= elegirFechaYhorario(servicio);
-
         turno.setServicio(servicio);
         turno.setProfesional(profesional);
         turno.setCliente(cliente);
-
         System.out.println(turno);
 /*
         Cliente cliente1;
@@ -65,8 +63,6 @@ public class PrototipoGestorTurnos {
         Profesional profesional = null;
 
         // 1. verificar cliente
-
-
     }
 
 

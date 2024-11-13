@@ -9,9 +9,9 @@ public abstract class Persona {
     protected String apellido;
     protected String dni;
     protected String genero; // esto si no se hace con un enum
-    protected int telefono;
+    protected String telefono;
 
-    public Persona(String nombre, String apellido, String dni, String genero, int telefono) {
+    public Persona(String nombre, String apellido, String dni, String genero, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -70,7 +70,7 @@ public abstract class Persona {
 
     public void setGenero(String genero) { this.genero = genero; }
 
-    public int getTelefono() { return telefono; }
+    public String getTelefono() { return telefono; }
 
-    public void setTelefono(int telefono) {  this.telefono = telefono; }
+    public void setTelefono(String telefono) {  this.telefono = telefono; }
 }
