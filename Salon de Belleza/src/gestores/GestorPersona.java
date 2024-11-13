@@ -24,7 +24,10 @@ public class GestorPersona {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
 
-    //pasamos 1 si es cliente, 2 si es profesional, 3 si es recepcionista, 4 si es administrador
+    //pasamos 1 si es cliente,
+    // 2 si es profesional,
+    // 3 si es recepcionista,
+    // 4 si es administrador
     public boolean agregarPersona(int tipoPersona)
     {
         boolean cargado=false;
@@ -43,11 +46,13 @@ public class GestorPersona {
         String apellido= pedirApellido();
 
         String genero= "";
-        try{
-            genero = pedirGenero();
-        }catch (GeneroInvalidoException e)
-        {
-            System.out.printf(e.getMessage());
+        while(true) {
+            try {
+                genero = pedirGenero();
+                break;
+            } catch (GeneroInvalidoException e) {
+                System.out.printf(e.getMessage());
+            }
         }
 
         String telefono="";
@@ -56,9 +61,10 @@ public class GestorPersona {
                 telefono = pedirTelefono();
                 break;
             } catch (TelefonoInvalidoException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
+
         switch (tipoPersona){
             case 1:
                 Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
@@ -281,7 +287,7 @@ public class GestorPersona {
 
             // Verificar si el carácter es válido
             if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
-                throw new GeneroInvalidoException("GÉNERO INVÁLIDO");
+                throw new GeneroInvalidoException("GÉNERO INVÁLIDO\n");
             } else {
                 break;
             }
@@ -324,7 +330,8 @@ public class GestorPersona {
             System.out.println("2. Apellido");
             System.out.println("3. DNI");
             System.out.println("4. Genero");
-            System.out.println("5. Salir");
+            System.out.println("5. Telefono");
+            System.out.println("6. Salir");
             opcion= scanner.nextInt();
             scanner.nextLine();
 
@@ -350,6 +357,13 @@ public class GestorPersona {
                     }
                     break;
                 case 5:
+                    try{
+                        persona.setTelefono((pedirTelefono()));
+                    } catch (TelefonoInvalidoException e) {
+                        System.out.println(e);
+                    }
+                    break;
+                case 6:
                     continuarModificando = false;
                     break;
                 default:
