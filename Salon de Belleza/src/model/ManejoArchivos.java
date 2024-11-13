@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManejoArchivos {
-
+/*
 
     public void EscribirUnProfesional(Profesional profesional) {
         try {
@@ -19,6 +19,7 @@ public class ManejoArchivos {
                 profesionales = new ArrayList<>(); // Si el archivo está vacío o no se pudo leer, inicializar la lista
             }
             profesionales.add(profesional);
+
 
             // Escribir la lista actualizada de profesionales en el archivo
             try (FileWriter fileWriter = new FileWriter("profesionales.json")) {
@@ -32,7 +33,31 @@ public class ManejoArchivos {
         } catch (IOException e) {
             System.out.println("Error al escribir en el archivo: " + e.getMessage());
         }
+    }*/
+
+    public void EscribirUnProfesional(Profesional profesional) {
+        try {
+            // Leer los profesionales actuales (si existen)
+            List<Profesional> profesionales = LeerArchivoProfesionales();
+
+            // Escribir el nuevo profesional en el archivo
+            try (FileWriter writer = new FileWriter("profesionales.json", true)) {
+                Gson gson = new Gson();
+                // Convertimos el objeto Profesional a JSON
+                String json = gson.toJson(profesional);
+                // Escribimos el objeto JSON seguido de un salto de línea
+                if (profesionales.size() > 0) {
+                    writer.write(System.lineSeparator()); // Solo agregar salto de línea si ya hay contenido
+                }
+                writer.write(json);
+            }
+
+            System.out.println("Profesional agregado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al escribir en el archivo: " + e.getMessage());
+        }
     }
+
 
     public List<Profesional> LeerArchivoProfesionales() {
         try (FileReader fileReader = new FileReader("profesionales.json")) {
@@ -51,10 +76,6 @@ public class ManejoArchivos {
         }
         return new ArrayList<>(); // Devolver una lista vacía en caso de error
     }
-
-
-
-
 }
 
 /*

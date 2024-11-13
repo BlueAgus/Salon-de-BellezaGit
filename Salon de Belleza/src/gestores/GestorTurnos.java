@@ -141,7 +141,7 @@ public class GestorTurnos {
     }
 
     // Métodos para pedir cada atributo con validaciones
-
+/*
     private LocalDate pedirFecha() {
         LocalDate fecha = null;
         boolean valido = false;
@@ -160,7 +160,7 @@ public class GestorTurnos {
         }
         return fecha;
     }
-
+*/
     public LocalTime pedirHorario() {
 
         LocalTime horario = null;

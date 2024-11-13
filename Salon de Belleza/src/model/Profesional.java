@@ -23,4 +23,9 @@ public class Profesional extends Persona{
     {
         profesiones.add(tipo);
     }
+
+    public boolean verificarProfesion(TipoDeProfesional tipo)
+    {
+        return profesiones.contains(tipo);
+    }
 }
