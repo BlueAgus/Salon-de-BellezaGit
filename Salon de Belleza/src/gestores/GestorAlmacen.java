@@ -18,7 +18,7 @@ public class GestorAlmacen <T>{
 
     public GestorAlmacen() {
     }
-
+// por qué boleados? no es mejor void 
     public boolean agregar(T elemento) {
 
         return  almacen.add(elemento);
