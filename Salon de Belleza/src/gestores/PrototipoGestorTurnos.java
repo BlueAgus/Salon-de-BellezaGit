@@ -3,10 +3,10 @@ package gestores;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import enumeraciones.TipoDeProfesional;
 import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import model.*;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,28 +19,31 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PrototipoGestorTurnos {
+
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static Scanner scanner = new Scanner(System.in);
-
 
     //Constructor
     public PrototipoGestorTurnos() {
         this.listaTurnos = new MapaGenerico<>();
     }
 
-
-
-
-    public List<Turno> obtenerTurnosDisponibles(LocalDate fecha) {
+    public List<Turno> obtenerTurnosReservadosXfecha(LocalDate fecha) {
         return listaTurnos.obtener(fecha);
     }
 
-    public void agregarTurno(Servicio servicio, Profesional profesional, Cliente cliente)
+    public void agregarTurno()
     {
-        Turno turno= elegirFechaYhorario(servicio);
-        turno.setServicio(servicio);
-        turno.setProfesional(profesional);
-        turno.setCliente(cliente);
+        String dniCliente="";//METODO pedir dni cliente
+        String codServicio= "";//METODO pedir cod servicio
+        Turno turno= elegirFechaYhorario(codServicio);
+        String dniProfesional="";//METODO pedir dni profesional
+
+        turno.setDni_cliente(dniCliente);
+        turno.setCodigo_servicio(codServicio);
+        turno.setDni_profesional(dniProfesional);
+
+
         System.out.println(turno);
 /*
         Cliente cliente1;
@@ -57,49 +60,13 @@ public class PrototipoGestorTurnos {
 
     }
 
-    public void agregarTurno(){
-        Cliente cliente = null;
-        Servicio servicio = null;
-        Profesional profesional = null;
+    public Turno elegirFechaYhorario(String cod_servicio) {
 
-        // 1. verificar cliente
-    }
+        LocalDate fecha=pedirFecha();
 
-
-
-    public Turno elegirFechaYhorario(Servicio servicio) {
-
-        List<LocalDate> fechas = fechasAunaSemana();
-
-        System.out.println("ELIJA UNA FECHA PARA VER LOS TURNOS DISPONIBLES: ");
-        for (int i = 0; i < fechas.size(); i++) {//recorre la lista con las fechas de aca a una semana
-            if (listaTurnos.obtener(fechas.get(i)) == null || listaTurnos.obtener(fechas.get(i)).size() < 11) {   ///si la fecha no existe en el mapa generico(es decir no hay turnos) o si tiene menos de 11 turnos lo printea
-                ///es decir, si tiene horarios disponibles lo muestra
-                System.out.println(i + "- " + fechas.get(i));
-            }
-        }
-
-
-        int indiceDia = -1;
-
-        ///seleccion de fecha
-        while (true) {
-            try {
-                System.out.println("OPCION: ");
-                indiceDia = scanner.nextInt();
-                if (indiceDia < 0 || indiceDia >= fechas.size()) {
-                    System.out.println("Opción no válida.");
-                } else {
-                    break;
-                }
-            } catch (InputMismatchException e) {///si ingresa
-                System.out.println("Entrada no válida. Por favor ingrese un número.");
-                scanner.nextLine();///limpia buffer
-            }
-        }
 
         ///guarda los horarios disponibles y los muestra
-        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fechas.get(indiceDia), servicio);
+        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fecha, cod_servicio);
 
         int indiceHorario = -1;
         ///seleccion de horario
@@ -124,30 +91,43 @@ public class PrototipoGestorTurnos {
             }
         }
 
-
-        Turno turno = new Turno(fechas.get(indiceDia), horariosDisponibles.get(indiceHorario));
+        Turno turno = new Turno(fecha, horariosDisponibles.get(indiceHorario));
         ///System.out.println(turno);
         return turno;
     }
 
-    public List<LocalDate> fechasAunaSemana() {
-        List<LocalDate> fechas = new ArrayList<>();
-        for (int i = 1; i <= 7; i++) {
-            fechas.add(LocalDate.now().plusDays(i));
+
+    private LocalDate pedirFecha() {
+        LocalDate fecha = null;
+        boolean valido = false;
+        while (!valido) {
+            /// agregar filtros
+            System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): ");
+            try {
+                fecha = LocalDate.parse(scanner.nextLine());
+                if (fecha.isBefore(LocalDate.now())) {
+                    System.out.println("Error: La fecha debe ser en el futuro.");
+                } else {
+                    valido = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Formato de fecha inválido.");
+            }
         }
-        return fechas;
+        return fecha;
     }
 
 
     ///el metodo retorna una lista con los horarios disponibles
-    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, Servicio servicio) {
-        List<Turno> turnosReservados = obtenerTurnosDisponibles(fecha);///retorna el valor que es una lista de turnos, con la clave que es la fecha
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, String cod_servicio) {
+        List<Turno> turnosReservados = obtenerTurnosReservadosXfecha(fecha);///retorna el valor que es una lista de turnos, con la clave que es la fecha
 
         List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
 
         LocalTime horaInicio = LocalTime.of(9, 0);  // 9 a.m.
         LocalTime horaFin = LocalTime.of(18, 0);    // 6 p.m.
 
+        ////agregar metodo que busque el servicio por codigo
         int i = 0; ///para el indice de horarios disponibles
         long hora = (long) servicio.getDuracion().getHour();
         long minutos = (long) servicio.getDuracion().getMinute();
@@ -155,31 +135,28 @@ public class PrototipoGestorTurnos {
         System.out.println("Turnos disponibles del dia: " + fecha);
         while (horaInicio.isBefore(horaFin)) {///recorre todos los horarios
 
-
-            if (!siEstaHorario(turnosReservados, horaInicio)) {
+            if (!siEstaHorario(turnosReservados, horaInicio,cod_servicio)) {
                 //si te retorna true es porque ese horario ya esta reservado, si da false lo muestra como horario disponible
                 System.out.println(i + "- " + horaInicio);
                 i++;
                 horariosDisponibles.add(horaInicio);
             }
-            // Avanzamos una hora para el siguiente turno
+            // Avanzamos la duracion del sevicio para el siguiente turno
             horaInicio = horaInicio.plusHours(hora).plusMinutes(minutos);
         }
-
         if (i == 0) {
             System.out.println("No hay turnos disponibles");
         }
-
         return horariosDisponibles;
     }
 
-    public boolean siEstaHorario(List<Turno> turnos, LocalTime horario) {
+    public boolean siEstaHorario(List<Turno> turnos, LocalTime horario, String cod_servicio) {
         if (turnos == null || turnos.isEmpty()) {
             return false;
         }
 
         for (Turno t : turnos) {
-            if (t.getHorario().equals(horario)) {
+            if (t.getHorario().equals(horario)&& t.getCodigo_servicio().equals(cod_servicio)) {
                 return true;
             }
         }
@@ -191,6 +168,9 @@ public class PrototipoGestorTurnos {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+    /////////////////////////////////////////////MANEJO DE PROFESIONALES!!!!////////////////////////////////////////
+
 
     public List<Profesional> LeerArchivo(String nombreArchivo) {
         try {
@@ -211,7 +191,13 @@ public class PrototipoGestorTurnos {
         return null;
     }
 
-    private Profesional pedirProfesionalXservicio(Servicio servicio) {
+    public String pedirPprofesional()
+    {
+
+
+    }
+
+    public List<Profesional> pedirProfesionalXservicio(TipoDeProfesional tipo) {
         List<Profesional> profesionales = LeerArchivo("profesionales.json");
 
         if (profesionales == null || profesionales.isEmpty()) {
@@ -220,12 +206,13 @@ public class PrototipoGestorTurnos {
         }
 
         int opc = -1;
-        do{
         List<Profesional> disponibles= new ArrayList<>();
+        do{
+
 
             System.out.println("Profesionales disponibles:");
             for (int i = 0; i < profesionales.size(); i++) {
-                if(profesionales.get(i).getProfesiones().contains(servicio))
+                if(profesionales.get(i).verificarProfesion(tipo))
                 {
                     System.out.println(i + "- " + profesionales.get(i).getNombre()+" "+profesionales.get(i).getApellido());
                     disponibles.add(profesionales.get(i));
@@ -241,7 +228,7 @@ public class PrototipoGestorTurnos {
             }
 
         } while (opc < 0 || opc > profesionales.size());
-        return profesionales.get(opc - 1);
+        return disponibles;
     }
 
 
