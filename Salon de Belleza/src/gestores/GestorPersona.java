@@ -3,6 +3,7 @@ package gestores;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import enumeraciones.TipoDeProfesional;
 import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
@@ -28,12 +29,11 @@ public class GestorPersona {
     // 2 si es profesional,
     // 3 si es recepcionista,
     // 4 si es administrador
-    public boolean agregarPersona(int tipoPersona)
-    {
-        boolean cargado=false;
+    public boolean agregarPersona(int tipoPersona) {
+        boolean cargado = false;
 
         String dni = "";
-        while(true) {
+        while (true) {
             try {
                 dni = pedirDNI();
                 break;
@@ -42,11 +42,11 @@ public class GestorPersona {
             }
         }
 
-        String nombre=pedirNombre();
-        String apellido= pedirApellido();
+        String nombre = pedirNombre();
+        String apellido = pedirApellido();
 
-        String genero= "";
-        while(true) {
+        String genero = "";
+        while (true) {
             try {
                 genero = pedirGenero();
                 break;
@@ -55,8 +55,8 @@ public class GestorPersona {
             }
         }
 
-        String telefono="";
-        while(true) {
+        String telefono = "";
+        while (true) {
             try {
                 telefono = pedirTelefono();
                 break;
@@ -64,13 +64,13 @@ public class GestorPersona {
                 System.out.println(e.getMessage());
             }
         }
+        TipoDeProfesional e;
 
-        switch (tipoPersona){
+        switch (tipoPersona) {
             case 1:
-                Cliente cliente= new Cliente(nombre, apellido, dni, genero, telefono);
-                cargado=true;
-                if (almacenPersonas.agregar(cliente))
-                {
+                Cliente cliente = new Cliente(nombre, apellido, dni, genero, telefono);
+                cargado = true;
+                if (almacenPersonas.agregar(cliente)) {
                     System.out.printf("\nCLIENTE AGREGADO EXITOSAMENTE \n");
                 } else {
                     System.out.printf("\nERROR AL AGREGAR CLIENTE\n");
@@ -80,24 +80,40 @@ public class GestorPersona {
 
                 break;
             case 2:
-                Profesional profesional= new Profesional(nombre,apellido,dni,genero, telefono);
-                cargado=true;
-                if (almacenPersonas.agregar(profesional))
-                {
+
+                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
+                int opcion = 0;
+                e = pedirTipoProfesional();
+                profesional.agregarProfesion(e);//minimo una profesion.
+                do {
+                    System.out.println("Deseas agregar otra profesion?");
+                    System.out.println("1. Si deseo.");
+                    System.out.println("2. No deseo.");
+                    opcion=scanner.nextInt();
+                    if(opcion==1){
+
+                        e=pedirTipoProfesional();
+                        profesional.agregarProfesion(e);
+                    }else if(opcion!=2){
+                        System.out.println("Ingresa una opcion valida por favor.");
+                    }
+                } while (opcion != 2);
+
+                cargado = true;
+                if (almacenPersonas.agregar(profesional)) {
                     System.out.printf("\n PROFESIONAL AGREGADO EXITOSAMENTE \n");
                 } else {
                     System.out.printf("\nERROR AL AGREGAR PROFESIONAL\n");
                 }
                 System.out.println(profesional);
                 verificarCarga(profesional);
-                ManejoArchivos a=new ManejoArchivos();
+                ManejoArchivos a = new ManejoArchivos();
                 a.EscribirUnProfesional(profesional);
                 break;
             case 3:
-                Recepcionista recepcionista= new Recepcionista(nombre, apellido, dni, genero, telefono);
-                cargado=true;
-                if (almacenPersonas.agregar(recepcionista))
-                {
+                Recepcionista recepcionista = new Recepcionista(nombre, apellido, dni, genero, telefono);
+                cargado = true;
+                if (almacenPersonas.agregar(recepcionista)) {
                     System.out.printf("\nRECEPCIONISTA AGREGADO EXITOSAMENTE \n");
                 } else {
                     System.out.printf("\nERROR AL AGREGAR RECEPCIONISTA\n");
@@ -106,10 +122,9 @@ public class GestorPersona {
                 verificarCarga(recepcionista);
                 break;
             case 4:
-                Administrador administrador= new Administrador(nombre, apellido, dni, genero, telefono);
-                cargado=true;
-                if (almacenPersonas.agregar(administrador))
-                {
+                Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono);
+                cargado = true;
+                if (almacenPersonas.agregar(administrador)) {
                     System.out.printf("\nADMINISTRADOR AGREGADO EXITOSAMENTE \n");
                 } else {
                     System.out.printf("\nERROR AL AGREGAR ADMINISTRADOR\n");
@@ -122,8 +137,7 @@ public class GestorPersona {
         return cargado;
     }
 
-    public void verificarCarga(Persona persona)
-    {
+    public void verificarCarga(Persona persona) {
         int opcion;
         do {
             System.out.println("¿Deseas modificar algo de la persona?");
@@ -143,7 +157,7 @@ public class GestorPersona {
                 default:
                     System.out.println("Opción no válida, selecciona nuevamente.");
             }
-        } while(opcion !=2 &&opcion!=1);
+        } while (opcion != 2 && opcion != 1);
     }
 
     public String pedirTelefono() throws TelefonoInvalidoException {
@@ -269,11 +283,11 @@ public class GestorPersona {
         return dni;
     }
 
-    public String pedirGenero() throws GeneroInvalidoException{
+    public String pedirGenero() throws GeneroInvalidoException {
 
         String genero;
 
-        while(true) {
+        while (true) {
             System.out.println("Ingrese el GÉNERO (M, F, O): ");
             genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
 
@@ -304,21 +318,17 @@ public class GestorPersona {
         }
         return false;
     }
-    
-    public Persona buscarPersona(String dni)throws DNInoEncontradoException
-    {
-        for(Persona p: almacenPersonas.getAlmacen())
-        {
-            if(p.getDni().equals(dni))
-            {
+
+    public Persona buscarPersona(String dni) throws DNInoEncontradoException {
+        for (Persona p : almacenPersonas.getAlmacen()) {
+            if (p.getDni().equals(dni)) {
                 return p;
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
 
-    public void modificarPersona(Persona persona)
-    {
+    public void modificarPersona(Persona persona) {
         int opcion;
 
         boolean continuarModificando = true;
@@ -332,7 +342,7 @@ public class GestorPersona {
             System.out.println("4. Genero");
             System.out.println("5. Telefono");
             System.out.println("6. Salir");
-            opcion= scanner.nextInt();
+            opcion = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
@@ -343,7 +353,7 @@ public class GestorPersona {
                     persona.setApellido(pedirApellido());
                     break;
                 case 3:
-                    try{
+                    try {
                         persona.setDni(pedirDNI());
                     } catch (DNIyaCargadoException e) {
                         System.out.printf(e.getMessage());
@@ -357,7 +367,7 @@ public class GestorPersona {
                     }
                     break;
                 case 5:
-                    try{
+                    try {
                         persona.setTelefono((pedirTelefono()));
                     } catch (TelefonoInvalidoException e) {
                         System.out.println(e);
@@ -376,6 +386,28 @@ public class GestorPersona {
 
     public List<Persona> getAlmacenPersonas() {
         return getAlmacenPersonas();
+    }
+
+    public TipoDeProfesional pedirTipoProfesional() {
+        int opcion = 0;
+        TipoDeProfesional aux = null;
+        do {
+            System.out.println("Ingrese la profesion que posee este profesional:");
+            System.out.println("1. Lashista");
+            System.out.println("2. Manicura");
+            System.out.println("3. Depiladora");
+            opcion = scanner.nextInt();
+            if (opcion == 1) {
+                aux = TipoDeProfesional.LASHISTA;
+            } else if (opcion == 2) {
+                aux = TipoDeProfesional.MANICURA;
+            } else if (opcion == 3) {
+                aux = TipoDeProfesional.DEPILADORA;
+            } else {
+                System.out.println("No haz ingresado una opcion correcta, volvamos a intentar.");
+            }
+        } while (opcion != 1 && opcion != 2 && opcion != 3);
+        return aux;
     }
 
 /*

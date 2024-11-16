@@ -5,7 +5,7 @@ import enumeraciones.TipoDeProfesional;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Profesional extends Persona{
+public class Profesional extends Persona {
 
     private List<TipoDeProfesional> profesiones;
 
@@ -19,13 +19,13 @@ public class Profesional extends Persona{
         return profesiones;
     }
 
-    public void agregarProfesion(TipoDeProfesional tipo)
-    {
+    public void agregarProfesion(TipoDeProfesional tipo) {
         profesiones.add(tipo);
     }
 
-    public boolean verificarProfesion(TipoDeProfesional tipo)
-    {
+    public boolean verificarProfesion(TipoDeProfesional tipo) {
         return profesiones.contains(tipo);
     }
 }
+
+
