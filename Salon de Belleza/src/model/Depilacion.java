@@ -9,10 +9,14 @@ import java.time.LocalTime;
 public class Depilacion extends Servicio implements MantenimientoMaquinas {
     private TipoDepilacion tipoDepilacion;
 
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+
     public Depilacion(double precio, TipoDepilacion tipoDepilacion, LocalTime duracion) {
         super(TipoServicio.DEPILACION, precio, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
+
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
     public double calcularPrecio() {
         double precio = 0.0;
@@ -24,6 +28,7 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
         return this.precio;
     }
 
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
     public TipoDepilacion getTipoDepilacion() {
         return tipoDepilacion;
@@ -40,11 +45,11 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
     }
 
 
-/*
-    @Override
-    public double calcularPrecio() {
-        return this.precio + this.tipoDepilacion.getPrecio();
-    }
-    */
+    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
 
-}
+    @Override
+    public String toString() {
+        return "DEPILACIÓN " + tipoDepilacion +
+                " \nPrecio= " + precio +
+                " \nDuracion=" + duracion;
+    }

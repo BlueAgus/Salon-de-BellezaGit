@@ -25,6 +25,10 @@ public class GestorPersona {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
 
+
+    ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
+
+
     //pasamos 1 si es cliente,
     // 2 si es profesional,
     // 3 si es recepcionista,
@@ -90,6 +94,8 @@ public class GestorPersona {
                     System.out.println("1. Si deseo.");
                     System.out.println("2. No deseo.");
                     opcion=scanner.nextInt();
+                    scanner.nextLine();
+
                     if(opcion==1){
 
                         e=pedirTipoProfesional();
@@ -137,6 +143,83 @@ public class GestorPersona {
         return cargado;
     }
 
+    public boolean eliminarPersona(String dni) {
+        try {
+            Persona p = buscarPersona(dni);
+            return almacenPersonas.eliminar(p);
+        } catch (DNInoEncontradoException e) {
+            System.out.printf(e.getMessage());
+        }
+        return false;
+    }
+
+    public Persona buscarPersona(String dni) throws DNInoEncontradoException {
+        for (Persona p : almacenPersonas.getAlmacen()) {
+            if (p.getDni().equals(dni)) {
+                return p;
+            }
+        }
+        throw new DNInoEncontradoException("\nDNI no encontrado!!");
+    }
+
+    public void modificarPersona(Persona persona) {
+        int opcion;
+
+        boolean continuarModificando = true;
+
+        while (continuarModificando) {
+
+            System.out.println("¿Qué te gustaría modificar?");
+            System.out.println("1. Nombre");
+            System.out.println("2. Apellido");
+            System.out.println("3. DNI");
+            System.out.println("4. Genero");
+            System.out.println("5. Telefono");
+            System.out.println("6. Salir");
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    persona.setNombre(pedirNombre());
+                    break;
+                case 2:
+                    persona.setApellido(pedirApellido());
+                    break;
+                case 3:
+                    try {
+                        persona.setDni(pedirDNI());
+                    } catch (DNIyaCargadoException e) {
+                        System.out.printf(e.getMessage());
+                    }
+                    break;
+                case 4:
+                    try {
+                        persona.setGenero(pedirGenero());
+                    } catch (GeneroInvalidoException e) {
+                        System.out.printf(e.getMessage());
+                    }
+                    break;
+                case 5:
+                    try {
+                        persona.setTelefono((pedirTelefono()));
+                    } catch (TelefonoInvalidoException e) {
+                        System.out.println(e);
+                    }
+                    break;
+                case 6:
+                    continuarModificando = false;
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        }
+        System.out.println("MODIFICADO EXITOSAMENTE!");
+        System.out.println(persona.toString());
+    }
+
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
     public void verificarCarga(Persona persona) {
         int opcion;
         do {
@@ -156,6 +239,7 @@ public class GestorPersona {
                     break;
                 default:
                     System.out.println("Opción no válida, selecciona nuevamente.");
+                    break;
             }
         } while (opcion != 2 && opcion != 1);
     }
@@ -309,84 +393,18 @@ public class GestorPersona {
         return genero;  // Retornar el String que contiene el género válido
     }
 
-    public boolean eliminarPersona(String dni) {
-        try {
-            Persona p = buscarPersona(dni);
-            return almacenPersonas.eliminar(p);
-        } catch (DNInoEncontradoException e) {
-            System.out.printf(e.getMessage());
-        }
-        return false;
-    }
-
-    public Persona buscarPersona(String dni) throws DNInoEncontradoException {
-        for (Persona p : almacenPersonas.getAlmacen()) {
-            if (p.getDni().equals(dni)) {
-                return p;
+    public boolean verificarSiExiste(String dni)throws DNInoEncontradoException
+    {
+        for(Persona p: almacenPersonas)
+        {
+            if(p.getDni().equals(dni))
+            {
+                return true;
             }
         }
-        throw new DNInoEncontradoException("\nDNI no encontrado!!");
+       throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
 
-    public void modificarPersona(Persona persona) {
-        int opcion;
-
-        boolean continuarModificando = true;
-
-        while (continuarModificando) {
-
-            System.out.println("¿Qué te gustaría modificar?");
-            System.out.println("1. Nombre");
-            System.out.println("2. Apellido");
-            System.out.println("3. DNI");
-            System.out.println("4. Genero");
-            System.out.println("5. Telefono");
-            System.out.println("6. Salir");
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    persona.setNombre(pedirNombre());
-                    break;
-                case 2:
-                    persona.setApellido(pedirApellido());
-                    break;
-                case 3:
-                    try {
-                        persona.setDni(pedirDNI());
-                    } catch (DNIyaCargadoException e) {
-                        System.out.printf(e.getMessage());
-                    }
-                    break;
-                case 4:
-                    try {
-                        persona.setGenero(pedirGenero());
-                    } catch (GeneroInvalidoException e) {
-                        System.out.printf(e.getMessage());
-                    }
-                    break;
-                case 5:
-                    try {
-                        persona.setTelefono((pedirTelefono()));
-                    } catch (TelefonoInvalidoException e) {
-                        System.out.println(e);
-                    }
-                    break;
-                case 6:
-                    continuarModificando = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-            }
-        }
-        System.out.println("MODIFICADO EXITOSAMENTE!");
-        System.out.println(persona.toString());
-    }
-
-    public List<Persona> getAlmacenPersonas() {
-        return getAlmacenPersonas();
-    }
 
     public TipoDeProfesional pedirTipoProfesional() {
         int opcion = 0;
@@ -438,5 +456,8 @@ public class GestorPersona {
             return profesionales;
         }*/
 
-
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+    public List<Persona> getAlmacenPersonas() {
+        return getAlmacenPersonas();
+    }
 }

@@ -6,7 +6,6 @@ import model.Manicura;
 import model.Pestanias;
 import model.Servicio;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -16,8 +15,9 @@ public class GestorServicio {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
 
+    ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
-    public void crearServicio() {
+    public void agregarServicio() {
 
         TipoServicio tipoService = pedirTipoServicio();
         double precio = pedirPrecio();
@@ -47,27 +47,23 @@ public class GestorServicio {
         }
     }
 
-    public void verificarCarga(Servicio servicio) {
-        int opcion;
-        do {
-            System.out.println("¿Deseas modificar algo del servicio?");
-            System.out.println("1. Sí");
-            System.out.println("2. No");
+    public boolean eliminarServicio(String id) {
 
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    modificarServicio(servicio);
-                    break;
-                case 2:
-                    System.out.println("....");
-                    break;
-                default:
-                    System.out.println("Opción no válida, selecciona nuevamente.");
+        for (Servicio servicio : almacenServicios.getAlmacen()) {
+            if (servicio.getCodigo_servicio().equals(id)) {
+                return almacenServicios.eliminar(servicio);
             }
-        } while (opcion != 2 && opcion != 1);
+        }
+        return false;
+    }
+
+    public Servicio buscarServicio(String cod_Servicio) {
+        for (Servicio s : almacenServicios.getAlmacen()) {
+            if (s.getCodigo_servicio().equals(cod_Servicio)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     // Función que permite modificar un servicio existente
@@ -103,6 +99,31 @@ public class GestorServicio {
             System.out.println("Servicio modificado:");
             System.out.println(servicio);
         }
+    }
+
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
+    public void verificarCarga(Servicio servicio) {
+        int opcion;
+        do {
+            System.out.println("¿Deseas modificar algo del servicio?");
+            System.out.println("1. Sí");
+            System.out.println("2. No");
+
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    modificarServicio(servicio);
+                    break;
+                case 2:
+                    System.out.println("....");
+                    break;
+                default:
+                    System.out.println("Opción no válida, selecciona nuevamente.");
+            }
+        } while (opcion != 2 && opcion != 1);
     }
 
     // Validación para el tipo de servicio
@@ -154,7 +175,6 @@ public class GestorServicio {
         return precio;
     }
 
-
     private LocalTime pedirDuracion() {
         int h = -1;
         int m = -1;
@@ -174,7 +194,7 @@ public class GestorServicio {
     }
 
     public void mostrarServicios() {
-        almacenServicios.mostrar();
+        almacenServicios.mostrar();///
     }
 
     public TipoDepilacion pedirTipoDepilacion() {
@@ -246,7 +266,6 @@ public class GestorServicio {
         return tipo;
     }
 
-
     public TipoManicura pedirTipoManicura() {
         TipoManicura tipo = null;
 
@@ -282,24 +301,13 @@ public class GestorServicio {
         return tipo;
     }
 
-
-    public boolean eliminarServicio(String id) {
-
-        for (Servicio servicio : almacenServicios.getAlmacen()) {
-            if (servicio.getCodigo_servicio().equals(id)) {
-                return almacenServicios.eliminar(servicio);
-            }
-        }
-        return false;
-    }
-
     public boolean pedirDisenio() {
         int opcion = 0;
         boolean disenio = false;
 
         do {
             try {
-                System.out.println("Desea agregar un diseño al servicio? El valor es .. " );
+                System.out.println("Desea agregar un diseño al servicio? El valor es .. ");
                 System.out.println("1. Si");
                 System.out.println("2. No");
                 opcion = scanner.nextInt();
@@ -321,6 +329,12 @@ public class GestorServicio {
             disenio = false;
         }
         return disenio;
+    }
+
+    ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
+
+    public GestorAlmacen<Servicio> getAlmacenServicios() {
+        return almacenServicios;
     }
 }
 

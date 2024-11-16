@@ -14,7 +14,9 @@ public abstract class Servicio {
     protected double precio;
     protected LocalTime duracion;
     protected Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
+    ///VER DISPONIBILIDAD!!!!!!!!!!!!!!!!!
 
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Servicio(TipoServicio tipoService, double precio, LocalTime duracion) {
 
         this.tipoService = tipoService;
@@ -23,7 +25,7 @@ public abstract class Servicio {
         this.disponibilidad = Disponibilidad.DISPONIBLE;
         this.codigo_servicio = generarIDEunico();
     }
-
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     public abstract double calcularPrecio();
 
     private String generarIDEunico() {
@@ -31,7 +33,7 @@ public abstract class Servicio {
         return String.valueOf(numeroUnico);
     }
 
-    ////////////////////////////////////////////////////////get y set ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
 
     public String getCodigo_servicio() {return codigo_servicio;}
@@ -68,24 +70,5 @@ public abstract class Servicio {
         this.disponibilidad = disponibilidad;
     }
 
-    //////////////////////////////////////////////// Dudoso ////////////////////////////////////////////////////////
-
-     /*  public void limpiezaDelLugar(long duracionMantenimientoMs){ // representa la duración en milisegundos durante la cual el servicio estará en mantenimiento.
-       this.disponibilidad = Disponibilidad.MANTENIMIENTO;
-        // Crea un temporizador para volver a poner el servicio disponible
-        Timer timer = new Timer(); //timer es una clase de Java que permite programar tareas que se ejecutan en un hilo separado después de un retraso.
-        timer.schedule(new TimerTask() { //se crea una nueva instancia de Timer, que se usará para gestionar la duración del mantenimiento.
-            @Override //TimerTask es una clase abstracta que debe ser extendida para definir una tarea que se va a ejecutar por el Timer.
-            public void run() { //Aquí se crea una nueva tarea (anónima) que se ejecutará después de un retraso especificado.
-               // Mét odo sobrescrito run() de la clase TimerTask. Contiene el código que se ejecutará cuando el temporizador expire.
-                // Cambia el estado a DISPONIBLE después de la duración especificada
-                disponibilidad = Disponibilidad.DISPONIBLE;
-                timer.cancel(); // Finaliza el temporizador. cancel() de la clase Timer. Detiene el temporizador y libera los recursos asociados.
-            }
-        }, duracionMantenimientoMs); //es el parámetro que determina cuánto tiempo, en milisegundos, el servicio estará en mantenimiento.
-    }*/
-    //long unaHoraEnMs = 60 * 60 * 1000; // 1 hora = 60 minutos * 60 segundos * 1000 milisegundos
-    //limpiezaDelLugar(unaHoraEnMs); // Llama al mét odo con la duración de una hora
-    // o si no pasarle directamente una hora en milisegundo que es 3600000
 }
 

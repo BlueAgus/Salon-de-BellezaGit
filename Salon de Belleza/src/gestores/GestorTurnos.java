@@ -3,8 +3,7 @@ package gestores;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import enumeraciones.TipoManicura;
-import excepciones.EntradaInvalidaException;
+import excepciones.DNInoEncontradoException;
 import model.*;
 
 import java.io.FileNotFoundException;
@@ -13,259 +12,324 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class GestorTurnos {
 
-    private GestorAlmacen<Turno> listaTurnos = new GestorAlmacen<>();
-    // private GestorPersona clientes = new GestorPersona();
-    private Scanner scanner = new Scanner(System.in);
+    private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
+    private static Scanner scanner = new Scanner(System.in);
 
-    public void agregarTurno() {
 
-        boolean turnoAgregado = false;
-
-        while (!turnoAgregado) {
-            LocalDate fecha = pedirFecha();
-            LocalTime horario = pedirHorario();
-            Servicio servicio = new Manicura(3, LocalTime.of(1, 30),true, TipoManicura.SEMIPERMANENTE);
-            //    pedirServicio();
-          //  Profesional profesional = pedirProfesional();
-            Cliente cliente = new Cliente("S", "S", "3", "C", "3232");//Cliente cliente = pedirCliente();
-
-            // Verificar si ya existe un turno para ese profesional en la misma fecha y hora
-            boolean error = false;
-
-            for (Turno turno : listaTurnos.getAlmacen()) {
-                if (turno.getFecha().equals(fecha) &&
-                        turno.getHorario().equals(horario)) {
-                    System.out.println("Error: El profesional ya tiene un turno en esta fecha y hora.");
-                    error = true;
-                    break;
-                }
-            }
-            // Si no hay conflicto, se agrega el turno y se sale del bucle
-            if (!error) {
-              //  Turno turno = new Turno(fecha, horario, servicio, profesional, cliente);
-              //  listaTurnos.agregar(turno);
-                System.out.println("Turno agregado con éxito.");
-                turnoAgregado = true;
-
-            } else {
-                System.out.println("¿Desea intentar de nuevo?");
-                System.out.println("1. Sí");
-                System.out.println("2. No");
-                int respuesta = scanner.nextInt();
-
-                switch (respuesta) {
-                    case 1:
-                        System.out.println("Intentando con un nuevo horario...");
-                        break;
-                    case 2:
-                        System.out.println("Operación cancelada.");
-                        return; // Salir y no volver a intentar
-                    default:
-                        System.out.println("Respuesta no válida. Por favor, ingrese '1' para sí o '2' para no.");
-                        break;
-                }
-            }
-        }
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+    public GestorTurnos() {
+        this.listaTurnos = new MapaGenerico<>();
     }
 
+    ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
-    public boolean eliminarTurno(LocalDate fecha, LocalTime horario, Profesional profesional) {
-        Turno turno = buscarTurno(fecha, horario, profesional);
-        if (turno != null) {
-            listaTurnos.agregar(turno);
-            System.out.println("Turno eliminado con éxito.");
-            return true;
-        } else {
-            System.out.println("Error: No se encontró el turno.");
+    public boolean agregarTurno(GestorPersona gestorCliente, GestorServicio gestorServicio) {
+        String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
+
+        if (dniCliente == null) {
             return false;
         }
+
+
+        String codServicio = pedirCodServicio(gestorServicio);//METODO pedir cod servicio
+
+        if (codServicio == null) {
+            return false;
+        }
+
+
+        Turno turno = elegirFechaYhorario(codServicio);
+
+        if (turno == null) {
+            return false;
+        }
+
+        while (verificarClienteXHorario(dniCliente, turno.getHorario(), turno.getFecha())) {
+            System.out.println("El cliente ya tiene reservado un turno en la misma fecha y horario!!");
+            turno = elegirFechaYhorario(codServicio);
+        }
+
+        String dniProfesional = pedirDNIprofesionalXservicio(codServicio, turno.getHorario(), turno.getFecha());//METODO pedir dni profesional
+
+        if (dniProfesional == null) {
+            return false;
+        }
+
+        turno.setDni_cliente(dniCliente);
+        turno.setCodigo_servicio(codServicio);
+        turno.setDni_profesional(dniProfesional);
+
+
+        System.out.println(turno);
+
+        if (listaTurnos.contiene(turno.getFecha())) {
+            listaTurnos.getMapa().get(turno.getFecha()).add(turno);
+        } else {
+            List<Turno> turnos = new ArrayList<>();
+            turnos.add(turno);
+
+            listaTurnos.agregar(turno.getFecha(), turnos);
+        }
+        return true;
     }
 
-    public Turno buscarTurno(LocalDate fecha, LocalTime horario, Profesional profesional) {
-        for (Turno turno : listaTurnos.getAlmacen()) {
-            if (turno.getFecha().equals(fecha) &&
-                    turno.getHorario().equals(horario) &&
-                    turno.getProfesional().equals(profesional)) {
-                return turno;
+    public boolean eliminarTurno(String codTurno) {
+        for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
+            for (List<Turno> e : listaTurnos.getMapa().values()) {
+                for (Turno t : e) {
+                    if (t.getCodigo_servicio().equals(codTurno)) {
+                        return e.remove(t);
+                    }
+                }
             }
         }
-        System.out.println("Turno no encontrado.");
+        return false;
+    }
+
+    public Turno buscarTurnoPorCodigo(String codTurno) {
+        for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
+            for (List<Turno> e : listaTurnos.getMapa().values()) {
+                for (Turno t : e) {
+                    if (t.getCodigo_servicio().equals(codTurno)) {
+                        return t;
+                    }
+                }
+            }
+        }
         return null;
     }
 
-    public void modificarTurno(Turno turno) {
-        int opcion;
-        boolean continuar = true;
+    public boolean modificarTurno(String codTurno) {
+        Turno t = buscarTurnoPorCodigo(codTurno);
+        System.out.println("DATOS ACTUALES DEL TURNO: " + t.toString());
+        System.out.println("| Ingrese la opcion que desea modificar:");
+        System.out.println("1- Fecha");
+        System.out.println("2- Horario");
+        System.out.println("3- Profesional");
+        System.out.println("4- Cliente");
 
-        while (continuar) {
-            System.out.println("¿Qué desea modificar?");
-            System.out.println("1. Fecha");
-            System.out.println("2. Horario");
-            System.out.println("3. Servicio");
-            System.out.println("4. Profesional");
-            System.out.println("5. Cliente");
-            System.out.println("6. Salir");
-
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    turno.setFecha(pedirFecha());
-                    break;
-                case 2:
-                    turno.setHorario(pedirHorario());
-                    break;
-                case 3:
-                    //aca le pasas los servicios
-                    //turno.setServicio(pedirServicio(serviciosDisponibles));
-                    break;
-                case 4:
-                    ///turno.setProfesional(pedirProfesional());
-                    break;
-                case 5:
-                    // turno.setCliente(pedirCliente());
-                    break;
-                case 6:
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-            }
-        }
+    /*
+        private LocalDate fecha;         // Fecha del turno
+        private LocalTime horario;       // Hora del turno
+        private String codigo_servicio;       // El servicio a realizar
+        private String dni_profesional; // Profesional que atenderá el servicio
+        private String dni_cliente;
+    */
     }
 
-    // Métodos para pedir cada atributo con validaciones
-/*
-    private LocalDate pedirFecha() {
+    /////////////////////////////////////////////MANEJO DE SERVICIOS!!!!////////////////////////////////////////
+    public String pedirCodServicio(GestorServicio gestorServicio) {
+        int opc = 0;
+        while (true) {
+            for (int i = 0; i < gestorServicio.getAlmacenServicios().getAlmacen().size(); i++) {
+                System.out.println(i + "- " + gestorServicio.getAlmacenServicios().getAlmacen().get(i).toString());
+            }
+
+            System.out.println("OPCIÓN: (o escriba 'salir' para cancelar) ");
+            String opcElegida = scanner.nextLine();
+
+            if (opcElegida.equalsIgnoreCase("salir")) {
+                System.out.println("Operación cancelada por el usuario.");
+                return null;
+            }
+
+            try {
+                opc = Integer.parseInt(opcElegida); // Convierte el String a entero
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Debe ingresar un número.");
+            }
+
+            if (opc < 0 || opc >= gestorServicio.getAlmacenServicios().getAlmacen().size()) {
+                System.out.println("Opcion no valida");
+            } else {
+                return gestorServicio.getAlmacenServicios().getAlmacen().get(opc).getCodigo_servicio();
+            }
+        }
+
+    }
+
+
+    /////////////////////////////////////////////MANEJO DE CLIENTES!!!!////////////////////////////////////////
+    public String pedirDNIcliente(GestorPersona gestorCliente) {
+        String dniCliente;
+        while (true) {
+            ///para ponerle que presione ESC hay que usar libreras
+            System.out.println("Ingrese el DNI del cliente (o escriba 'salir' para cancelar):");
+            dniCliente = scanner.nextLine();
+
+            if (dniCliente.equalsIgnoreCase("salir")) {
+                System.out.println("Operación cancelada por el usuario.");
+                return null; // Devuelve null o lanza una excepción según el diseño
+            }
+
+            try {
+                gestorCliente.verificarSiExiste(dniCliente);
+                return dniCliente;
+
+            } catch (DNInoEncontradoException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        ///tendriamos que verificar que el cliente no tenga más turnos en el mismo horario y dia?? o podriamos decir que puede reservar turnos para otra persona
+    }
+
+    public boolean verificarClienteXHorario(String dni, LocalTime horario, LocalDate fecha) {
+        List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
+
+        for (Turno t : turnos) {
+            if (t.getDni_cliente().equals(dni) && t.getHorario().equals(horario)) {
+                return false; ///retorna falso si el cliente tiene un turno con el mismo horario solicitado
+            }
+        }
+        return true;//si no hay ningun turno con el mismo horario y cliente retorna true
+
+    }
+
+    /////////////////////////////////////////////MANEJO DE FECHAS!!!!////////////////////////////////////////
+
+    ///retorna un turno con la fecha y el horario elegido
+    public Turno elegirFechaYhorario(String cod_servicio) {
+
+        LocalDate fecha = pedirFecha();
+        if (fecha == null) {
+            return null;
+        }
+
+        ///guarda los horarios disponibles y los muestra
+        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fecha, cod_servicio);
+
+        int indiceHorario;
+        ///seleccion de horario
+        while (true) {
+            try {
+
+                if (horariosDisponibles.isEmpty()) {
+                    System.out.println("No hay turnos disponibles en la fecha seleccionada");
+                    ///NO HAY HORARIOS DISPONIBLES
+                } else {
+
+                    System.out.println("OPCIÓN: (o escriba 'salir' para cancelar) ");
+                    String opcElegida = scanner.nextLine();
+
+                    if (opcElegida.equalsIgnoreCase("salir")) {
+                        System.out.println("Operación cancelada por el usuario.");
+                        return null;
+                    }
+
+                    try {
+                        indiceHorario = Integer.parseInt(opcElegida); // Convierte el String a entero
+                    } catch (NumberFormatException e) {
+                        System.out.println("Entrada inválida. Debe ingresar un número.");
+                        return null;
+                    }
+
+                    if (indiceHorario < 0 || indiceHorario >= horariosDisponibles.size()) {
+                        System.out.println("Opcion no valida");
+                    } else {
+                        break;
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no valida. Por favor ingrese un número.");
+                scanner.nextLine();///limpia buffer
+            }
+        }
+
+        Turno turno = new Turno(fecha, horariosDisponibles.get(indiceHorario));
+        ///System.out.println(turno);
+        return turno;
+    }
+
+    ///retorna la fecha ingresada por el usuario
+    public LocalDate pedirFecha() {
         LocalDate fecha = null;
         boolean valido = false;
         while (!valido) {
-            System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): ");
+            /// agregar filtros
+            System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
+
+            ///lo guarda en un string para verificar que no haya escrito salir
+            String fechaIngresada = scanner.nextLine();
+
+            if (fechaIngresada.equalsIgnoreCase("salir")) {
+                System.out.println("Operación cancelada por el usuario.");
+                return null; // Devuelve null o lanza una excepción según el diseño
+            }
+
             try {
-                fecha = LocalDate.parse(scanner.nextLine());
+
+                fecha = LocalDate.parse(fechaIngresada);
+
                 if (fecha.isBefore(LocalDate.now())) {
                     System.out.println("Error: La fecha debe ser en el futuro.");
                 } else {
                     valido = true;
                 }
-            } catch (Exception e) {
-                System.out.println("Formato de fecha inválido.");
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato de fecha inválido. Por favor, use el formato YYYY-MM-DD");
             }
         }
         return fecha;
     }
-*/
-    public LocalTime pedirHorario() {
 
-        LocalTime horario = null;
-        boolean valido = false;
+    ///retorna una lista con los horarios disponibles x fecha especifica y servicio
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, String cod_servicio) {
+        List<Turno> turnosReservados = obtenerTurnosReservadosXfecha(fecha);///retorna la lista de turnos reservados para una fecha
 
-        while (!valido) {
-            System.out.println("Ingrese la hora del turno en este formato (HH:MM):");
-            try {
-                horario = LocalTime.parse(scanner.nextLine());
+        List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
 
-                // Verificar que el horario esté en una hora exacta (minutos = 00)
-                if (horario.getMinute() != 0) {
-                    System.out.println("El turno debe ser en una hora exacta (por ejemplo, 10:00, 14:00). Intente de nuevo.");
-                    continue;  // Volver a pedir la hora
-                }
+        LocalTime horaInicio = LocalTime.of(9, 0);  // 9 a.m.
+        LocalTime horaFin = LocalTime.of(18, 0);    // 6 p.m.
 
-                // Verificar que el horario esté entre las 09:00 y las 18:00 inclusive
-                LocalTime horaApertura = LocalTime.of(9, 0);
-                LocalTime horaCierre = LocalTime.of(18, 0);
-                if (horario.isBefore(horaApertura) || horario.isAfter(horaCierre)) {
-                    System.out.println("El turno debe estar entre las 09:00 y las 18:00 inclusive. Intente de nuevo.");
-                    continue;  // Volver a pedir la hora
-                }
-                // Si pasa ambas validaciones, salimos del bucle
-                valido = true;
+        ////agregar metodo que busque el servicio por codigo
+        int i = 0; ///para el indice de horarios disponibles
+        long hora = (long) servicio.getDuracion().getHour();
+        long minutos = (long) servicio.getDuracion().getMinute();
 
-            } catch (EntradaInvalidaException e) {
-                System.out.println("El formato de la hora no es válido. Asegúrese de usar el formato HH:MM.");
+        System.out.println("Turnos disponibles del dia: " + fecha);
+        while (horaInicio.isBefore(horaFin)) {///recorre todos los horarios
+
+            if (!siEstaHorario(turnosReservados, horaInicio, cod_servicio)) {
+                //si te retorna true es porque ese horario ya esta reservado, si da false lo muestra como horario disponible
+                System.out.println(i + "- " + horaInicio);
+                i++;
+                horariosDisponibles.add(horaInicio);
+            }
+            // Avanzamos la duracion del sevicio para el siguiente turno
+            horaInicio = horaInicio.plusHours(hora).plusMinutes(minutos);
+        }
+        if (i == 0) {
+            System.out.println("No hay turnos disponibles");
+        }
+        return horariosDisponibles;
+    }
+
+    /// retorna lista de turnos RESERVADOS por fecha específica
+    public List<Turno> obtenerTurnosReservadosXfecha(LocalDate fecha) {
+        return listaTurnos.obtener(fecha);
+    }
+
+    ///retorna true si el horario está ocupado por un turno del mismo servicio
+    public boolean siEstaHorario(List<Turno> turnos, LocalTime horario, String cod_servicio) {
+        if (turnos == null || turnos.isEmpty()) {
+            return false;
+        }
+
+        for (Turno t : turnos) {
+            if (t.getHorario().equals(horario) && t.getCodigo_servicio().equals(cod_servicio)) {
+                return true;
             }
         }
-        return horario;
-    }
-}
-/*
-    private Servicio pedirServicio( GestorServicio servicios){
-        boolean valido=false;
-        int aux=0;
-        try{
-            do{
-                System.out.println("Ingrese el tipo de servicio:");
-                System.out.println("1. Manicura");
-                System.out.println("2. Pestanias");
-                System.out.println("3. Depilacion");
-                aux= scanner.nextInt();
-                if(aux!=1 && aux!=2 && aux!=3){
-                    System.out.println("No haz elegido una opcion valida!! Vuelve a ingresar un servicio que si exista por favor.");
-                }
-            }while(aux!=1 && aux!=2 && aux!=3);
-  //no se por que otr atributo buscar.. precio? duracion?
-        }catch(ServicioNoExistenteException e){
-            System.out.println("No existe el turno que buscas.");
-        }
-    }
-/*
-    private Persona pedirProfesional(GestorPersona profesionales) {
-        boolean existe = false;
-        Persona aux = null;
-        do {
-            System.out.println("Ingresa el nombre del profesional");
-            String n = scanner.nextLine();
-            System.out.println("ingresa el apellido del profesional");
-            String a = scanner.nextLine();
-            System.out.println("ingresa el dni del profesional");
-            String d = scanner.nextLine();
-
-            for (Persona e : profesionales.getAlmacenPersonas()) { //esto me devuelve la lista bien?
-                if (e.getNombre().equals(n) && e.getApellido().equals(a) && e.getDni().equals(d)) {
-                    existe = true;
-                    aux = e;
-                    break;
-                }
-            }
-            if (aux == null) {
-                System.out.println("No existe este profesional, volvamos a buscarlo.");
-            }
-        } while (!existe);
-
-        return aux;
-    }
-
-//aca los clientes se deben leer de un archivo? creo yo,
-    private Persona pedirCliente(GestorPersona clientes){
-        boolean existe=false;
-        Persona aux=null;
-        do{
-            System.out.println("Ingresa el nombre del cliente");
-            String n=scanner.nextLine();
-            System.out.println("Ingresa el apellido del cliente");
-            String a=scanner.nextLine();
-            System.out.println("Ingresa el dni del cliente");
-            String d=scanner.nextLine();
-
-            for(Persona e: clientes.getAlmacenPersonas()) {
-                if (e.getNombre().equals(n) && e.getApellido().equals(a) && e.getDni().equals(d)) {
-                    existe = true;
-                    aux = e;
-                    break;
-                }
-            }
-            if(aux==null){
-                System.out.println("No existe este cliente, volvamos a buscarlo.");
-            }
-        }while(!existe);
-
-        return aux;
+        return false;
     }
 
     public String toJson() {
@@ -273,7 +337,9 @@ public class GestorTurnos {
         return gson.toJson(this);
     }
 
-    public List<Profesional> LeerArchivo(String nombreArchivo) {
+/////////////////////////////////////////////MANEJO DE PROFESIONALES!!!!////////////////////////////////////////
+
+    public List<Profesional> LeerArchivoProfesionales(String nombreArchivo) {
         try {
             FileReader fileReader = new FileReader(nombreArchivo);
             Gson gson = new Gson();
@@ -292,64 +358,106 @@ public class GestorTurnos {
         return null;
     }
 
-    private Profesional pedirProfesional(Servicio servicio) {
-        List<Profesional> profesionales = LeerArchivo("profesionales.json");
+
+   /* public List<Profesional> pedirDNIprofesionalXservicio(TipoDeProfesional tipo) {
+        List<Profesional> profesionales = LeerArchivoProfesionales("profesionales.json");///no es mejor que el metodo ya tenga el nombre antes que pasarselo?
 
         if (profesionales == null || profesionales.isEmpty()) {
             System.out.println("No hay profesionales disponibles.");
             return null;
         }
 
-        int pro = -1;
+        int opc = -1;
+        List<Profesional> disponibles = new ArrayList<>();
         do {
             System.out.println("Profesionales disponibles:");
-
             for (int i = 0; i < profesionales.size(); i++) {
-                System.out.println((i + 1) + ") " + profesionales.get(i).getNombre()+" "+profesionales.get(i).getApellido());
+                if (profesionales.get(i).verificarProfesion(tipo)) {
+                    System.out.println(i + "- " + profesionales.get(i).getNombre() + " " + profesionales.get(i).getApellido());
+                    disponibles.add(profesionales.get(i));
+                }
             }
 
             System.out.println("Elija por favor el profesional (número):");
-            pro = scanner.nextInt();
+            opc = scanner.nextInt();
+            scanner.nextLine();
 
-            if (pro < 1 || pro > profesionales.size()) {
+            if (opc < 1 || opc > profesionales.size()) {
                 System.out.println("Selección inválida. Inténtelo de nuevo.");
             }
 
-        } while (pro < 0 || pro > profesionales.size());
-        return profesionales.get(pro - 1);
-    }
+        } while (opc < 0 || opc > profesionales.size());
+        return disponibles;
+    }*/
+///a este metodo le agregue las verificaciones de servicio, fecha y horario. Tambien retorne el dni en vez de retornar la lista completa
 
-}
 
-public boolean pedirDisenio() {
-        int opcion = 0;
-        boolean disenio = false;
+    ///devuelve el DNI del profesional
+///filtra por servicio, por horario y fecha
+    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha) {
+        List<Profesional> profesionales = LeerArchivoProfesionales("profesionales.json");
 
-        do {
+        if (profesionales == null || profesionales.isEmpty()) {
+            System.out.println("No hay profesionales disponibles.");
+            return null;
+        }
+
+        int opc = 0;
+        List<Profesional> disponibles = new ArrayList<>();
+
+        while (true) {
+            System.out.println("Profesionales disponibles:");
+            for (int i = 0; i < profesionales.size(); i++) {
+
+                if (profesionales.get(i).verificarProfesion(codServicio) && verificarProfesionalXhorario(profesionales.get(i).getDni(), horario, fecha)) {
+                    System.out.println(opc + "- " + profesionales.get(i).getNombre() + " " + profesionales.get(i).getApellido());
+                    disponibles.add(profesionales.get(i));
+                    opc++;
+                }
+            }
             try {
-                System.out.println("Desea agregar un diseño al servicio? El valor es .. " );
-                System.out.println("1. Si");
-                System.out.println("2. No");
-                opcion = scanner.nextInt();
-                scanner.nextLine();
+                System.out.println("OPCION: (o escriba 'salir' para cancelar) ");
+                String opcElegida = scanner.nextLine();
 
-                if (opcion != 1 && opcion != 2) {
-                    System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+
+                if (opcElegida.equalsIgnoreCase("salir")) {
+                    System.out.println("Operación cancelada por el usuario.");
+                    return null;
                 }
 
-            } catch (InputMismatchException a) {
-                System.out.println("No haz ingresado una opcion valida, vuelve a agregar. ");
+                ///pasa a int un string
+                opc = Integer.parseInt(opcElegida);
+                if (opc < 0 || opc > profesionales.size()) {
+                    System.out.println("Selección inválida. Inténtelo de nuevo.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no valida. Por favor ingrese un número.");
                 scanner.nextLine();
             }
-        } while (opcion != 1 && opcion != 2);
-
-        if (opcion == 1) {
-            disenio = true;
-        } else {
-            disenio = false;
         }
-        return disenio;
+
+
+        return disponibles.get(opc).getDni();
+    }
+
+
+    public boolean verificarProfesionalXhorario(String dni, LocalTime horario, LocalDate fecha) {
+        List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
+
+        for (Turno t : turnos) {
+            if (t.getDni_profesional().equals(dni) && t.getHorario().equals(horario)) {
+                return false; ///retorna falso si el profesional tiene un turno con el mismo horario solicitado
+            }
+        }
+        return true;//si no hay ningun turno con el mismo horario y profesional retorna true
+
+    }
+
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+
+    public MapaGenerico<LocalDate, List<Turno>> getListaTurnos() {
+        return listaTurnos;
     }
 }
-
-*/

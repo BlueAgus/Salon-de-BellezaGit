@@ -8,10 +8,13 @@ public class MapaGenerico<K, V>{
 
     private Map<K, V> mapa;
 
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public MapaGenerico() {
         this.mapa = new HashMap<>();
     }
     //La clave es unica y el valor puede repetirse
+
+    ////////////////////////////////////////////////////////AGREGAR, BUSCAR Y ELIMINAR ////////////////////////////////////////////////////
     public void agregar(K clave, V valor){
         mapa.put(clave, valor);
     }
@@ -23,4 +26,15 @@ public class MapaGenerico<K, V>{
     public void eliminar(K clave){
         mapa.remove(clave);
     }
+
+    public boolean contiene(K clave){
+        return mapa.containsKey(clave);
+    }
+
+    ////////////////////////////////////////////////////////GET  ////////////////////////////////////////////////////
+    public Map<K, V> getMapa() {
+        return mapa;
+    }
+
+
 }

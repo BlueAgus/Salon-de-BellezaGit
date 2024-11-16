@@ -11,6 +11,7 @@ public abstract class Persona {
     protected String genero; // esto si no se hace con un enum
     protected String telefono;
 
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Persona(String nombre, String apellido, String dni, String genero, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -19,19 +20,7 @@ public abstract class Persona {
         this.telefono = telefono;
     }
 
-    //////////////////////////////////////ToString e Equals//////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public String toString() {
-        return
-                "| Nombre : " + nombre + "\n" +
-                        "| Apellido : " + apellido + "\n" +
-                        "| DNI : " + dni + "\n" +
-                        "| Genero : " + genero + "\n" +
-                        "| Telefono : " + telefono + "\n" +
-                        "=========================================\n";
-    }
-
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,4 +62,17 @@ public abstract class Persona {
     public String getTelefono() { return telefono; }
 
     public void setTelefono(String telefono) {  this.telefono = telefono; }
+
+
+    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return
+                "| Nombre : " + nombre + "\n" +
+                        "| Apellido : " + apellido + "\n" +
+                        "| DNI : " + dni + "\n" +
+                        "| Genero : " + genero + "\n" +
+                        "| Telefono : " + telefono + "\n" +
+                        "=========================================\n";
+    }
 }

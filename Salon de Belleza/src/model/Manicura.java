@@ -15,16 +15,14 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
     ///si TipoServicio es por defecto no lo pedimos
     // hay un precio base? VER PRECIO DEPILACION
 
-
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Manicura(double precio, LocalTime duracion, boolean disenio, TipoManicura tipoManicura) {
         super(TipoServicio.MANICURA , precio, duracion);
         this.disenio = disenio;
         this.tipoManicura = tipoManicura;
     }
 
-    public TipoManicura getTipoManicura() {return tipoManicura;}
-
-    public void setTipoManicura(TipoManicura tipoManicura) {this.tipoManicura = tipoManicura;}
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
     //implementacion interfaz, faltaaaaaaaaaaaa
     @Override
@@ -42,6 +40,7 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
         return precioFinal;
     }
 
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
     public static double getPrecioDisenio() {
         return precioDisenio;
@@ -50,4 +49,27 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
     public static void setPrecioDisenio(double precioDisenio) {
         Manicura.precioDisenio = precioDisenio;
     }
+
+    public boolean isDisenio() {
+        return disenio;
+    }
+
+    public void setDisenio(boolean disenio) {
+        this.disenio = disenio;
+    }
+
+    public TipoManicura getTipoManicura() {return tipoManicura;}
+
+    public void setTipoManicura(TipoManicura tipoManicura) {this.tipoManicura = tipoManicura;}
+
+
+    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return " MANICURA " + tipoManicura +
+                (disenio ? " con diseño " : " sin diseño ")+
+                " \nPrecio= " + precio +
+                " \nDuracion= " + duracion ;
+    }
 }
+

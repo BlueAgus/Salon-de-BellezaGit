@@ -28,7 +28,7 @@ public class GestorFactura {
     Gson geson;
     private String nombreArchivoGson;
 
-
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorFactura(String nombreArchivoGson) {
         this.historial = new GestorAlmacen<>();
         this.geson = new Gson();
@@ -36,6 +36,7 @@ public class GestorFactura {
         this.scan = new Scanner(System.in);
     }
 
+    ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
     public boolean crearFactura (){
         boolean cargado = false;
         Cliente cliente;
@@ -63,14 +64,19 @@ public class GestorFactura {
                     System.out.println("Ingrese el código de turno " + (i + 1) + ":");
                     String codigo = scan.nextLine();
 
-                    // Hya que hacer este metodo en Gestor Turno
-                    GestorTurnos turno = buscarTurnoPorCodigo(codigo);
+
+                    // HICE EL METODO buscar turno por codigo pero devuelve un TURNO. retorna null si no lo encuentra (por la validacion)
+
+                    //GestorTurnos turno = buscarTurnoPorCodigo(codigo);
+
+                    //falta crear el gestor turno
+                    /*Turno turno = gestorTurno.buscarTurnoPorCodigo(codigo);
                     if (turno != null) {
-                        facturaFinal.agregarTurno(turno);
+                        //facturaFinal.agregarTurno(turno);
                     } else {
                         System.out.println("Código de servicio no encontrado, intente de nuevo.");
                         i--;  // Repite la iteración si el código no es válido
-                    }
+                    }*/
                 }
 
                 // Definir el tipo de pago
@@ -100,8 +106,6 @@ public class GestorFactura {
         return cargado;
     }
 
-
-
     public boolean agregarFactura(Factura factura) throws FacturaYaExistenteException {
         for (Factura f : historial.getAlmacen()) {
             if (f.getCodigoFactura().equals(factura.getCodigoFactura())) {
@@ -110,7 +114,6 @@ public class GestorFactura {
         }
         return historial.agregar(factura);
     }
-
 
     public boolean eliminarFactura(String codigoFactura) throws FacturaNoExistenteException {
         Factura facturaAEliminar = null;
@@ -130,7 +133,7 @@ public class GestorFactura {
         return historial.eliminar(facturaAEliminar);
     }
 
-
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     public List<Factura> verHistorialPorFecha(LocalDate fecha) {
 
         if (fecha == null) {
@@ -147,11 +150,6 @@ public class GestorFactura {
 
         Predicate<Factura> condicion = factura -> factura.getFecha().equals(fecha);
         return historial.filtrarPorCondicion(condicion);
-    }
-
-
-    public GestorAlmacen<Factura> getHistorial() {
-        return historial;
     }
 
     public void guardarEnArchivo() {
@@ -198,9 +196,9 @@ public class GestorFactura {
             throw new DNInoEncontradoException("El DNI ingresado no existe en la base de datos, intente de nuevo.");
         }
 
-         Cliente cliente = new Cliente(null, null, dni, null, null);
-         GestorPersona persona = new GestorPersona();
-         cliente = (Cliente) persona.buscarPersona(dni);
+        Cliente cliente = new Cliente(null, null, dni, null, null);
+        GestorPersona persona = new GestorPersona();
+        cliente = (Cliente) persona.buscarPersona(dni);
         // Mostrar las facturas encontradas
         System.out.println("Historial de facturas para el cliente con DNI " + dni + " Nombre y apellido: "+cliente.getNombre()+" "+cliente.getApellido()+"");
         for (Factura factura : facturasEncontradas) {
@@ -208,6 +206,10 @@ public class GestorFactura {
         }
     }
 
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+    public GestorAlmacen<Factura> getHistorial() {
+        return historial;
+    }
 
     public String getNombreArchivoGson() {
         return nombreArchivoGson;

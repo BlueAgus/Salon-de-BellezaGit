@@ -1,6 +1,9 @@
 package model;
 
 import enumeraciones.TipoDePago;
+import excepciones.DNInoEncontradoException;
+import gestores.GestorPersona;
+import gestores.GestorServicio;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,8 +18,8 @@ public class Turno {
     private String dni_profesional; // Profesional que atenderá el servicio
     private String dni_cliente;         // Cliente que recibirá el servicio
 
+    //////////////////////////////////////////////////////// CONSTRUCTORes ////////////////////////////////////////////////////
     // Constructor de la clase Turno
-
     public Turno(LocalDate fecha, LocalTime horario, String codigo_servicio, String dni_profesional, String dni_cliente) {
         this.fecha = fecha;
         this.horario = horario;
@@ -34,19 +37,17 @@ public class Turno {
         this.dni_cliente = null;
     }
 
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Turno turno = (Turno) o;
-        return Objects.equals(fecha, turno.fecha) && Objects.equals(horario, turno.horario) && Objects.equals(servicio, turno.servicio);
+        return Objects.equals(fecha, turno.fecha) && Objects.equals(horario, turno.horario) && Objects.equals(codigo_servicio, turno.codigo_servicio) && Objects.equals(dni_profesional, turno.dni_profesional) && Objects.equals(dni_cliente, turno.dni_cliente);
     }
 
 
-
-    // Métodos Getters y Setters
-
-
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public LocalDate getFecha() {
         return fecha;
     }
@@ -87,15 +88,20 @@ public class Turno {
         this.dni_cliente = dni_cliente;
     }
 
-    @Override
-    public String toString() {
-        return "\n        TURNO: " +
-                "\n| FECHA : " + fecha +
-                "\n| HORARIO : " + horario +
-                "\n| SERVICIO : " + servicio.getTipoService() +
-                "\n| PROFESIONAL :" + profesional.getNombre() +
-                "\n| CLIENTE : " + cliente.getNombre() +
-                " DNI : "+ cliente.getDni();
+
+    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    public String toString(GestorServicio gestorServicio, GestorPersona gestorCliente, GestorPersona gestorProfesional) {
+        try {
+            return "\n        TURNO: " +
+                    "\n| FECHA : " + fecha +
+                    "\n| HORARIO : " + horario +
+                    "\n| SERVICIO : " + gestorServicio.buscarServicio(codigo_servicio).getTipoService() +
+                    "\n| PROFESIONAL :" + gestorProfesional.buscarPersona(dni_profesional).getNombre()+ gestorProfesional.buscarPersona(dni_profesional).getApellido()+
+                    "\n| CLIENTE : " + gestorCliente.buscarPersona(dni_cliente).getNombre() + gestorCliente.buscarPersona(dni_cliente).getApellido()+ " DNI : "+ gestorCliente.buscarPersona(dni_cliente).getDni();
+        } catch (DNInoEncontradoException e) {
+
+        }
+        return "ERROR!";
     }
 
 

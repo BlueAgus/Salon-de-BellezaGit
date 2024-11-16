@@ -24,7 +24,7 @@ public class Factura {
     private LocalDate fecha; // fecha y hora de la creacion de la factura
     private LocalTime hora;
 
-
+    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Factura(TipoDePago tipoPago, Cliente cliente) {
 
         this.codigoFactura = generarIDEunico();
@@ -36,20 +36,8 @@ public class Factura {
         this.hora = LocalTime.now();
     }
 
-@Override
-public String toString() {
-    return
-            "| Detalles Factura: " +
-            "| Metodo de pago: " +tipoPago  + "\n" +
-            "| Precio final : " + precioFinal+ "\n" +
-            "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-            "| Datos del cliente : " + cliente.toString()+"\n" +
-            "| Fecha : " + fecha +"\n" +
-            "| Hora : " + hora +"\n" +
-            "=========================================\n";
-}
-
-public String detallesDeServicios() { // Esto es para que en el detalle de la factura en el caso de tener
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+    public String detallesDeServicios() { // Esto es para que en el detalle de la factura en el caso de tener
         //dos turnos del mismo servicio muestre por ej Manicura x2
         StringBuilder detalles = new StringBuilder();
 
@@ -83,41 +71,38 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
         return detalles.toString();
     }
 
-    public double calcularPrecioFinal(){
+    public double calcularPrecioFinal() {
 
-      double precioBase = 0.0;
+        double precioBase = 0.0;
 
-      for(Turno turno : turnosPorCliente){
-          precioBase += turno.getServicio().calcularPrecio();
-      }
+        for (Turno turno : turnosPorCliente) {
+            precioBase += turno.getServicio().calcularPrecio();
+        }
 
-      this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
+        this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
 
-      return this.precioFinal;
+        return this.precioFinal;
     }
 
-    public void agregarTurno(Turno turno)throws TurnoExistenteException, ClienteInvalidoException
-    {
-        if(turnosPorCliente.contains(turno))
-        {
+    public void agregarTurno(Turno turno) throws TurnoExistenteException, ClienteInvalidoException {
+        if (turnosPorCliente.contains(turno)) {
             throw new TurnoExistenteException("El turno ya esta ingresado en la factura");
         }
         //ahora que lo pienso, puede pasar que por ejemplo me pague el turno a mi y a una amiga por ej,
         // en ese caso esto no seria necesario, despues lo hablamos porque no se
-       // if(!turno.getCliente().equals(this.cliente)){
+        // if(!turno.getCliente().equals(this.cliente)){
         //    throw new ClienteInvalidoException("El turno que desea ingresar no coincide con el cliente "+this.cliente.getDni()+" asociado a esta factura");
-     //   }
+        //   }
         turnosPorCliente.add(turno);
         System.out.println("La informacion del turno se agrego con exito a la factura!");
     }
 
-    public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException
-    {
-        if(!turnosPorCliente.contains(turno)){
+    public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException {
+        if (!turnosPorCliente.contains(turno)) {
             throw new TurnoNoExistenteException("El turno que desea eliminar en la factura no existe aqui.");
         }
-       // opcion 1: no permitimos que se elimine un turno en el caso de que haya solo uno.
-        if(turnosPorCliente.size() == 1){
+        // opcion 1: no permitimos que se elimine un turno en el caso de que haya solo uno.
+        if (turnosPorCliente.size() == 1) {
             throw new FacturaSinTurnosException("La factura debe contener al menos un turno");
         }
 
@@ -144,7 +129,7 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
     }
 
 
-
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public String getCodigoFactura() {
         return codigoFactura;
     }
@@ -195,5 +180,20 @@ public String detallesDeServicios() { // Esto es para que en el detalle de la fa
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+
+    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return
+                "| Detalles Factura: " +
+                        "| Metodo de pago: " + tipoPago + "\n" +
+                        "| Precio final : " + precioFinal + "\n" +
+                        "| Servicios aplicados : " + detallesDeServicios() + "\n" +
+                        "| Datos del cliente : " + cliente.toString() + "\n" +
+                        "| Fecha : " + fecha + "\n" +
+                        "| Hora : " + hora + "\n" +
+                        "=========================================\n";
     }
 }
