@@ -34,8 +34,6 @@ public abstract class Servicio {
     }
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
-
-
     public String getCodigo_servicio() {return codigo_servicio;}
 
     public TipoServicio getTipoService() {

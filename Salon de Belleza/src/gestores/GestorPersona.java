@@ -68,8 +68,6 @@ public class GestorPersona {
                 System.out.println(e.getMessage());
             }
         }
-        TipoDeProfesional e;
-
         switch (tipoPersona) {
             case 1:
                 Cliente cliente = new Cliente(nombre, apellido, dni, genero, telefono);
@@ -84,7 +82,7 @@ public class GestorPersona {
 
                 break;
             case 2:
-
+                TipoDeProfesional e;
                 Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
                 int opcion = 0;
                 e = pedirTipoProfesional();
@@ -93,14 +91,13 @@ public class GestorPersona {
                     System.out.println("Deseas agregar otra profesion?");
                     System.out.println("1. Si deseo.");
                     System.out.println("2. No deseo.");
-                    opcion=scanner.nextInt();
+                    opcion = scanner.nextInt();
                     scanner.nextLine();
 
-                    if(opcion==1){
-
-                        e=pedirTipoProfesional();
-                        profesional.agregarProfesion(e);
-                    }else if(opcion!=2){
+                    if (opcion == 1) {
+                        e = pedirTipoProfesional();
+                        profesional.agregarProfesion();
+                    } else if (opcion != 2) {
                         System.out.println("Ingresa una opcion valida por favor.");
                     }
                 } while (opcion != 2);
@@ -164,50 +161,110 @@ public class GestorPersona {
 
     public void modificarPersona(Persona persona) {
         int opcion;
-
         boolean continuarModificando = true;
+        if (persona instanceof Profesional) {
+            modificarProfesional((Profesional) persona);
+        } else {
+            while (continuarModificando) {
 
+                System.out.println("¿Qué te gustaría modificar?");
+                System.out.println("1. Nombre");
+                System.out.println("2. Apellido");
+                System.out.println("3. DNI");
+                System.out.println("4. Genero");
+                System.out.println("5. Telefono");
+                System.out.println("6. Salir");
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (opcion) {
+                    case 1:
+                        persona.setNombre(pedirNombre());
+                        break;
+                    case 2:
+                        persona.setApellido(pedirApellido());
+                        break;
+                    case 3:
+                        try {
+                            persona.setDni(pedirDNI());
+                        } catch (DNIyaCargadoException e) {
+                            System.out.printf(e.getMessage());
+                        }
+                        break;
+                    case 4:
+                        try {
+                            persona.setGenero(pedirGenero());
+                        } catch (GeneroInvalidoException e) {
+                            System.out.printf(e.getMessage());
+                        }
+                        break;
+                    case 5:
+                        try {
+                            persona.setTelefono((pedirTelefono()));
+                        } catch (TelefonoInvalidoException e) {
+                            System.out.println(e);
+                        }
+                        break;
+                    case 6:
+                        continuarModificando = false;
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            }
+        }
+        System.out.println("MODIFICADO EXITOSAMENTE!");
+        System.out.println(persona.toString());
+    }
+
+    public void modificarProfesional(Profesional profesional) {
+        int opcion;
+        boolean continuarModificando = true;
         while (continuarModificando) {
 
-            System.out.println("¿Qué te gustaría modificar?");
+            System.out.println("¿Qué te gustaría modificar del profesional?");
             System.out.println("1. Nombre");
             System.out.println("2. Apellido");
             System.out.println("3. DNI");
             System.out.println("4. Genero");
             System.out.println("5. Telefono");
-            System.out.println("6. Salir");
+            System.out.println("6. Servicios que ofrece");
+            System.out.println("7. Salir");
             opcion = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
                 case 1:
-                    persona.setNombre(pedirNombre());
+                    profesional.setNombre(pedirNombre());
                     break;
                 case 2:
-                    persona.setApellido(pedirApellido());
+                    profesional.setApellido(pedirApellido());
                     break;
                 case 3:
                     try {
-                        persona.setDni(pedirDNI());
+                        profesional.setDni(pedirDNI());
                     } catch (DNIyaCargadoException e) {
                         System.out.printf(e.getMessage());
                     }
                     break;
                 case 4:
                     try {
-                        persona.setGenero(pedirGenero());
+                        profesional.setGenero(pedirGenero());
                     } catch (GeneroInvalidoException e) {
                         System.out.printf(e.getMessage());
                     }
                     break;
                 case 5:
                     try {
-                        persona.setTelefono((pedirTelefono()));
+                        profesional.setTelefono((pedirTelefono()));
                     } catch (TelefonoInvalidoException e) {
                         System.out.println(e);
                     }
                     break;
                 case 6:
+                    //agregar servicios
+                    break;
+                case 7:
                     continuarModificando = false;
                     break;
                 default:
@@ -215,7 +272,7 @@ public class GestorPersona {
             }
         }
         System.out.println("MODIFICADO EXITOSAMENTE!");
-        System.out.println(persona.toString());
+        System.out.println( profesional.toString());
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
@@ -393,19 +450,16 @@ public class GestorPersona {
         return genero;  // Retornar el String que contiene el género válido
     }
 
-    public boolean verificarSiExiste(String dni)throws DNInoEncontradoException
-    {
-        for(Persona p: almacenPersonas)
-        {
-            if(p.getDni().equals(dni))
-            {
+    public boolean verificarSiExiste(String dni) throws DNInoEncontradoException {
+        for (Persona p : almacenPersonas) {
+            if (p.getDni().equals(dni)) {
                 return true;
             }
         }
-       throw new DNInoEncontradoException("\nDNI no encontrado!!");
+        throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
 
-
+/*
     public TipoDeProfesional pedirTipoProfesional() {
         int opcion = 0;
         TipoDeProfesional aux = null;
@@ -428,7 +482,6 @@ public class GestorPersona {
         return aux;
     }
 
-/*
     public void ActualizarArchivo(String nombreArchivo,List<T>){
         try{
             FileReader fileReader = new FileReader(nombreArchivo);
