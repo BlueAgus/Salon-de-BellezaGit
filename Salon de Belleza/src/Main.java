@@ -17,8 +17,7 @@ public class Main {
         System.out.println("Holi soy agus jeje");*/
 
         GestorPersona profesionales=new GestorPersona();
-        profesionales.agregarPersona(2);
-        System.out.println(profesionales);
+     
 
         GestorTurnos turnos = new GestorTurnos();
         Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);

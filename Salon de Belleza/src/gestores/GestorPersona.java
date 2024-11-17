@@ -33,7 +33,7 @@ public class GestorPersona {
     // 2 si es profesional,
     // 3 si es recepcionista,
     // 4 si es administrador
-    public boolean agregarPersona(int tipoPersona) {
+    public boolean agregarPersona(int tipoPersona,GestorServicio servicios) {
         boolean cargado = false;
 
         String dni = "";
@@ -82,11 +82,13 @@ public class GestorPersona {
 
                 break;
             case 2:
-                TipoDeProfesional e;
-                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
                 int opcion = 0;
-                e = pedirTipoProfesional();
+                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
+
+                GestorTurnos aux=new GestorTurnos();
+                String e = aux.pedirCodServicio(servicios);
                 profesional.agregarProfesion(e);//minimo una profesion.
+
                 do {
                     System.out.println("Deseas agregar otra profesion?");
                     System.out.println("1. Si deseo.");
@@ -95,8 +97,8 @@ public class GestorPersona {
                     scanner.nextLine();
 
                     if (opcion == 1) {
-                        e = pedirTipoProfesional();
-                        profesional.agregarProfesion();
+                        e = aux.pedirCodServicio(servicios);
+                        profesional.agregarProfesion(e);
                     } else if (opcion != 2) {
                         System.out.println("Ingresa una opcion valida por favor.");
                     }

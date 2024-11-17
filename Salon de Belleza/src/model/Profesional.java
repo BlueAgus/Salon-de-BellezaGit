@@ -16,7 +16,7 @@ public class Profesional extends Persona {
     }
 
     ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
-    public List<TipoDeProfesional> getProfesiones() {
+    public List<String> getProfesiones() {
         return cod_servicios;
     }
 

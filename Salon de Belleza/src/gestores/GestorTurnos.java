@@ -136,6 +136,7 @@ public class GestorTurnos {
         int opc = 0;
         while (true) {
             for (int i = 0; i < gestorServicio.getAlmacenServicios().getAlmacen().size(); i++) {
+                System.out.println("---------------------------------------");
                 System.out.println(i + "- " + gestorServicio.getAlmacenServicios().getAlmacen().get(i).toString());
             }
 
@@ -159,7 +160,6 @@ public class GestorTurnos {
                 return gestorServicio.getAlmacenServicios().getAlmacen().get(opc).getCodigo_servicio();
             }
         }
-
     }
 
 
