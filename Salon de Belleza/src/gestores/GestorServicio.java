@@ -1,6 +1,7 @@
 package gestores;
 
 import enumeraciones.*;
+import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
 import model.Manicura;
 import model.Pestanias;
@@ -57,13 +58,15 @@ public class GestorServicio {
         return false;
     }
 
-    public Servicio buscarServicio(String cod_Servicio) {
+    public Servicio buscarServicio(String cod_Servicio) throws CodigoNoEncontradoException {
+
         for (Servicio s : almacenServicios.getAlmacen()) {
             if (s.getCodigo_servicio().equals(cod_Servicio)) {
                 return s;
             }
         }
-        return null;
+        throw new CodigoNoEncontradoException("El código de servicio no existe: " + cod_Servicio);
+
     }
 
     // Función que permite modificar un servicio existente

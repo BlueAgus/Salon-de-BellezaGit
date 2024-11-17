@@ -6,7 +6,7 @@ import enumeraciones.TipoServicio;
 
 import java.time.LocalTime;
 
-public class Manicura extends Servicio implements MantenimientoMaquinas {
+public class Manicura extends Servicio  {
 
     private TipoManicura tipoManicura;
     private boolean disenio;
@@ -25,16 +25,16 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
     //implementacion interfaz, faltaaaaaaaaaaaa
-    @Override
+   /* @Override
     public void MantenimientoMaquinas(Servicio servicio) {
         System.out.println("aca ira el metodo ");
-    }
+    }*/
 
 
     @Override
     public double calcularPrecio() {
         double precioFinal =  this.precio + this.tipoManicura.getPrecio();
-        if(disenio = true){
+        if(disenio = true){ // al final esto se saca??
             precioFinal += precioDisenio;
         }
         return precioFinal;
@@ -71,5 +71,7 @@ public class Manicura extends Servicio implements MantenimientoMaquinas {
                 " \nPrecio= " + precio +
                 " \nDuracion= " + duracion ;
     }
+
+
 }
 

@@ -16,95 +16,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class GestorFactura {
 
     private GestorAlmacen<Factura> historial;
-    private Scanner scan;
     Gson geson;
-    private String nombreArchivoGson;
+    private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorFactura(String nombreArchivoGson) {
         this.historial = new GestorAlmacen<>();
         this.geson = new Gson();
         this.nombreArchivoGson = nombreArchivoGson;
-        this.scan = new Scanner(System.in);
+
     }
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
-    public boolean crearFactura (){
-        boolean cargado = false;
-        Cliente cliente;
-        GestorPersona clientes = new GestorPersona();
-        Factura facturaFinal;
-        List<Turno> turnosCliente = new ArrayList<>();
-
-
-        while (!cargado) {
-            try {
-                // Buscar cliente por DNI
-                System.out.println("Ingrese el DNI del cliente:");
-                String dni = scan.nextLine();
-                cliente = (Cliente) clientes.buscarPersona(dni);
-
-                // Crear instancia de factura para este cliente
-                facturaFinal = new Factura(null, cliente);
-
-                // Capturar servicios realizados
-                System.out.println("Cuántos servicios se le realizaron al cliente:");
-                int cantidad = scan.nextInt();
-                scan.nextLine();
-
-                for (int i = 0; i < cantidad; i++) {
-                    System.out.println("Ingrese el código de turno " + (i + 1) + ":");
-                    String codigo = scan.nextLine();
-
-
-                    // HICE EL METODO buscar turno por codigo pero devuelve un TURNO. retorna null si no lo encuentra (por la validacion)
-
-                    //GestorTurnos turno = buscarTurnoPorCodigo(codigo);
-
-                    //falta crear el gestor turno
-                    /*Turno turno = gestorTurno.buscarTurnoPorCodigo(codigo);
-                    if (turno != null) {
-                        //facturaFinal.agregarTurno(turno);
-                    } else {
-                        System.out.println("Código de servicio no encontrado, intente de nuevo.");
-                        i--;  // Repite la iteración si el código no es válido
-                    }*/
-                }
-
-                // Definir el tipo de pago
-                System.out.println("Seleccione el tipo de pago:");
-                for (TipoDePago tipo : TipoDePago.values()) {
-                    System.out.println(tipo.ordinal() + " - " + tipo.name());
-                }
-                int opcionPago = scan.nextInt();
-                facturaFinal.setTipoPago(TipoDePago.values()[opcionPago]);
-
-                // Calcular precio final
-                facturaFinal.calcularPrecioFinal();
-                System.out.println("Factura creada:\n" + facturaFinal);
-
-                // Guardar la factura en el historial
-                agregarFactura(facturaFinal);
-                cargado = true;
-
-            } catch (DNInoEncontradoException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (FacturaYaExistenteException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Error inesperado: " + e.getMessage());
-            }
-        }
-        return cargado;
-    }
 
     public boolean agregarFactura(Factura factura) throws FacturaYaExistenteException {
         for (Factura f : historial.getAlmacen()) {
@@ -181,30 +110,50 @@ public class GestorFactura {
     }
 
     public void historialFacturasPorCliente(String dni) throws DNInoEncontradoException {
+        // Validar si el DNI es null o está vacío
+        if (dni == null || dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI proporcionado es inválido.");
+        }
+
         List<Factura> facturasEncontradas = new ArrayList<>();
 
         // Recorremos todas las facturas en el historial
         for (Factura factu : historial.getAlmacen()) {
-            // Si el DNI del cliente de la factura coincide con el DNI proporcionado
+            // Si el DNI del cliente de la factura coincide con el DNI del parametro
             if (factu.getCliente().getDni().equals(dni)) {
-                facturasEncontradas.add(factu);  // Agregamos la factura a la lista
+                facturasEncontradas.add(factu);  // se agrega a la lisya
             }
         }
 
-        //aca la idea es desde afuera poner el while para que vuelva a intentar
+
         if (facturasEncontradas.isEmpty()) {
             throw new DNInoEncontradoException("El DNI ingresado no existe en la base de datos, intente de nuevo.");
         }
 
+        //para mostrar las facturas ordanadas por fecha
+        Collections.sort(facturasEncontradas, new Comparator<Factura>() {
+            @Override
+            public int compare(Factura f1, Factura f2) {
+                return f1.getFecha().compareTo(f2.getFecha());
+            }
+        });
+
+        // info del cliente
         Cliente cliente = new Cliente(null, null, dni, null, null);
         GestorPersona persona = new GestorPersona();
         cliente = (Cliente) persona.buscarPersona(dni);
-        // Mostrar las facturas encontradas
-        System.out.println("Historial de facturas para el cliente con DNI " + dni + " Nombre y apellido: "+cliente.getNombre()+" "+cliente.getApellido()+"");
+
+        // mostrar las facturas
+        System.out.println("Historial de facturas para el cliente con DNI " + dni +
+                " Nombre y apellido: " + cliente.getNombre() + " " + cliente.getApellido());
         for (Factura factura : facturasEncontradas) {
-            System.out.println(factura);  // Aquí puedes modificar la forma de mostrar la factura según lo necesites
+            System.out.println("----------------------------------");
+            System.out.println(factura);
+            System.out.println("----------------------------------");
+
         }
     }
+
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public GestorAlmacen<Factura> getHistorial() {

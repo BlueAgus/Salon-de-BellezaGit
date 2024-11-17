@@ -2,17 +2,13 @@ package model;
 
 import enumeraciones.TipoDePago;
 import enumeraciones.TipoServicio;
-import excepciones.ClienteInvalidoException;
-import excepciones.FacturaSinTurnosException;
-import excepciones.TurnoExistenteException;
-import excepciones.TurnoNoExistenteException;
+import excepciones.*;
+import gestores.GestorPersona;
+import gestores.GestorServicio;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Factura {
 
@@ -24,8 +20,11 @@ public class Factura {
     private LocalDate fecha; // fecha y hora de la creacion de la factura
     private LocalTime hora;
 
+    private GestorServicio gestorServicio;
+    private GestorPersona gestorPersona;
+
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Factura(TipoDePago tipoPago, Cliente cliente) {
+    public Factura(TipoDePago tipoPago, Cliente cliente, GestorPersona gestorPersona, GestorServicio gestorServicio) {
 
         this.codigoFactura = generarIDEunico();
         this.tipoPago = tipoPago;
@@ -34,67 +33,63 @@ public class Factura {
         this.cliente = cliente;
         this.fecha = LocalDate.now();
         this.hora = LocalTime.now();
+        this.gestorPersona = gestorPersona;
+        this.gestorServicio = gestorServicio;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-    public String detallesDeServicios() { // Esto es para que en el detalle de la factura en el caso de tener
-        //dos turnos del mismo servicio muestre por ej Manicura x2
+
+    public String detallesDeServicios() {
         StringBuilder detalles = new StringBuilder();
+        Map<TipoServicio, Integer> cantidadPorServicio = new HashMap<>();
 
-        List<TipoServicio> cantidadPorServicio = new ArrayList<>();
-
-        // Recorremos los turnos y contamos los servicios
         for (Turno turno : turnosPorCliente) {
-            TipoServicio tipoServicio = turno.getServicio().getTipoService();
+            try {
+                // Obtener el servicio correspondiente al código
+                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                TipoServicio tipoServicio = servicio.getTipoService();
 
-            // omite el servicio si ya lo proceso
-            if (!cantidadPorServicio.contains(tipoServicio)) {
-                int cantidad = 0;
-
-                // Contamos cuántos turnos de este tipo tiene el cliente
-                for (Turno t : turnosPorCliente) {
-                    if (t.getServicio().getTipoService() == tipoServicio) {
-                        cantidad++;
-                    }
-                }
-                // Añadimos la descripción al StringBuilder
-                //name es un metodo de los enum para traer literalmente el nombre y usar el toLower
-                detalles.append(tipoServicio.name().toLowerCase())
-                        .append(" x")
-                        .append(cantidad)
-                        .append("\n");
-
-                // Marcamos este tipo de servicio como procesado
-                cantidadPorServicio.add(tipoServicio);
+                // Incrementar la cantidad de este servicio
+                cantidadPorServicio.put(tipoServicio, cantidadPorServicio.getOrDefault(tipoServicio, 0) + 1);
+            } catch (CodigoNoEncontradoException e) {
+                detalles.append("Servicio no encontrado para el código: ").append(turno.getCodigo_servicio()).append("\n");
             }
         }
+
+        // Construir el string de detalles
+        for (Map.Entry<TipoServicio, Integer> entry : cantidadPorServicio.entrySet()) {
+            detalles.append(entry.getKey().name().toLowerCase())
+                    .append(" x")
+                    .append(entry.getValue())
+                    .append("\n");
+        }
+
         return detalles.toString();
     }
 
     public double calcularPrecioFinal() {
-
         double precioBase = 0.0;
 
         for (Turno turno : turnosPorCliente) {
-            precioBase += turno.getServicio().calcularPrecio();
+            try {
+                // Obtener el servicio correspondiente al código
+                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                precioBase += servicio.calcularPrecio();
+            } catch (CodigoNoEncontradoException e) {
+                System.out.println("Servicio no encontrado para el código: " + turno.getCodigo_servicio());
+            }
         }
 
         this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
-
         return this.precioFinal;
     }
 
-    public void agregarTurno(Turno turno) throws TurnoExistenteException, ClienteInvalidoException {
+    public void agregarTurno(Turno turno) throws TurnoExistenteException {
         if (turnosPorCliente.contains(turno)) {
-            throw new TurnoExistenteException("El turno ya esta ingresado en la factura");
+            throw new TurnoExistenteException("El turno ya está ingresado en la factura.");
         }
-        //ahora que lo pienso, puede pasar que por ejemplo me pague el turno a mi y a una amiga por ej,
-        // en ese caso esto no seria necesario, despues lo hablamos porque no se
-        // if(!turno.getCliente().equals(this.cliente)){
-        //    throw new ClienteInvalidoException("El turno que desea ingresar no coincide con el cliente "+this.cliente.getDni()+" asociado a esta factura");
-        //   }
         turnosPorCliente.add(turno);
-        System.out.println("La informacion del turno se agrego con exito a la factura!");
+        System.out.println("El turno se agregó correctamente a la factura.");
     }
 
     public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException {
@@ -127,6 +122,8 @@ public class Factura {
         Factura factura = (Factura) o;
         return Objects.equals(fecha, factura.fecha) && Objects.equals(hora, factura.hora);
     }
+
+
 
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
@@ -191,9 +188,19 @@ public class Factura {
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + cliente.toString() + "\n" +
+                        "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
     }
+// esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
+    //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
+   private String datosClienteParaFactura(){
+        return "------------------"+
+                "Nombre: "+this.cliente.getNombre()+"\n"+
+                "Apellido: "+this.cliente.getApellido()+"\n"+
+                "DNI: "+this.cliente.getDni()+"\n"+
+                "Telefono: "+this.cliente.getTelefono()+"\n"+
+                "-----------------\n";
+   }
 }

@@ -6,7 +6,7 @@ import enumeraciones.TipoServicio;
 
 import java.time.LocalTime;
 
-public class Depilacion extends Servicio implements MantenimientoMaquinas {
+public class Depilacion extends Servicio {
     private TipoDepilacion tipoDepilacion;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -39,10 +39,10 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
     }
 
     ///uso interfaz
-    @Override
+  /*  @Override
     public void MantenimientoMaquinas(Servicio servicio) {
         System.out.println("aca ira el metodo");
-    }
+    }*/
 
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
@@ -53,3 +53,4 @@ public class Depilacion extends Servicio implements MantenimientoMaquinas {
                 " \nPrecio= " + precio +
                 " \nDuracion=" + duracion;
     }
+}

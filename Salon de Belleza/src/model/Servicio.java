@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 public abstract class Servicio {
 
-    private String codigo_servicio ; // me parece que esta al pedo
+    private String codigo_servicio ; //
     protected TipoServicio tipoService;
     protected double precio;
     protected LocalTime duracion;

@@ -3,6 +3,7 @@ package gestores;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import model.*;
 
@@ -38,13 +39,11 @@ public class GestorTurnos {
             return false;
         }
 
-
         String codServicio = pedirCodServicio(gestorServicio);//METODO pedir cod servicio
 
         if (codServicio == null) {
             return false;
         }
-
 
         Turno turno = elegirFechaYhorario(codServicio);
 
@@ -94,7 +93,7 @@ public class GestorTurnos {
         return false;
     }
 
-    public Turno buscarTurnoPorCodigo(String codTurno) {
+    public Turno buscarTurnoPorCodigo(String codTurno) throws CodigoNoEncontradoException {
         for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
             for (List<Turno> e : listaTurnos.getMapa().values()) {
                 for (Turno t : e) {
@@ -104,17 +103,19 @@ public class GestorTurnos {
                 }
             }
         }
-        return null;
+        throw new CodigoNoEncontradoException("El código del turno no existe: " + codTurno);
     }
 
     public boolean modificarTurno(String codTurno) {
-        Turno t = buscarTurnoPorCodigo(codTurno);
-        System.out.println("DATOS ACTUALES DEL TURNO: " + t.toString());
-        System.out.println("| Ingrese la opcion que desea modificar:");
-        System.out.println("1- Fecha");
-        System.out.println("2- Horario");
-        System.out.println("3- Profesional");
-        System.out.println("4- Cliente");
+
+      try{
+          Turno t = buscarTurnoPorCodigo(codTurno);
+          System.out.println("DATOS ACTUALES DEL TURNO: " + t.toString());
+          System.out.println("| Ingrese la opcion que desea modificar:");
+          System.out.println("1- Fecha");
+          System.out.println("2- Horario");
+          System.out.println("3- Profesional");
+          System.out.println("4- Cliente");
 
     /*
         private LocalDate fecha;         // Fecha del turno
@@ -123,6 +124,11 @@ public class GestorTurnos {
         private String dni_profesional; // Profesional que atenderá el servicio
         private String dni_cliente;
     */
+
+      } catch (CodigoNoEncontradoException e) {
+         e.getMessage();
+      }
+
     }
 
     /////////////////////////////////////////////MANEJO DE SERVICIOS!!!!////////////////////////////////////////
