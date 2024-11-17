@@ -162,6 +162,7 @@ public class GestorPersona {
     public void modificarPersona(Persona persona) {
         int opcion;
         boolean continuarModificando = true;
+
         if (persona instanceof Profesional) {
             modificarProfesional((Profesional) persona);
         } else {
@@ -174,290 +175,300 @@ public class GestorPersona {
                 System.out.println("4. Genero");
                 System.out.println("5. Telefono");
                 System.out.println("6. Salir");
+                try {
+                    opcion = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (opcion) {
+                        case 1:
+                            persona.setNombre(pedirNombre());
+                            break;
+                        case 2:
+                            persona.setApellido(pedirApellido());
+                            break;
+                        case 3:
+                            try {
+                                persona.setDni(pedirDNI());
+                            } catch (DNIyaCargadoException e) {
+                                System.out.printf(e.getMessage());
+                            }
+                            break;
+                        case 4:
+                            try {
+                                persona.setGenero(pedirGenero());
+                            } catch (GeneroInvalidoException e) {
+                                System.out.printf(e.getMessage());
+                            }
+                            break;
+                        case 5:
+                            try {
+                                persona.setTelefono((pedirTelefono()));
+                            } catch (TelefonoInvalidoException e) {
+                                System.out.println(e);
+                            }
+                            break;
+                        case 6:
+                            continuarModificando = false;
+                            break;
+                        default:
+                            System.out.println("Opción no válida.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: Por favor, ingresa un número válido.");
+                    scanner.nextLine(); // Limpiar el buffer
+                }
+            }
+            System.out.println("¡MODIFICADO EXITOSAMENTE!");
+            System.out.println(persona.toString());
+        }
+    }
+
+        public void modificarProfesional (Profesional profesional){
+            int opcion;
+            boolean continuarModificando = true;
+            while (continuarModificando) {
+
+                System.out.println("¿Qué te gustaría modificar del profesional?");
+                System.out.println("1. Nombre");
+                System.out.println("2. Apellido");
+                System.out.println("3. DNI");
+                System.out.println("4. Genero");
+                System.out.println("5. Telefono");
+                System.out.println("6. Servicios que ofrece");
+                System.out.println("7. Salir");
+                try {
+                    opcion = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (opcion) {
+                        case 1:
+                            profesional.setNombre(pedirNombre());
+                            break;
+                        case 2:
+                            profesional.setApellido(pedirApellido());
+                            break;
+                        case 3:
+                            try {
+                                profesional.setDni(pedirDNI());
+                            } catch (DNIyaCargadoException e) {
+                                System.out.printf(e.getMessage());
+                            }
+                            break;
+                        case 4:
+                            try {
+                                profesional.setGenero(pedirGenero());
+                            } catch (GeneroInvalidoException e) {
+                                System.out.printf(e.getMessage());
+                            }
+                            break;
+                        case 5:
+                            try {
+                                profesional.setTelefono((pedirTelefono()));
+                            } catch (TelefonoInvalidoException e) {
+                                System.out.println(e);
+                            }
+                            break;
+                        case 6:
+                            //agregar servicios
+                            break;
+                        case 7:
+                            continuarModificando = false;
+                            break;
+                        default:
+                            System.out.println("Opción no válida.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: Por favor, ingresa un número válido.");
+                    scanner.nextLine(); // Limpiar el buffer
+                }
+                System.out.println("MODIFICADO EXITOSAMENTE!");
+                System.out.println(profesional.toString());
+            }
+        }
+
+        //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
+        public void verificarCarga (Persona persona){
+            int opcion;
+            do {
+                System.out.println("¿Deseas modificar algo de la persona?");
+                System.out.println("1. Sí");
+                System.out.println("2. No");
+
                 opcion = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (opcion) {
                     case 1:
-                        persona.setNombre(pedirNombre());
+                        modificarPersona(persona);
                         break;
                     case 2:
-                        persona.setApellido(pedirApellido());
-                        break;
-                    case 3:
-                        try {
-                            persona.setDni(pedirDNI());
-                        } catch (DNIyaCargadoException e) {
-                            System.out.printf(e.getMessage());
-                        }
-                        break;
-                    case 4:
-                        try {
-                            persona.setGenero(pedirGenero());
-                        } catch (GeneroInvalidoException e) {
-                            System.out.printf(e.getMessage());
-                        }
-                        break;
-                    case 5:
-                        try {
-                            persona.setTelefono((pedirTelefono()));
-                        } catch (TelefonoInvalidoException e) {
-                            System.out.println(e);
-                        }
-                        break;
-                    case 6:
-                        continuarModificando = false;
+                        System.out.println("....");
                         break;
                     default:
-                        System.out.println("Opción no válida.");
-                }
-            }
-        }
-        System.out.println("MODIFICADO EXITOSAMENTE!");
-        System.out.println(persona.toString());
-    }
-
-    public void modificarProfesional(Profesional profesional) {
-        int opcion;
-        boolean continuarModificando = true;
-        while (continuarModificando) {
-
-            System.out.println("¿Qué te gustaría modificar del profesional?");
-            System.out.println("1. Nombre");
-            System.out.println("2. Apellido");
-            System.out.println("3. DNI");
-            System.out.println("4. Genero");
-            System.out.println("5. Telefono");
-            System.out.println("6. Servicios que ofrece");
-            System.out.println("7. Salir");
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    profesional.setNombre(pedirNombre());
-                    break;
-                case 2:
-                    profesional.setApellido(pedirApellido());
-                    break;
-                case 3:
-                    try {
-                        profesional.setDni(pedirDNI());
-                    } catch (DNIyaCargadoException e) {
-                        System.out.printf(e.getMessage());
-                    }
-                    break;
-                case 4:
-                    try {
-                        profesional.setGenero(pedirGenero());
-                    } catch (GeneroInvalidoException e) {
-                        System.out.printf(e.getMessage());
-                    }
-                    break;
-                case 5:
-                    try {
-                        profesional.setTelefono((pedirTelefono()));
-                    } catch (TelefonoInvalidoException e) {
-                        System.out.println(e);
-                    }
-                    break;
-                case 6:
-                    //agregar servicios
-                    break;
-                case 7:
-                    continuarModificando = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-            }
-        }
-        System.out.println("MODIFICADO EXITOSAMENTE!");
-        System.out.println( profesional.toString());
-    }
-
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-
-    public void verificarCarga(Persona persona) {
-        int opcion;
-        do {
-            System.out.println("¿Deseas modificar algo de la persona?");
-            System.out.println("1. Sí");
-            System.out.println("2. No");
-
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    modificarPersona(persona);
-                    break;
-                case 2:
-                    System.out.println("....");
-                    break;
-                default:
-                    System.out.println("Opción no válida, selecciona nuevamente.");
-                    break;
-            }
-        } while (opcion != 2 && opcion != 1);
-    }
-
-    public String pedirTelefono() throws TelefonoInvalidoException {
-        String telefono = "";
-        boolean telefonoValido = false;
-
-        while (!telefonoValido) {
-            System.out.print("Ingrese el teléfono: ");
-            scanner.nextLine();
-            telefono = scanner.nextLine().trim();
-
-            // Validar que el número tenga exactamente 10 dígitos y solo contenga números
-            if (!telefono.matches("\\d{10}")) {
-                throw new TelefonoInvalidoException("El número de teléfono debe tener  10 dígitos y solo contener números.");
-            } else {
-                // Si es válido, confirmamos y salimos del bucle
-                telefonoValido = true;
-            }
-        }
-        return telefono;
-    }
-
-    ///////nombre
-    public String pedirNombre() {
-        String nombre = "";
-        boolean nombreValido = false;
-
-        while (!nombreValido) {
-            System.out.print("Ingrese el nombre: ");
-            nombre = scanner.nextLine();
-
-            // Validar que el nombre no esté vacío y que contenga solo letras y espacios
-            if (nombre.isEmpty()) {
-                System.out.println("Error: El nombre no puede estar vacío. Por favor ingresa un nombre válido.");
-            } else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
-                System.out.println("Error: El nombre solo puede contener letras y espacios entre palabras.");
-            } else {
-                // Si el nombre es válido, formatearlo con la primera letra en mayúscula
-                nombre = capitalizeWords(nombre);
-                nombreValido = true;
-            }
-        }
-
-        return nombre;
-    }
-
-    /////////PASA A MAYUSCULA LOS NOMBRES y apellidos  !
-    private String capitalizeWords(String nombre) {
-        String[] palabras = nombre.split(" "); // Separar las palabras por espacio
-        StringBuilder nombreFormateado = new StringBuilder();
-
-        for (String palabra : palabras) {
-            // Poner la primera letra en mayúscula y las demás en minúscula
-            if (palabra.length() > 0) {
-                nombreFormateado.append(palabra.substring(0, 1).toUpperCase()) // Primera letra en mayúscula
-                        .append(palabra.substring(1).toLowerCase()) // Resto de la palabra en minúscula
-                        .append(" "); // Agregar espacio entre palabras
-            }
-        }
-        // Eliminar el último espacio vacio
-        return nombreFormateado.toString().trim();
-    }
-
-    /////////////apellido
-    public String pedirApellido() {
-        String apellido = "";
-        boolean apellidoValido = false;
-
-        while (!apellidoValido) {
-            System.out.print("Ingrese el apellido: ");
-            apellido = scanner.nextLine();
-
-            // Validar que el apellido no esté vacío y que contenga solo letras y espacios
-            if (apellido.isEmpty()) {
-                System.out.println("Error: El apellido no puede estar vacío. Por favor ingresa un apellido válido.");
-            } else if (!apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
-                System.out.println("Error: El apellido solo puede contener letras y espacios entre palabras.");
-            } else {
-                // Si el apellido es válido, formatearlo con la primera letra en mayúscula
-                apellido = capitalizeWords(apellido);
-                apellidoValido = true;
-            }
-        }
-        return apellido;
-    }
-
-    public String pedirDNI() throws DNIyaCargadoException {
-        String dni = "";
-        boolean dnivalido = false;
-
-        while (!dnivalido) {
-            System.out.println("Ingrese el DNI: ");
-            dni = scanner.nextLine();
-
-            // no esté vacío
-            if (dni.isEmpty()) {
-                System.out.println("Error: El DNI no puede estar vacío.");
-            }
-            //  contenga números
-            else if (!dni.matches("\\d+")) {
-                System.out.println("Error: El DNI solo puede contener números.");
-            }
-            //  dígitos
-            else if (dni.length() != 8) {
-                System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
-            }
-            // Verificar si el DNI ya está cargado en el sistema
-            else {
-                boolean dniRepetido = false;
-                for (Persona a : almacenPersonas.getAlmacen()) {
-                    if (a.getDni().equals(dni)) {
-                        dniRepetido = true;
+                        System.out.println("Opción no válida, selecciona nuevamente.");
                         break;
+                }
+            } while (opcion != 2 && opcion != 1);
+        }
+
+        public String pedirTelefono () throws TelefonoInvalidoException {
+            String telefono = "";
+            boolean telefonoValido = false;
+
+            while (!telefonoValido) {
+                System.out.print("Ingrese el teléfono: ");
+                scanner.nextLine();
+                telefono = scanner.nextLine().trim();
+
+                // Validar que el número tenga exactamente 10 dígitos y solo contenga números
+                if (!telefono.matches("\\d{10}")) {
+                    throw new TelefonoInvalidoException("El número de teléfono debe tener  10 dígitos y solo contener números.");
+                } else {
+                    // Si es válido, confirmamos y salimos del bucle
+                    telefonoValido = true;
+                }
+            }
+            return telefono;
+        }
+
+        ///////nombre
+        public String pedirNombre () {
+            String nombre = "";
+            boolean nombreValido = false;
+
+            while (!nombreValido) {
+                System.out.print("Ingrese el nombre: ");
+                nombre = scanner.nextLine();
+
+                // Validar que el nombre no esté vacío y que contenga solo letras y espacios
+                if (nombre.isEmpty()) {
+                    System.out.println("Error: El nombre no puede estar vacío. Por favor ingresa un nombre válido.");
+                } else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
+                    System.out.println("Error: El nombre solo puede contener letras y espacios entre palabras.");
+                } else {
+                    // Si el nombre es válido, formatearlo con la primera letra en mayúscula
+                    nombre = capitalizeWords(nombre);
+                    nombreValido = true;
+                }
+            }
+
+            return nombre;
+        }
+
+        /////////PASA A MAYUSCULA LOS NOMBRES y apellidos  !
+        private String capitalizeWords (String nombre){
+            String[] palabras = nombre.split(" "); // Separar las palabras por espacio
+            StringBuilder nombreFormateado = new StringBuilder();
+
+            for (String palabra : palabras) {
+                // Poner la primera letra en mayúscula y las demás en minúscula
+                if (palabra.length() > 0) {
+                    nombreFormateado.append(palabra.substring(0, 1).toUpperCase()) // Primera letra en mayúscula
+                            .append(palabra.substring(1).toLowerCase()) // Resto de la palabra en minúscula
+                            .append(" "); // Agregar espacio entre palabras
+                }
+            }
+            // Eliminar el último espacio vacio
+            return nombreFormateado.toString().trim();
+        }
+
+        /////////////apellido
+        public String pedirApellido () {
+            String apellido = "";
+            boolean apellidoValido = false;
+
+            while (!apellidoValido) {
+                System.out.print("Ingrese el apellido: ");
+                apellido = scanner.nextLine();
+
+                // Validar que el apellido no esté vacío y que contenga solo letras y espacios
+                if (apellido.isEmpty()) {
+                    System.out.println("Error: El apellido no puede estar vacío. Por favor ingresa un apellido válido.");
+                } else if (!apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*")) {
+                    System.out.println("Error: El apellido solo puede contener letras y espacios entre palabras.");
+                } else {
+                    // Si el apellido es válido, formatearlo con la primera letra en mayúscula
+                    apellido = capitalizeWords(apellido);
+                    apellidoValido = true;
+                }
+            }
+            return apellido;
+        }
+
+        public String pedirDNI () throws DNIyaCargadoException {
+            String dni = "";
+            boolean dnivalido = false;
+
+            while (!dnivalido) {
+                System.out.println("Ingrese el DNI: ");
+                dni = scanner.nextLine();
+
+                // no esté vacío
+                if (dni.isEmpty()) {
+                    System.out.println("Error: El DNI no puede estar vacío.");
+                }
+                //  contenga números
+                else if (!dni.matches("\\d+")) {
+                    System.out.println("Error: El DNI solo puede contener números.");
+                }
+                //  dígitos
+                else if (dni.length() != 8) {
+                    System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+                }
+                // Verificar si el DNI ya está cargado en el sistema
+                else {
+                    boolean dniRepetido = false;
+                    for (Persona a : almacenPersonas.getAlmacen()) {
+                        if (a.getDni().equals(dni)) {
+                            dniRepetido = true;
+                            break;
+                        }
+                    }
+                    if (dniRepetido) {
+                        throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + dni);
+                    } else {
+                        dnivalido = true;
                     }
                 }
-                if (dniRepetido) {
-                    throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + dni);
+            }
+            return dni;
+        }
+
+        public String pedirGenero () throws GeneroInvalidoException {
+
+            String genero;
+
+            while (true) {
+                System.out.println("Ingrese el GÉNERO (M, F, O): ");
+                genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
+
+                // Verificar que la entrada tiene exactamente un carácter
+                if (genero.length() != 1) {
+                    throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+                }
+
+                // Convertimos el String a un carácter para la validación
+                char generoChar = genero.charAt(0);
+
+                // Verificar si el carácter es válido
+                if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
+                    throw new GeneroInvalidoException("GÉNERO INVÁLIDO\n");
                 } else {
-                    dnivalido = true;
+                    break;
                 }
             }
+            return genero;  // Retornar el String que contiene el género válido
         }
-        return dni;
-    }
 
-    public String pedirGenero() throws GeneroInvalidoException {
-
-        String genero;
-
-        while (true) {
-            System.out.println("Ingrese el GÉNERO (M, F, O): ");
-            genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
-
-            // Verificar que la entrada tiene exactamente un carácter
-            if (genero.length() != 1) {
-                throw new GeneroInvalidoException("Debes ingresar solo un carácter para el género.");
+        public boolean verificarSiExiste (String dni) throws DNInoEncontradoException {
+            for (Persona p : almacenPersonas) {
+                if (p.getDni().equals(dni)) {
+                    return true;
+                }
             }
-
-            // Convertimos el String a un carácter para la validación
-            char generoChar = genero.charAt(0);
-
-            // Verificar si el carácter es válido
-            if (generoChar != 'M' && generoChar != 'F' && generoChar != 'O') {
-                throw new GeneroInvalidoException("GÉNERO INVÁLIDO\n");
-            } else {
-                break;
-            }
+            throw new DNInoEncontradoException("\nDNI no encontrado!!");
         }
-        return genero;  // Retornar el String que contiene el género válido
-    }
-
-    public boolean verificarSiExiste(String dni) throws DNInoEncontradoException {
-        for (Persona p : almacenPersonas) {
-            if (p.getDni().equals(dni)) {
-                return true;
-            }
-        }
-        throw new DNInoEncontradoException("\nDNI no encontrado!!");
-    }
 
 /*
     public TipoDeProfesional pedirTipoProfesional() {
@@ -509,8 +520,8 @@ public class GestorPersona {
             return profesionales;
         }*/
 
-    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
-    public List<Persona> getAlmacenPersonas() {
-        return getAlmacenPersonas();
+        ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+        public List<Persona> getAlmacenPersonas () {
+            return getAlmacenPersonas();
+        }
     }
-}
