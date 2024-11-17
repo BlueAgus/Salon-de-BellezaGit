@@ -5,12 +5,14 @@ import enumeraciones.TipoServicio;
 import excepciones.*;
 import gestores.GestorPersona;
 import gestores.GestorServicio;
+import interfaces.CrearID;
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-public class Factura {
+public class Factura implements CrearID {
 
     private String codigoFactura;
     private TipoDePago tipoPago;
@@ -26,7 +28,7 @@ public class Factura {
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Factura(TipoDePago tipoPago, Cliente cliente, GestorPersona gestorPersona, GestorServicio gestorServicio) {
 
-        this.codigoFactura = generarIDEunico();
+        this.codigoFactura = this.generarIDEunico(); // aca usamos el metodo de la interfaz directamente
         this.tipoPago = tipoPago;
         this.precioFinal = 0.0;
         this.turnosPorCliente = new ArrayList<>();
@@ -110,10 +112,11 @@ public class Factura {
         }*/
     }
 
-    private String generarIDEunico() {
-        long numeroUnico = (long) (Math.random() * 10000000000000L);  // Genera un número entre 0 y 9999999999
-        return String.valueOf(numeroUnico);
-    }
+    @Override
+    public String generarIDEunico() {
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+            return uuid.substring(0, 15 );
+        }
 
     @Override
     public boolean equals(Object o) {

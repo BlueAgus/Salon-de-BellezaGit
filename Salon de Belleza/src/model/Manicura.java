@@ -36,7 +36,7 @@ public class Manicura extends Servicio  {
     @Override
     public double calcularPrecio() {
         double precioBase = GestorPrecios.obtenerPrecio(Manicura.class, this.tipoManicura);
-        
+
         if (disenio) {
             precioBase = GestorPrecios.agregarDisenio(this.tipoManicura);
         }

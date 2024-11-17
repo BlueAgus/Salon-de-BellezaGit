@@ -3,6 +3,7 @@ package model;
 import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
+import gestores.GestorPrecios;
 
 import java.time.LocalTime;
 
@@ -20,13 +21,7 @@ public class Depilacion extends Servicio {
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
     public double calcularPrecio() {
-        double precio = 0.0;
-        if (tipoDepilacion == TipoDepilacion.CERA) {
-            precio = tipoDepilacion.getPrecio();
-        } else if (tipoDepilacion == TipoDepilacion.LASER) {
-            precio = tipoDepilacion.getPrecio();
-        }
-        return this.precio;
+        return GestorPrecios.obtenerPrecio(Depilacion.class, this.tipoDepilacion);
     }
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
@@ -51,7 +46,7 @@ public class Depilacion extends Servicio {
     @Override
     public String toString() {
         return "DEPILACIÓN " + tipoDepilacion +
-                " \nPrecio= " + precio +
+                " \nPrecio= " + calcularPrecio() +
                 " \nDuracion=" + duracion;
     }
 }

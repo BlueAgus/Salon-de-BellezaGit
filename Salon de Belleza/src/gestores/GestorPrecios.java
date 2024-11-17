@@ -1,10 +1,7 @@
 package gestores;
 //Capaz la logica de poner precio directamente en los enum no esta tan buena, entonces es mejor manejarlo de aca
 
-import enumeraciones.TipoDepilacion;
-import enumeraciones.TipoManicura;
-import enumeraciones.TipoPestanias;
-import enumeraciones.TipoServicio;
+import enumeraciones.*;
 import model.Depilacion;
 import model.Manicura;
 import model.Pestanias;
@@ -17,7 +14,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GestorPrecios {
+public final class GestorPrecios {
     private static final double precioDepiCera = 10.0;
     private static final double precioDepiLaser = 10.0;
 
@@ -127,5 +124,15 @@ public class GestorPrecios {
             throw new IllegalArgumentException("No se encontraron precios para la clase: " + servicio.getSimpleName());
         }
     }
+
+    ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
+/*
+    public static double ajustarPrecioPorTipoPago(double precioBase, TipoDePago tipoPago) {
+        int porcentajeAjuste = tipoPago.getPorcentajeAjuste();
+        double ajuste = (porcentajeAjuste / 100.0) * precioBase;
+        return precioBase + ajuste;
+    }*/
+    // no estoy segura si manejar lo de tipos de pago aca porque tendria que hacer otros atributos cargarlo
+    //con mas cosas y capaz asi como esta en el enum esta bien.
 
 }
