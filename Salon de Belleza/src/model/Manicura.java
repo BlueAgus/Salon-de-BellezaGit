@@ -3,24 +3,26 @@ package model;
 import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoManicura;
 import enumeraciones.TipoServicio;
+import gestores.GestorPrecios;
 
 import java.time.LocalTime;
 
 public class Manicura extends Servicio  {
 
     private TipoManicura tipoManicura;
-    private boolean disenio;
-    private static double precioDisenio = 10.0;
+    private static boolean disenio;
 
     ///si TipoServicio es por defecto no lo pedimos
     // hay un precio base? VER PRECIO DEPILACION
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Manicura(double precio, LocalTime duracion, boolean disenio, TipoManicura tipoManicura) {
-        super(TipoServicio.MANICURA , precio, duracion);
-        this.disenio = disenio;
+
+    public Manicura(LocalTime duracion, TipoManicura tipoManicura) {
+        super(TipoServicio.MANICURA, duracion);
         this.tipoManicura = tipoManicura;
+        this.disenio = false;
     }
+
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
@@ -33,42 +35,36 @@ public class Manicura extends Servicio  {
 
     @Override
     public double calcularPrecio() {
-        double precioFinal =  this.precio + this.tipoManicura.getPrecio();
-        if(disenio = true){ // al final esto se saca??
-            precioFinal += precioDisenio;
+        double precioBase = GestorPrecios.obtenerPrecio(Manicura.class, this.tipoManicura);
+        
+        if (disenio) {
+            precioBase = GestorPrecios.agregarDisenio(this.tipoManicura);
         }
-        return precioFinal;
+
+        return precioBase;
     }
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
-    public static double getPrecioDisenio() {
-        return precioDisenio;
-    }
-
-    public static void setPrecioDisenio(double precioDisenio) {
-        Manicura.precioDisenio = precioDisenio;
-    }
-
-    public boolean isDisenio() {
-        return disenio;
-    }
-
-    public void setDisenio(boolean disenio) {
-        this.disenio = disenio;
-    }
 
     public TipoManicura getTipoManicura() {return tipoManicura;}
 
     public void setTipoManicura(TipoManicura tipoManicura) {this.tipoManicura = tipoManicura;}
 
+    public static boolean isDisenio() {
+        return disenio;
+    }
+
+    public static void setDisenio(boolean disenio) {
+        Manicura.disenio = disenio;
+    }
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     @Override
     public String toString() {
         return " MANICURA " + tipoManicura +
                 (disenio ? " con diseño " : " sin diseño ")+
-                " \nPrecio= " + precio +
+                " \nPrecio= " + calcularPrecio() +
                 " \nDuracion= " + duracion ;
     }
 

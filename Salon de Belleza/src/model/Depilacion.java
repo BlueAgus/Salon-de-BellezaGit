@@ -11,10 +11,11 @@ public class Depilacion extends Servicio {
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
-    public Depilacion(double precio, TipoDepilacion tipoDepilacion, LocalTime duracion) {
-        super(TipoServicio.DEPILACION, precio, duracion);
+    public Depilacion(LocalTime duracion, TipoDepilacion tipoDepilacion) {
+        super(TipoServicio.DEPILACION, duracion);
         this.tipoDepilacion = tipoDepilacion;
     }
+
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 

@@ -27,21 +27,21 @@ public class GestorServicio {
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion(precio, tipoDepilacion, duracion);
+            Depilacion depilacion = new Depilacion(duracion, tipoDepilacion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias(precio, tipoPestanias, duracion);
+            Pestanias pestanias = new Pestanias(duracion, tipoPestanias);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(precio, duracion, disenio, tipoManicura);
+            Manicura manicura = new Manicura(duracion, tipoManicura);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
@@ -76,7 +76,7 @@ public class GestorServicio {
         while (continuarModificando) {
             System.out.println("¿Qué te gustaría modificar?");
             System.out.println("1. Tipo de servicio");
-            System.out.println("2. Precio");
+           // System.out.println("2. Precio");
             System.out.println("3. Duración");
             System.out.println("4. Salir");
             int opcion = scanner.nextInt();
@@ -87,7 +87,7 @@ public class GestorServicio {
                     servicio.setTipoService(pedirTipoServicio());
                     break;
                 case 2:
-                    servicio.setPrecio(pedirPrecio());
+                  //  servicio.setPrecio(pedirPrecio());
                     break;
                 case 3:
                     servicio.setDuracion(pedirDuracion());

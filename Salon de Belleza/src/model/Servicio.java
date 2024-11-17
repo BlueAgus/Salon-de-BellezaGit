@@ -11,16 +11,16 @@ public abstract class Servicio {
 
     private String codigo_servicio ; //
     protected TipoServicio tipoService;
-    protected double precio;
+    // protected double precio; sacamos precio de las clases para centralizar en gestorPrecios
     protected LocalTime duracion;
     protected Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
     ///VER DISPONIBILIDAD!!!!!!!!!!!!!!!!!
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Servicio(TipoServicio tipoService, double precio, LocalTime duracion) {
+    public Servicio(TipoServicio tipoService, LocalTime duracion) {
 
         this.tipoService = tipoService;
-        this.precio = precio;
+      //  this.precio = precio;
         this.duracion = duracion;
         this.disponibilidad = Disponibilidad.DISPONIBLE;
         this.codigo_servicio = generarIDEunico();
@@ -46,13 +46,6 @@ public abstract class Servicio {
         this.tipoService = tipoService;
     }
 
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
 
     public LocalTime getDuracion() {
         return duracion;
