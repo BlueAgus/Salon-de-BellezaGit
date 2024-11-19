@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class Turno {
 
+    private String cod_turno;
     private LocalDate fecha;         // Fecha del turno
     private LocalTime horario;       // Hora del turno
     private String codigo_servicio;       // El servicio a realizar
@@ -19,7 +20,9 @@ public class Turno {
 
     //////////////////////////////////////////////////////// CONSTRUCTORes ////////////////////////////////////////////////////
     // Constructor de la clase Turno
-    public Turno(LocalDate fecha, LocalTime horario, String codigo_servicio, String dni_profesional, String dni_cliente) {
+
+    public Turno(String cod_turno, LocalDate fecha, LocalTime horario, String codigo_servicio, String dni_profesional, String dni_cliente) {
+        this.cod_turno = cod_turno;
         this.fecha = fecha;
         this.horario = horario;
         this.codigo_servicio = codigo_servicio;

@@ -2,7 +2,7 @@ import enumeraciones.TipoManicura;
 
 import gestores.GestorPersona;
 
-import gestores.GestorTurnos;
+import gestores.GestorTurno;
 import model.Cliente;
 import model.Manicura;
 import model.Profesional;
@@ -17,10 +17,11 @@ public class Main {
         System.out.println("Holi soy agus jeje");*/
 
         GestorPersona profesionales=new GestorPersona();
-     
+        profesionales.agregarPersona(2);
+        System.out.println(profesionales);
 
-        GestorTurnos turnos = new GestorTurnos();
-        Manicura manicura= new Manicura(LocalTime.of(1,30),TipoManicura.ESCULPIDAS);
+        GestorTurno turnos = new GestorTurno();
+        Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);
         Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", "223456346");
         Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", "223654789");
 

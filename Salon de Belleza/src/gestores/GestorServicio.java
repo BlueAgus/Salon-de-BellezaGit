@@ -1,5 +1,6 @@
 package gestores;
 
+import com.google.gson.Gson;
 import enumeraciones.*;
 import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
@@ -15,6 +16,7 @@ public class GestorServicio {
 
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
+    Gson gson=new Gson();
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
@@ -48,10 +50,10 @@ public class GestorServicio {
         }
     }
 
-    public boolean eliminarServicio(String id) {
+    public boolean eliminarServicio(String cod_servicio) {
 
         for (Servicio servicio : almacenServicios.getAlmacen()) {
-            if (servicio.getCodigo_servicio().equals(id)) {
+            if (servicio.getCodigo_servicio().equals(cod_servicio)) {
                 return almacenServicios.eliminar(servicio);
             }
         }
@@ -66,7 +68,6 @@ public class GestorServicio {
             }
         }
         throw new CodigoNoEncontradoException("El código de servicio no existe: " + cod_Servicio);
-
     }
 
     // Función que permite modificar un servicio existente
@@ -194,10 +195,6 @@ public class GestorServicio {
         }
         LocalTime duracion = LocalTime.of(h, m);
         return duracion;
-    }
-
-    public void mostrarServicios() {
-        almacenServicios.mostrar();///
     }
 
     public TipoDepilacion pedirTipoDepilacion() {
@@ -339,6 +336,11 @@ public class GestorServicio {
     public GestorAlmacen<Servicio> getAlmacenServicios() {
         return almacenServicios;
     }
+
+    public void mostrarServicios() {
+        almacenServicios.mostrar();///
+    }
+
 }
 
 

@@ -24,16 +24,16 @@ public class GestorPersona {
 
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas = new GestorAlmacen<>();
+    Gson gson= new Gson();
 
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
-
 
     //pasamos 1 si es cliente,
     // 2 si es profesional,
     // 3 si es recepcionista,
     // 4 si es administrador
-    public boolean agregarPersona(int tipoPersona,GestorServicio servicios) {
+    public boolean agregarPersona(int tipoPersona) {
         boolean cargado = false;
 
         String dni = "";
@@ -82,13 +82,11 @@ public class GestorPersona {
 
                 break;
             case 2:
-                int opcion = 0;
+                TipoDeProfesional e;
                 Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
-
-                GestorTurnos aux=new GestorTurnos();
-                String e = aux.pedirCodServicio(servicios);
+                int opcion = 0;
+                e = pedirTipoProfesional();
                 profesional.agregarProfesion(e);//minimo una profesion.
-
                 do {
                     System.out.println("Deseas agregar otra profesion?");
                     System.out.println("1. Si deseo.");
@@ -97,7 +95,7 @@ public class GestorPersona {
                     scanner.nextLine();
 
                     if (opcion == 1) {
-                        e = aux.pedirCodServicio(servicios);
+                        e = pedirTipoProfesional();
                         profesional.agregarProfesion(e);
                     } else if (opcion != 2) {
                         System.out.println("Ingresa una opcion valida por favor.");
@@ -437,6 +435,31 @@ public class GestorPersona {
             return dni;
         }
 
+
+    public String pedirDNIsinVerificacion () {
+        String dni = "";
+        boolean dnivalido = false;
+
+        while (!dnivalido) {
+            System.out.println("Ingrese el DNI: ");
+            dni = scanner.nextLine();
+
+            // no esté vacío
+            if (dni.isEmpty()) {
+                System.out.println("Error: El DNI no puede estar vacío.");
+            }
+            //  contenga números
+            else if (!dni.matches("\\d+")) {
+                System.out.println("Error: El DNI solo puede contener números.");
+            }
+            //  dígitos
+            else if (dni.length() != 8) {
+                System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            }
+        }
+        return dni;
+    }
+
         public String pedirGenero () throws GeneroInvalidoException {
 
             String genero;
@@ -472,7 +495,7 @@ public class GestorPersona {
             throw new DNInoEncontradoException("\nDNI no encontrado!!");
         }
 
-/*
+
     public TipoDeProfesional pedirTipoProfesional() {
         int opcion = 0;
         TipoDeProfesional aux = null;
@@ -494,7 +517,7 @@ public class GestorPersona {
         } while (opcion != 1 && opcion != 2 && opcion != 3);
         return aux;
     }
-
+/*
     public void ActualizarArchivo(String nombreArchivo,List<T>){
         try{
             FileReader fileReader = new FileReader(nombreArchivo);
@@ -511,19 +534,47 @@ public class GestorPersona {
 
     }
 
-    public List<Profesional> LeerArchivo(String nombreArchivo) {
-        try {
-            FileReader fileReader = new FileReader(nombreArchivo);
-            Gson gson = new Gson();
-            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
-            }.getType();
-            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
-
-            return profesionales;
-        }*/
+ */
 
         ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
         public List<Persona> getAlmacenPersonas () {
             return getAlmacenPersonas();
         }
+
+
+    public List<Profesional> LeerArchivoProfesionales(String nombreArchivo) {
+        try(FileReader fileReader = new FileReader(nombreArchivo)) {
+
+            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {}.getType();
+            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
+            return profesionales;
+
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Persona> LeerArchivoPersona(String nombreArchivo) {
+        try ( FileReader fileReader = new FileReader(nombreArchivo)){
+
+            Type persona = new TypeToken<List<Persona>>() {
+            }.getType();
+            List<Persona> personas = gson.fromJson(fileReader, persona);
+
+            return personas;
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     }
