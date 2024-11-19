@@ -3,23 +3,26 @@ package model;
 import enumeraciones.Disponibilidad;
 import enumeraciones.TipoPestanias;
 import enumeraciones.TipoServicio;
+import gestores.GestorPrecios;
 
 import java.time.LocalTime;
 
 public class Pestanias extends Servicio{
+
     private TipoPestanias tipoPestanias;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
-    public Pestanias(double precio, TipoPestanias tipoPestanias, LocalTime duracion) {
-        super(TipoServicio.PESTANIAS, precio,duracion );
+
+    public Pestanias(LocalTime duracion, TipoPestanias tipoPestanias) {
+        super(TipoServicio.PESTANIAS, duracion);
         this.tipoPestanias = tipoPestanias;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     @Override
     public double calcularPrecio() {
-        return this.precio + this.tipoPestanias.getPrecio();
+        return GestorPrecios.obtenerPrecio(Pestanias.class, this.tipoPestanias);
     }
 
 
@@ -34,8 +37,8 @@ public class Pestanias extends Servicio{
 
     @Override
     public String toString() {
-        return "PESTAÑAS " + tipoPestanias +
-                " \nPrecio= " + precio +
+        return "PESTAÑAS " + this.tipoPestanias +
+                " \nPrecio= " + calcularPrecio() +
                 " \nDuracion=" + duracion ;
     }
 }

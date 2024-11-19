@@ -1,21 +1,8 @@
 package enumeraciones;
 
 public enum TipoPestanias {
-    TRES_D(10.0),
-    DOS_D(10.0),
-    CLASICAS(10.0);
+    TRES_D(),
+    DOS_D(),
+    CLASICAS();
 
-    private double precio;
-
-    TipoPestanias(double precio) {
-        this.precio = precio;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double nuevoPrecio) {
-        this.precio = precio;
-    }
 }

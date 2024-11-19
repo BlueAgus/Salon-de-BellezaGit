@@ -1,16 +1,10 @@
 package gestores;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import model.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -19,21 +13,21 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class GestorTurnos {
+public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static Scanner scanner = new Scanner(System.in);
 
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public GestorTurnos() {
+    public GestorTurno() {
         this.listaTurnos = new MapaGenerico<>();
     }
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
-    public boolean agregarTurno(GestorPersona gestorCliente, GestorServicio gestorServicio) {
-        String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
+    public boolean agregarTurno(GestorPersona gestorPersona, GestorServicio gestorServicio) {
+        String dniCliente = pedirDNIcliente(gestorPersona);//METODO pedir dni cliente
 
         if (dniCliente == null) {
             return false;
@@ -45,7 +39,7 @@ public class GestorTurnos {
             return false;
         }
 
-        Turno turno = elegirFechaYhorario(codServicio);
+        Turno turno = elegirFechaYhorario(codServicio, gestorServicio);
 
         if (turno == null) {
             return false;
@@ -53,10 +47,10 @@ public class GestorTurnos {
 
         while (verificarClienteXHorario(dniCliente, turno.getHorario(), turno.getFecha())) {
             System.out.println("El cliente ya tiene reservado un turno en la misma fecha y horario!!");
-            turno = elegirFechaYhorario(codServicio);
+            turno = elegirFechaYhorario(codServicio,gestorServicio);
         }
 
-        String dniProfesional = pedirDNIprofesionalXservicio(codServicio, turno.getHorario(), turno.getFecha());//METODO pedir dni profesional
+        String dniProfesional = pedirDNIprofesionalXservicio(codServicio, turno.getHorario(), turno.getFecha(), gestorPersona);//METODO pedir dni profesional
 
         if (dniProfesional == null) {
             return false;
@@ -128,7 +122,6 @@ public class GestorTurnos {
       } catch (CodigoNoEncontradoException e) {
          e.getMessage();
       }
-
     }
 
     /////////////////////////////////////////////MANEJO DE SERVICIOS!!!!////////////////////////////////////////
@@ -136,7 +129,6 @@ public class GestorTurnos {
         int opc = 0;
         while (true) {
             for (int i = 0; i < gestorServicio.getAlmacenServicios().getAlmacen().size(); i++) {
-                System.out.println("---------------------------------------");
                 System.out.println(i + "- " + gestorServicio.getAlmacenServicios().getAlmacen().get(i).toString());
             }
 
@@ -162,9 +154,10 @@ public class GestorTurnos {
         }
     }
 
-
     /////////////////////////////////////////////MANEJO DE CLIENTES!!!!////////////////////////////////////////
-    public String pedirDNIcliente(GestorPersona gestorCliente) {
+
+   public String pedirDNIcliente(GestorPersona gestorCliente) {
+
         String dniCliente;
         while (true) {
             ///para ponerle que presione ESC hay que usar libreras
@@ -203,7 +196,7 @@ public class GestorTurnos {
     /////////////////////////////////////////////MANEJO DE FECHAS!!!!////////////////////////////////////////
 
     ///retorna un turno con la fecha y el horario elegido
-    public Turno elegirFechaYhorario(String cod_servicio) {
+    public Turno elegirFechaYhorario(String cod_servicio, GestorServicio gestorServicio) {
 
         LocalDate fecha = pedirFecha();
         if (fecha == null) {
@@ -211,7 +204,7 @@ public class GestorTurnos {
         }
 
         ///guarda los horarios disponibles y los muestra
-        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fecha, cod_servicio);
+        List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fecha, cod_servicio, gestorServicio );
 
         int indiceHorario;
         ///seleccion de horario
@@ -288,7 +281,7 @@ public class GestorTurnos {
     }
 
     ///retorna una lista con los horarios disponibles x fecha especifica y servicio
-    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, String cod_servicio) {
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, String cod_servicio,GestorServicio gestorServicio) {
         List<Turno> turnosReservados = obtenerTurnosReservadosXfecha(fecha);///retorna la lista de turnos reservados para una fecha
 
         List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
@@ -345,24 +338,6 @@ public class GestorTurnos {
 
 /////////////////////////////////////////////MANEJO DE PROFESIONALES!!!!////////////////////////////////////////
 
-    public List<Profesional> LeerArchivoProfesionales(String nombreArchivo) {
-        try {
-            FileReader fileReader = new FileReader(nombreArchivo);
-            Gson gson = new Gson();
-            Type tipoListaProfesionales = new TypeToken<List<Profesional>>() {
-            }.getType();
-            List<Profesional> profesionales = gson.fromJson(fileReader, tipoListaProfesionales);
-            fileReader.close();
-            return profesionales;
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
 
 
    /* public List<Profesional> pedirDNIprofesionalXservicio(TipoDeProfesional tipo) {
@@ -397,11 +372,11 @@ public class GestorTurnos {
     }*/
 ///a este metodo le agregue las verificaciones de servicio, fecha y horario. Tambien retorne el dni en vez de retornar la lista completa
 
-
+///Meli modifique
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
-    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha) {
-        List<Profesional> profesionales = LeerArchivoProfesionales("profesionales.json");
+    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorPersona gestorPersona) {
+        List<Profesional> profesionales = gestorPersona.LeerArchivoProfesionales("profesionales.json");
 
         if (profesionales == null || profesionales.isEmpty()) {
             System.out.println("No hay profesionales disponibles.");
@@ -443,8 +418,6 @@ public class GestorTurnos {
                 scanner.nextLine();
             }
         }
-
-
         return disponibles.get(opc).getDni();
     }
 

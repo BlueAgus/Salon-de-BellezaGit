@@ -1,5 +1,6 @@
 package gestores;
 
+import com.google.gson.Gson;
 import enumeraciones.*;
 import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
@@ -15,6 +16,7 @@ public class GestorServicio {
 
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
+    Gson gson=new Gson();
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
@@ -27,31 +29,31 @@ public class GestorServicio {
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
-            Depilacion depilacion = new Depilacion(precio, tipoDepilacion, duracion);
+            Depilacion depilacion = new Depilacion(duracion, tipoDepilacion);
             almacenServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
-            Pestanias pestanias = new Pestanias(precio, tipoPestanias, duracion);
+            Pestanias pestanias = new Pestanias(duracion, tipoPestanias);
             almacenServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
             TipoManicura tipoManicura = pedirTipoManicura();
-            Manicura manicura = new Manicura(precio, duracion, disenio, tipoManicura);
+            Manicura manicura = new Manicura(duracion, tipoManicura);
             almacenServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
         }
     }
 
-    public boolean eliminarServicio(String id) {
+    public boolean eliminarServicio(String cod_servicio) {
 
         for (Servicio servicio : almacenServicios.getAlmacen()) {
-            if (servicio.getCodigo_servicio().equals(id)) {
+            if (servicio.getCodigo_servicio().equals(cod_servicio)) {
                 return almacenServicios.eliminar(servicio);
             }
         }
@@ -66,7 +68,6 @@ public class GestorServicio {
             }
         }
         throw new CodigoNoEncontradoException("El código de servicio no existe: " + cod_Servicio);
-
     }
 
     // Función que permite modificar un servicio existente
@@ -76,7 +77,7 @@ public class GestorServicio {
         while (continuarModificando) {
             System.out.println("¿Qué te gustaría modificar?");
             System.out.println("1. Tipo de servicio");
-            System.out.println("2. Precio");
+           // System.out.println("2. Precio");
             System.out.println("3. Duración");
             System.out.println("4. Salir");
             int opcion = scanner.nextInt();
@@ -87,7 +88,7 @@ public class GestorServicio {
                     servicio.setTipoService(pedirTipoServicio());
                     break;
                 case 2:
-                    servicio.setPrecio(pedirPrecio());
+                  //  servicio.setPrecio(pedirPrecio());
                     break;
                 case 3:
                     servicio.setDuracion(pedirDuracion());
@@ -194,10 +195,6 @@ public class GestorServicio {
         }
         LocalTime duracion = LocalTime.of(h, m);
         return duracion;
-    }
-
-    public void mostrarServicios() {
-        almacenServicios.mostrar();///
     }
 
     public TipoDepilacion pedirTipoDepilacion() {
@@ -339,6 +336,11 @@ public class GestorServicio {
     public GestorAlmacen<Servicio> getAlmacenServicios() {
         return almacenServicios;
     }
+
+    public void mostrarServicios() {
+        almacenServicios.mostrar();///
+    }
+
 }
 
 
