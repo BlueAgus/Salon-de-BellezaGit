@@ -14,12 +14,11 @@ import java.time.LocalTime;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-<<<<<<< HEAD
+
        // GestorPersona profesionales=new GestorPersona();
         MenuPrincipal menuPrincipal=new MenuPrincipal();
-//
-        GestorTurnos turnos = new GestorTurnos();
-=======
+
+
        /* System.out.println("HOLA HICE UN CAMBIO ");
         System.out.println("Holi soy agus jeje");*/
 
@@ -28,8 +27,8 @@ public class Main {
         System.out.println(profesionales);
 
         GestorTurno turnos = new GestorTurno();
->>>>>>> c8d8b8c680ce30e44ef010694ad7579c7b76fe68
-        Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);
+
+      //  Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);
         Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", "223456346");
         Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", "223654789");
 
