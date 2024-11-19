@@ -1,5 +1,7 @@
 package model;
 
+import interfaces.CrearID;
+
 import java.util.Objects;
 import java.util.UUID;
 
