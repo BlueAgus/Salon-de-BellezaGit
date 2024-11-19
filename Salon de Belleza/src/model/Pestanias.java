@@ -7,6 +7,7 @@ import enumeraciones.TipoServicio;
 import java.time.LocalTime;
 
 public class Pestanias extends Servicio{
+
     private TipoPestanias tipoPestanias;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////

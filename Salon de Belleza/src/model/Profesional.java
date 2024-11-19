@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Profesional extends Persona {
 
-    private List<String > cod_servicios;
+    private List<String> cod_servicios;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Profesional(String nombre, String apellido, String dni, String genero, String telefono) {
@@ -16,7 +16,7 @@ public class Profesional extends Persona {
     }
 
     ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
-    public List<TipoDeProfesional> getProfesiones() {
+    public List<String> getProfesiones() {
         return cod_servicios;
     }
 

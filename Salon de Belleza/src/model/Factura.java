@@ -79,17 +79,24 @@ public class Factura {
                 System.out.println("Servicio no encontrado para el código: " + turno.getCodigo_servicio());
             }
         }
-
         this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
+        ///mirar
         return this.precioFinal;
     }
 
-    public void agregarTurno(Turno turno) throws TurnoExistenteException {
-        if (turnosPorCliente.contains(turno)) {
-            throw new TurnoExistenteException("El turno ya está ingresado en la factura.");
+    public void agregarTurno(Turno turno) {
+        try {
+            if (turnosPorCliente.contains(turno)) {
+
+                throw new TurnoExistenteException("El turno ya está ingresado en la factura.");
+            }
+            turnosPorCliente.add(turno);
+            System.out.println("El turno se agregó correctamente a la factura.");
+
+        } catch (TurnoExistenteException e) {
+
+            System.out.println("Error: " + e.getMessage());
         }
-        turnosPorCliente.add(turno);
-        System.out.println("El turno se agregó correctamente a la factura.");
     }
 
     public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException {
@@ -111,7 +118,7 @@ public class Factura {
     }
 
     private String generarIDEunico() {
-        long numeroUnico = (long) (Math.random() * 10000000000000L);  // Genera un número entre 0 y 9999999999
+        long numeroUnico = (long) (Math.random() * 1000L);  // Genera un número entre 0 y 999
         return String.valueOf(numeroUnico);
     }
 
@@ -123,10 +130,8 @@ public class Factura {
         return Objects.equals(fecha, factura.fecha) && Objects.equals(hora, factura.hora);
     }
 
-
-
-
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+
     public String getCodigoFactura() {
         return codigoFactura;
     }
@@ -188,19 +193,10 @@ public class Factura {
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
+                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
     }
-// esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
-    //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
-   private String datosClienteParaFactura(){
-        return "------------------"+
-                "Nombre: "+this.cliente.getNombre()+"\n"+
-                "Apellido: "+this.cliente.getApellido()+"\n"+
-                "DNI: "+this.cliente.getDni()+"\n"+
-                "Telefono: "+this.cliente.getTelefono()+"\n"+
-                "-----------------\n";
-   }
+
 }

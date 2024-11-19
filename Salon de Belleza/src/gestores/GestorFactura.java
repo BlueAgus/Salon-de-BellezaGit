@@ -1,6 +1,7 @@
 package gestores;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoDePago;
 import excepciones.DNInoEncontradoException;
@@ -22,15 +23,16 @@ import java.util.function.Predicate;
 public class GestorFactura {
 
     private GestorAlmacen<Factura> historial;
-    Gson geson;
+    Gson gson;
+    /// donde pondriamos el nombre del archivo?
     private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorFactura(String nombreArchivoGson) {
-        this.historial = new GestorAlmacen<>();
-        this.geson = new Gson();
-        this.nombreArchivoGson = nombreArchivoGson;
 
+        this.historial = new GestorAlmacen<>();
+        this.gson = new Gson();
+        this.nombreArchivoGson = nombreArchivoGson;
     }
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
@@ -63,10 +65,11 @@ public class GestorFactura {
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
     public List<Factura> verHistorialPorFecha(LocalDate fecha) {
 
         if (fecha == null) {
-            System.err.println("La fecha proporcionada es nula.");
+            System.err.println("La fecha proporcionada no registra facturas en la fecha proporcionada.");
             return new ArrayList<>();
         }
 
@@ -76,7 +79,6 @@ public class GestorFactura {
             return new ArrayList<>(); // Retorna lista vacía si la fecha es futura
         }
 
-
         Predicate<Factura> condicion = factura -> factura.getFecha().equals(fecha);
         return historial.filtrarPorCondicion(condicion);
     }
@@ -85,7 +87,7 @@ public class GestorFactura {
 
         try {
             FileWriter file = new FileWriter(this.nombreArchivoGson);
-            String json = geson.toJson(getHistorial());
+            String json = gson.toJson(getHistorial());
             file.write(json);
             file.close();
             System.out.println("Historial de facturas cargados con exito!");
@@ -94,20 +96,23 @@ public class GestorFactura {
         }
     }
 
+
     public void leerDesdeGson() {
-
-        try {
-            FileReader file = new FileReader(nombreArchivoGson);
-            GestorAlmacen<Factura> historialGson = geson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {
-            }.getType());
-            this.historial = historialGson;
-            file.close();
+        try (FileReader file = new FileReader(nombreArchivoGson)) {
+            // Deserializar el archivo JSON a un objeto de tipo GestorAlmacen<Factura>
+            GestorAlmacen<Factura> historialGson = gson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {}.getType());
+            this.historial = historialGson;  // Guardar el resultado en el atributo historial
         } catch (IOException e) {
-            e.getMessage();
-
+            // Manejo adecuado de la excepción: aquí podrías loggear o imprimir el error
+            System.out.println("Error al leer el archivo: " + e.getMessage());
+            e.printStackTrace(); // Para obtener más detalles de la excepción MIRAR COMO SE MUESTRA SI NO LO SACAMOS
+        } catch (JsonSyntaxException e) {
+            // En caso de que haya un error en el formato del JSON
+            System.out.println("Error de sintaxis en el JSON: " + e.getMessage());
+            e.printStackTrace();
         }
-
     }
+
 
     public void historialFacturasPorCliente(String dni) throws DNInoEncontradoException {
         // Validar si el DNI es null o está vacío
@@ -125,9 +130,8 @@ public class GestorFactura {
             }
         }
 
-
         if (facturasEncontradas.isEmpty()) {
-            throw new DNInoEncontradoException("El DNI ingresado no existe en la base de datos, intente de nuevo.");
+            throw new DNInoEncontradoException("El DNI ingresado no pertenece a ninguno de nuestros clientes, intente de nuevo.");
         }
 
         //para mostrar las facturas ordanadas por fecha

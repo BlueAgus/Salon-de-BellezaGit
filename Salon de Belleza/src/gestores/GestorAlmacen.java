@@ -39,6 +39,7 @@ public class GestorAlmacen<T> {
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
     public void guardarServicioAJSON(String nombreArchivo) {
         try (FileWriter writer = new FileWriter(nombreArchivo)) {
             gson.toJson(almacen, writer);
@@ -47,7 +48,6 @@ public class GestorAlmacen<T> {
             System.out.println("Error al guardar datos al archivo" + e.getMessage());
         }
     }
-
 
     public ArrayList<T> filtrarPorCondicion(Predicate<T> condicion) {
         ArrayList<T> resultado = new ArrayList<>();

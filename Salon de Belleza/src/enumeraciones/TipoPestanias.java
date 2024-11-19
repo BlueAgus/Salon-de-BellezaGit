@@ -1,8 +1,8 @@
 package enumeraciones;
 
 public enum TipoPestanias {
-    TRES_D(10.0),
-    DOS_D(10.0),
+    TRES_D(20.0),
+    DOS_D(15.0),
     CLASICAS(10.0);
 
     private double precio;

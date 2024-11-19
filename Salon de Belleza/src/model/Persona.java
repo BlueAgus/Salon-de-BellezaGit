@@ -20,15 +20,6 @@ public abstract class Persona {
         this.telefono = telefono;
     }
 
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Persona persona = (Persona) o;
-        return Objects.equals(dni, persona.dni);
-    }
-
 //////////////////////////////////////GETTERS Y SETTERS//////////////////////////////////////////////////////////////////////////////////
 
     public String getDni() {
@@ -64,6 +55,7 @@ public abstract class Persona {
     public void setTelefono(String telefono) {  this.telefono = telefono; }
 
 
+
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     @Override
     public String toString() {
@@ -75,4 +67,14 @@ public abstract class Persona {
                         "| Telefono : " + telefono + "\n" +
                         "=========================================\n";
     }
+
+    public String datosClienteSinGenero(){
+        return "------------------"+
+                "Nombre: "+ getNombre()+"\n"+
+                "Apellido: "+ getApellido()+"\n"+
+                "DNI: "+ getDni()+"\n"+
+                "Telefono: " + getTelefono() +"\n"+
+                "-----------------\n";
+    }
+
 }
