@@ -16,7 +16,7 @@ public class Factura implements CrearID {
 
     private String codigoFactura;
     private TipoDePago tipoPago;
-    private double precioFinal= 0.0;
+    private double precioFinal = 0.0;
     private Cliente cliente;
     private List<Turno> turnosPorCliente;
     private double descuento;
@@ -112,9 +112,9 @@ public class Factura implements CrearID {
 
     @Override
     public String generarIDEunico() {
-            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            return uuid.substring(0, 15 );
-        }
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        return uuid.substring(0, 15);
+    }
 
 
     @Override
@@ -124,7 +124,6 @@ public class Factura implements CrearID {
         Factura factura = (Factura) o;
         return Objects.equals(codigoFactura, factura.codigoFactura);
     }
-
 
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
@@ -189,7 +188,6 @@ public class Factura implements CrearID {
     }
 
 
-
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     @Override
     public String toString() {
@@ -199,19 +197,12 @@ public class Factura implements CrearID {
                         "| Precio final : " + precioFinal + "\n" +
                         "| Descuento aplicado : " + descuento + "\n" + //deberia agregar un atributo descuento y calcular el descuento??
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
+                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" + // perdon meli lo saque sin querer y lo volvi a poner jeje
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
     }
+}
 // esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
     //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
-   private String datosClienteParaFactura(){
-        return "------------------"+
-                "Nombre: "+this.cliente.getNombre()+"\n"+
-                "Apellido: "+this.cliente.getApellido()+"\n"+
-                "DNI: "+this.cliente.getDni()+"\n"+
-                "Telefono: "+this.cliente.getTelefono()+"\n"+
-                "-----------------\n";
-   }
-}
+

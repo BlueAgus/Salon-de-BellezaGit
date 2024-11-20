@@ -284,7 +284,8 @@ public class GestorFactura {
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
 
-
+    ///Para mi seria por rango de fechas o otra funcion
+  //esta muestra las facturas de cualquier cliente en ese dia, pero se podria hacer por rango tambien
     public List<Factura> verHistorialPorFecha(LocalDate fecha) {
 
         if (fecha == null) {
@@ -303,7 +304,7 @@ public class GestorFactura {
     }
 
 
-
+//mirar
     public void guardarEnArchivo() {
 
         try {
