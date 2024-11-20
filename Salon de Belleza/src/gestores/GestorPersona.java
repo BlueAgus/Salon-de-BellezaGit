@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -74,9 +75,7 @@ public class GestorPersona {
                 }
                 System.out.println(cliente);
                 verificarCarga(cliente, gestorServicio);
-                List<Cliente> clientesAux=(Cliente) LeerArchivo("clientes.json");
-                clientesAux.add(cliente);
-                EscribirPersonasEnArchivo("clientes.json",clientesAux);
+                almacenPersonas.agregar(cliente);
                 break;
             case 2:
                 int opcion = 0;
@@ -140,6 +139,9 @@ public class GestorPersona {
         return cargado;
     }
 
+
+
+    //estos buscan en la list ano en el archivo a
     public boolean eliminarPersona(String dni) {
         try {
             Persona p = buscarPersona(dni);
@@ -158,6 +160,11 @@ public class GestorPersona {
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
+
+
+
+
+
 
     public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
         int opcion;
@@ -290,8 +297,6 @@ public class GestorPersona {
         return null;
     }
 
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-
     public void verificarCarga(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         do {
@@ -336,7 +341,6 @@ public class GestorPersona {
         return telefono;
     }
 
-    ///////nombre
     public String pedirNombre() {
         String nombre = "";
         boolean nombreValido = false;
@@ -359,7 +363,6 @@ public class GestorPersona {
         return nombre;
     }
 
-    /////////PASA A MAYUSCULA LOS NOMBRES y apellidos  !
     private String PasarMayuscula(String nombre) {
         String[] palabras = nombre.split(" "); // Separar las palabras por espacio
         StringBuilder nombreFormateado = new StringBuilder();
@@ -462,9 +465,7 @@ public class GestorPersona {
     }
 
     public String pedirGenero() throws GeneroInvalidoException {
-
         String genero;
-
         while (true) {
             System.out.println("Ingrese el GÉNERO (M, F, O): ");
             genero = scanner.next().toUpperCase();  // Capturamos la entrada como String
@@ -487,97 +488,144 @@ public class GestorPersona {
         return genero;  // Retornar el String que contiene el género válido
     }
 
-    public boolean verificarSiExiste( String dni,String nombreArchivo) throws DNInoEncontradoException {
-        List<Persona> aux=LeerArchivo(nombreArchivo);
+    ///////VERIFICACIONES
+    public boolean verificarSiExisteAdministrador( String dni) throws DNInoEncontradoException {
+        List<Administrador> aux=leerArchivoAdministradores();
         if (aux == null || aux.isEmpty()) {
-            throw new DNInoEncontradoException("\nNo hay registros en el archivo.");
+            throw new DNInoEncontradoException("\nNo hay registros de administradores..");
         }
         for (Persona p : aux) {
             if (p.getDni().equals(dni)) {
                 return true;//alguien del archivo tiene ese dni.
             }
         }
-        throw new DNInoEncontradoException("\nDNI no encontrado!!");
+        throw new DNInoEncontradoException("\nDNI no encontrado en administradores!!");
+    }
+    public boolean verificarSiExisteCliente(String dni ) throws DNInoEncontradoException {
+        List<Cliente> aux = leerArchivoClientes();
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros de clientes en el archivo especificado.");
+        }
+        for (Persona p : aux) {
+            if (p.getDni().equals(dni)) {
+                return true; // alguien del archivo tiene ese DNI
+            }
+        }
+        throw new DNInoEncontradoException("\nDNI no encontrado en clientes del archivo especificado.");
+    }
+    public boolean verificarSiExisteRecepcionista(String dni) throws DNInoEncontradoException {
+        List<Recepcionista> aux = leerArchivoRecepcionistas();
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros de recepcionistas en el archivo especificado.");
+        }
+        for (Persona p : aux) {
+            if (p.getDni().equals(dni)) {
+                return true; // alguien del archivo tiene ese DNI
+            }
+        }
+        throw new DNInoEncontradoException("\nDNI no encontrado en recepcionistas del archivo especificado.");
+    }
+    public boolean verificarSiExisteProfesional(String dni) throws DNInoEncontradoException{
+        List<Profesional> aux = leerArchivoProfesionales();
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros de profesionales en el archivo especificado.");
+        }
+        for (Persona p : aux) {
+            if (p.getDni().equals(dni)) {
+                return true; // alguien del archivo tiene ese DNI
+            }
+        }
+        throw new DNInoEncontradoException("\nDNI no encontrado en profesionales del archivo especificado.");
     }
 
-    ///////MANEJO DE ARCHIVOS DE PERSONAS.
-    public void EscribirPersonasEnArchivo(String nombreArchivo, List<Persona> personas) {
-        try(FileWriter fileWriter = new FileWriter(nombreArchivo)){
-            Gson gson = new Gson();
-            String json = gson.toJson(personas);
-            fileWriter.write(json);
-           // System.out.println("Archivo escrito correctamente.");
+    /////////////////////////MANEJO DE ARCHIVOS DE PERSONAS.//////////////////////////
+    //ADMINISTRADOR
+public void guardarArchivoAdministradores(List<Administrador> administradores) {
+    Gson gson = new Gson();
 
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+    try (FileWriter fileWriter = new FileWriter("administradores.json")) {
+        // Convertir la lista de administradores a formato JSON
+        gson.toJson(administradores, fileWriter);
+        System.out.println("Archivo guardado exitosamente.");
+    } catch (IOException e) {
+        System.out.println("No se puede guardar el archivo: " + e.getMessage());
+    }
+}
+public List<Administrador> leerArchivoAdministradores() {
+        Gson gson = new Gson();
+        List<Administrador> listaAdministradores = new ArrayList<>();
+
+        try (FileReader fileReader = new FileReader("administradores.json")) {
+            // Leer el archivo JSON y convertirlo a una lista de administradores
+            Type listType = new TypeToken<List<Administrador>>() {}.getType();
+            listaAdministradores = gson.fromJson(fileReader, listType);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("No se puede leer el archivo: " + e.getMessage());
         }
+
+        return listaAdministradores;
     }
-
-    public List<Persona> LeerArchivo(String nombreArchivo) {
-        try (FileReader fileReader = new FileReader(nombreArchivo)){
-            Gson gson = new Gson();
-            Type ListaPersonas = new TypeToken<List<Persona>>() {}.getType();
-            List<Persona> personas = gson.fromJson(fileReader, ListaPersonas);
-
-            return personas;
-
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+    ///Secretaria
+    public List<Recepcionista> leerArchivoRecepcionistas() {
+        Gson gson = new Gson();
+        List<Recepcionista> listaRecepcionistas = new ArrayList<>();
+        try (FileReader fileReader = new FileReader("recepcionistas.json")) {
+            Type listType = new TypeToken<List<Recepcionista>>() {}.getType();
+            listaRecepcionistas = gson.fromJson(fileReader, listType);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("No se puede leer el archivo: " + e.getMessage());
         }
-        return null;
+        return listaRecepcionistas;
     }
-
-    public void guardarPersonaEnArchivo(List<Persona> personas, String nombreArchivo) {
-        Gson gson = configurarGsonConHerencia();
-        try (FileWriter writer = new FileWriter(nombreArchivo)) {
-            gson.toJson(personas, writer);
-            System.out.println("Archivo guardado correctamente: " + nombreArchivo);
+    public void guardarArchivoRecepcionistas(List<Recepcionista> recepcionistas) {
+        Gson gson = new Gson();
+        try (FileWriter fileWriter = new FileWriter("recepcionistas.json")) {
+            gson.toJson(recepcionistas, fileWriter);
         } catch (IOException e) {
-            System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
+            System.out.println("No se puede guardar el archivo: " + e.getMessage());
         }
     }
-    /*
-    public Gson configurarGsonConHerencia() {
-        RuntimeTypeAdapterFactory<Persona> adapter =
-                RuntimeTypeAdapterFactory.of(Persona.class, "tipo") // Campo "tipo" identifica la subclase
-                        .registerSubtype(Recepcionista.class, "recepcionista")
-                        .registerSubtype(Administrador.class, "administrador")
-                        .registerSubtype(Cliente.class, "cliente");
+    //profesional
+public List<Profesional> leerArchivoProfesionales() {
+    Gson gson = new Gson();
+    List<Profesional> listaProfesionales = new ArrayList<>();
+    try (FileReader fileReader = new FileReader("profesionales.json")) {
+        Type listType = new TypeToken<List<Profesional>>() {}.getType();
+        listaProfesionales = gson.fromJson(fileReader, listType);
+    } catch (IOException e) {
+        System.out.println("No se puede leer el archivo: " + e.getMessage());
+    }
+    return listaProfesionales;
+}
+public void guardarArchivoProfesionales(List<Profesional> profesionales) {
+        Gson gson = new Gson();
+        try (FileWriter fileWriter = new FileWriter("profesionales.json")) {
+            gson.toJson(profesionales, fileWriter);
+        } catch (IOException e) {
+            System.out.println("No se puede guardar el archivo: " + e.getMessage());
+        }
+    }
+   //Clientes
+public void guardarArchivoClientes(List<Cliente> clientes) {
+    Gson gson = new Gson();
+    try (FileWriter fileWriter = new FileWriter("clientes.json")) {
+        gson.toJson(clientes, fileWriter);
+    } catch (IOException e) {
+        System.out.println("No se puede guardar el archivo: " + e.getMessage());
+    }
+}
+public List<Cliente> leerArchivoClientes() {
+        Gson gson = new Gson();
+        List<Cliente> listaClientes = new ArrayList<>();
+        try (FileReader fileReader = new FileReader("clientes.json")) {
+            Type listType = new TypeToken<List<Cliente>>() {}.getType();
+            listaClientes = gson.fromJson(fileReader, listType);
+        } catch (IOException e) {
+            System.out.println("No se puede leer el archivo: " + e.getMessage());
+        }
+        return listaClientes;
+    }
 
-        return new GsonBuilder().registerTypeAdapterFactory(adapter).create();
-    }
-*/
-    /*
-        public TipoDeProfesional pedirTipoProfesional() {
-            int opcion = 0;
-            TipoDeProfesional aux = null;
-            do {
-                System.out.println("Ingrese la profesion que posee este profesional:");
-                System.out.println("1. Lashista");
-                System.out.println("2. Manicura");
-                System.out.println("3. Depiladora");
-                opcion = scanner.nextInt();
-                if (opcion == 1) {
-                    aux = TipoDeProfesional.LASHISTA;
-                } else if (opcion == 2) {
-                    aux = TipoDeProfesional.MANICURA;
-                } else if (opcion == 3) {
-                    aux = TipoDeProfesional.DEPILADORA;
-                } else {
-                    System.out.println("No haz ingresado una opcion correcta, volvamos a intentar.");
-                }
-            } while (opcion != 1 && opcion != 2 && opcion != 3);
-            return aux;
-        }
-    */
 }
 
 
