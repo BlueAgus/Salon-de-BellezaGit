@@ -25,6 +25,7 @@ public class Factura implements CrearID {
     GestorServicio gestorServicio;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+
     public Factura(TipoDePago tipoPago, Cliente cliente, GestorServicio gestorServicio) {
 
         this.codigoFactura = this.generarIDEunico(); // aca usamos el metodo de la interfaz directamente
@@ -116,7 +117,6 @@ public class Factura implements CrearID {
         return uuid.substring(0, 15);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -124,7 +124,6 @@ public class Factura implements CrearID {
         Factura factura = (Factura) o;
         return Objects.equals(codigoFactura, factura.codigoFactura);
     }
-
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public String getCodigoFactura() {
@@ -188,7 +187,8 @@ public class Factura implements CrearID {
     }
 
 
-    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    ////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+
     @Override
     public String toString() {
         return
@@ -197,12 +197,10 @@ public class Factura implements CrearID {
                         "| Precio final : " + precioFinal + "\n" +
                         "| Descuento aplicado : " + descuento + "\n" + //deberia agregar un atributo descuento y calcular el descuento??
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" + // perdon meli lo saque sin querer y lo volvi a poner jeje
+                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
     }
 }
-// esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
-    //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
 

@@ -10,12 +10,8 @@ import java.util.Scanner;
 public class MenuRecepcionista {
 
     private MenuAdministrador menuAdministrador;
-    private GestorPersona gestorPersona;
-    private GestorTurno gestorTurno;
-    private GestorFactura gestorFactura;
-    private GestorServicio gestorServicio;
 
-    public void MenuRecepcionista() {
+    public void MenuRecepcionista(GestorPersona gestorPersona,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;

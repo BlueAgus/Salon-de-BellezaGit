@@ -12,12 +12,8 @@ import java.util.Scanner;
 
 public class MenuAdministrador {
 
-    private GestorPersona gestorPersona;
-    private GestorServicio gestorServicio;
-    private GestorTurno gestorTurno;
-    private GestorFactura gestorFactura;
 
-    public void mostrarMenu() {
+    public void mostrarMenu(GestorPersona gestorPersona,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -503,7 +499,6 @@ public class MenuAdministrador {
 
                     break;
                 case 6:
-
                     String dni = gestorPersona.pedirDNIsinVerificacion();
                     try {
                         gestorFactura.historialFacturasPorCliente(dni);
