@@ -89,11 +89,24 @@ public class GestorTurno {
         return false;
     }
 
-    public Turno buscarTurno(String dniCliente, LocalDate fecha, LocalTime horario) {
+    public Turno buscarTurnoXclienteFechaHorario(String dniCliente, LocalDate fecha, LocalTime horario) {
 
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
                 if (t.getDni_cliente().equals(dniCliente) && t.getFecha().equals(fecha) && t.getHorario().equals(horario)) {
+                    return t;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Turno buscarTurno(String codTurno) {
+
+        for (List<Turno> e : listaTurnos.getMapa().values()) {
+            for (Turno t : e) {
+                if (t.getCod_turno().equals(codTurno)) {
                     return t;
                 }
             }
@@ -413,7 +426,7 @@ public class GestorTurno {
         while (!valido) {
             /// agregar filtros
             System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
-
+ n
             ///lo guarda en un string para verificar que no haya escrito salir
             String fechaIngresada = scanner.nextLine();
 

@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class Turno {
 
+    private String cod_turno;
     private LocalDate fecha;         // Fecha del turno
     private LocalTime horario;       // Hora del turno
     private String codigo_servicio;       // El servicio a realizar
@@ -21,6 +22,7 @@ public class Turno {
     // Constructor de la clase Turno
 
     public Turno(String cod_turno, LocalDate fecha, LocalTime horario, String codigo_servicio, String dni_profesional, String dni_cliente) {
+        this.cod_turno = cod_turno;
         this.fecha = fecha;
         this.horario = horario;
         this.codigo_servicio = codigo_servicio;
@@ -46,8 +48,8 @@ public class Turno {
         return Objects.equals(fecha, turno.fecha) && Objects.equals(horario, turno.horario) && Objects.equals(codigo_servicio, turno.codigo_servicio) && Objects.equals(dni_profesional, turno.dni_profesional) && Objects.equals(dni_cliente, turno.dni_cliente);
     }
 
-    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public LocalDate getFecha() {
         return fecha;
     }
@@ -88,9 +90,15 @@ public class Turno {
         this.dni_cliente = dni_cliente;
     }
 
+    public String getCod_turno() {
+        return cod_turno;
+    }
+
+    public void setCod_turno(String cod_turno) {
+        this.cod_turno = cod_turno;
+    }
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
-
     public String toString(GestorServicio gestorServicio, GestorPersona gestorCliente, GestorPersona gestorProfesional) {
         try {
             return "\n        TURNO: " +
@@ -107,6 +115,7 @@ public class Turno {
     }    catch (Exception e) {
             return "Error inesperado al generar los detalles del turno.";
     }
+
     }
 
 
