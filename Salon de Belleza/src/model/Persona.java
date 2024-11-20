@@ -10,7 +10,7 @@ public abstract class Persona {
     protected String nombre;
     protected String apellido;
     protected String dni;
-    protected String genero; // esto si no se hace con un enum
+    protected String genero;
     protected String telefono;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -55,7 +55,6 @@ public abstract class Persona {
     public String getTelefono() { return telefono; }
 
     public void setTelefono(String telefono) {  this.telefono = telefono; }
-
 
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////

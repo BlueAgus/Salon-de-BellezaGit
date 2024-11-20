@@ -36,7 +36,6 @@ public abstract class Servicio implements CrearID {
         return String.valueOf(numeroUnico);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,8 +43,6 @@ public abstract class Servicio implements CrearID {
         Servicio servicio = (Servicio) o;
         return Objects.equals(codigo_servicio, servicio.codigo_servicio);
     }
-
-
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public String getCodigo_servicio() {return codigo_servicio;}
