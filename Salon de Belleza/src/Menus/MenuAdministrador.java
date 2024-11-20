@@ -253,7 +253,7 @@ public class MenuAdministrador {
             System.out.println("2.Eliminar");
             System.out.println("3.Buscar por su dni ");
             System.out.println("4.Modificar datos ");
-            System.out.println("5.Mostrar todos lo clientes del salon ");
+            System.out.println("5.Mostrar todos lo clientes del salon");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -327,6 +327,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
+
                     gestorServicio.agregarServicio();
 
                     break;
@@ -487,8 +488,8 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    gestorFactura.agregarFactura()
-                    break;
+                    gestorFactura.crearFactura();
+                break;
                 case 2:
 
                     break;

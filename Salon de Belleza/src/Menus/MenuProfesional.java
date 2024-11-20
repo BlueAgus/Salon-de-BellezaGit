@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class MenuProfesional {
 
-
     public void MenuProfesional() {
 
         Scanner scanner = new Scanner(System.in);

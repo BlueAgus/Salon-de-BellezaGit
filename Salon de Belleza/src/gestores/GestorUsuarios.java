@@ -16,6 +16,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class GestorUsuarios {
+
     private HashMap<String, String> usuarios = new HashMap<>();
     Scanner scanner = new Scanner(System.in);
     public Set<String> getClaves() {
@@ -34,6 +35,7 @@ public class GestorUsuarios {
         return usuarios.get(key);
     }
 ///////////////////////////////////////////////METODOS COOL
+
     public void agregarUsuarioDeCero(String dni,String nombreArchivo){
         if(verificarUsuario(dni,nombreArchivo)){//se fija si existe ese usuario en el archivo.
             System.out.println("Ya existe ese usuario!. ");
@@ -41,7 +43,6 @@ public class GestorUsuarios {
             HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
             aux.put(dni,pedirContraseña());//guarda y pide la contra
             guardarEnArchivoUsuarios(nombreArchivo);//guarda en archi
-
         }
     }
 

@@ -28,7 +28,6 @@ public class GestorPersona {
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
-
     //pasamos 1 si es cliente,
     // 2 si es profesional,
     // 3 si es recepcionista,
@@ -549,6 +548,7 @@ public class GestorPersona {
             System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
         }
     }
+    /*
     public Gson configurarGsonConHerencia() {
         RuntimeTypeAdapterFactory<Persona> adapter =
                 RuntimeTypeAdapterFactory.of(Persona.class, "tipo") // Campo "tipo" identifica la subclase
@@ -558,7 +558,7 @@ public class GestorPersona {
 
         return new GsonBuilder().registerTypeAdapterFactory(adapter).create();
     }
-
+*/
     /*
         public TipoDeProfesional pedirTipoProfesional() {
             int opcion = 0;
