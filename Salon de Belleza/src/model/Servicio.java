@@ -5,6 +5,7 @@ import enumeraciones.TipoServicio;
 import interfaces.CrearID;
 
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +35,17 @@ public abstract class Servicio implements CrearID {
         long numeroUnico = (long) (Math.random() * 100L);  // Genera un número entre 0 y 100
         return String.valueOf(numeroUnico);
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Servicio servicio = (Servicio) o;
+        return Objects.equals(codigo_servicio, servicio.codigo_servicio);
+    }
+
+
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public String getCodigo_servicio() {return codigo_servicio;}

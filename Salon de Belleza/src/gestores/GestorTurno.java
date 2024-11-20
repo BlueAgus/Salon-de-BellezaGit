@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class GestorTurno {
 
@@ -436,7 +437,14 @@ public class GestorTurno {
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
-    public MapaGenerico<LocalDate, List<Turno>> getListaTurnos() {
-        return listaTurnos;
+   // aguss, lo hice para probar
+    public List<Turno> obtenerTurnosPorCliente(String dni) {
+        List<Turno> turnosProclien = (List<Turno>) listaTurnos.getMapa();
+        return turnosProclien.stream()
+                .filter(turno -> turno.getDni_cliente().equals(dni) &&
+                        !turno.getFecha().isBefore(LocalDate.now()))
+                .collect(Collectors.toList());
     }
+
+
 }

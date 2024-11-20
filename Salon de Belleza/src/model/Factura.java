@@ -16,26 +16,25 @@ public class Factura implements CrearID {
 
     private String codigoFactura;
     private TipoDePago tipoPago;
-    private double precioFinal;
+    private double precioFinal= 0.0;
     private Cliente cliente;
     private List<Turno> turnosPorCliente;
+    private double descuento;
     private LocalDate fecha; // fecha y hora de la creacion de la factura
     private LocalTime hora;
-
-    private GestorServicio gestorServicio;
-    private GestorPersona gestorPersona;
+    GestorServicio gestorServicio;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Factura(TipoDePago tipoPago, Cliente cliente, GestorPersona gestorPersona, GestorServicio gestorServicio) {
+    public Factura(TipoDePago tipoPago, Cliente cliente, GestorServicio gestorServicio) {
 
         this.codigoFactura = this.generarIDEunico(); // aca usamos el metodo de la interfaz directamente
         this.tipoPago = tipoPago;
         this.precioFinal = 0.0;
+        this.descuento = 0.0;
         this.turnosPorCliente = new ArrayList<>();
         this.cliente = cliente;
         this.fecha = LocalDate.now();
         this.hora = LocalTime.now();
-        this.gestorPersona = gestorPersona;
         this.gestorServicio = gestorServicio;
     }
 
@@ -91,7 +90,6 @@ public class Factura implements CrearID {
             throw new TurnoExistenteException("El turno ya está ingresado en la factura.");
         }
         turnosPorCliente.add(turno);
-        System.out.println("El turno se agregó correctamente a la factura.");
     }
 
     public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException {
@@ -118,14 +116,14 @@ public class Factura implements CrearID {
             return uuid.substring(0, 15 );
         }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Factura factura = (Factura) o;
-        return Objects.equals(fecha, factura.fecha) && Objects.equals(hora, factura.hora);
+        return Objects.equals(codigoFactura, factura.codigoFactura);
     }
-
 
 
 
@@ -182,6 +180,15 @@ public class Factura implements CrearID {
         this.cliente = cliente;
     }
 
+    public double getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
+
+
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     @Override
@@ -190,6 +197,7 @@ public class Factura implements CrearID {
                 "| Detalles Factura: " +
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
+                        "| Descuento aplicado : " + descuento + "\n" + //deberia agregar un atributo descuento y calcular el descuento??
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
                         "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
                         "| Fecha : " + fecha + "\n" +

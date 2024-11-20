@@ -2,12 +2,13 @@ package gestores;
 //Capaz la logica de poner precio directamente en los enum no esta tan buena, entonces es mejor manejarlo de aca
 
 import enumeraciones.*;
+import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
+import model.Factura;
 import model.Manicura;
 import model.Pestanias;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -124,6 +125,29 @@ public final class GestorPrecios {
             throw new IllegalArgumentException("No se encontraron precios para la clase: " + servicio.getSimpleName());
         }
     }
+
+    public static void aplicarDescuento(String codigoFactura, double porcentajeDescuento, List<Factura> facturas) throws CodigoNoEncontradoException {
+        if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+            throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100.");
+        }
+
+       // buscar factura con el codigo
+        Factura factura = facturas.stream()
+                .filter(f -> f.getCodigoFactura().equals(codigoFactura))
+                .findFirst()
+                .orElseThrow(() -> new CodigoNoEncontradoException("Factura con código " + codigoFactura + " no encontrada."));
+
+        // Calcular y aplicar el descuento
+        double precioOriginal = factura.getPrecioFinal();
+        double descuento = precioOriginal * (porcentajeDescuento / 100);
+        double nuevoPrecioFinal = precioOriginal - descuento;
+
+        // Actualizar el precio final en la factura
+        factura.setPrecioFinal(nuevoPrecioFinal);
+
+        System.out.println("Descuento del " + porcentajeDescuento + "% aplicado. Nuevo precio final: " + nuevoPrecioFinal);
+    }
+
 
     ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
 /*
