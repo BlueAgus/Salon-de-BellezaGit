@@ -99,8 +99,8 @@ public class Factura implements CrearID {
         }
         // opcion 1: no permitimos que se elimine un turno en el caso de que haya solo uno.
         if (turnosPorCliente.size() == 1) {
-            throw new FacturaSinTurnosException("La factura debe contener al menos un turno");
-        }
+            throw new FacturaSinTurnosException("La factura debe contener al menos un turno, en caso contrario eliminar la factura completa");
+        } //
 
         turnosPorCliente.remove(turno);
         System.out.println("El turno fue quitado de la factura final");
