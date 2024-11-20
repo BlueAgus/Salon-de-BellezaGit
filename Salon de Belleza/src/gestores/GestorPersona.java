@@ -168,7 +168,7 @@ public class GestorPersona {
         boolean continuarModificando = true;
 
         if (persona instanceof Profesional) {
-            modificarProfesional((Profesional) persona);
+            modificarProfesional(persona,GestorServicio gestorServicio);
         } else {
             while (continuarModificando) {
 

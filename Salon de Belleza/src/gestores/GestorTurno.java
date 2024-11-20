@@ -1,6 +1,9 @@
 package gestores;
+
 import excepciones.DNInoEncontradoException;
-import model.*;
+import model.Persona;
+import model.Profesional;
+import model.Turno;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,14 +13,14 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class GestorTurnos {
+public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static Scanner scanner = new Scanner(System.in);
 
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public GestorTurnos() {
+    public GestorTurno() {
         this.listaTurnos = new MapaGenerico<>();
     }
 
@@ -160,28 +163,26 @@ public class GestorTurnos {
             }
         }
 
-        switch (opc){
+        switch (opc) {
             case 1:
-                Turno aux= elegirFechaYhorario(t.getCodigo_servicio(), gestorServicio);
+                Turno aux = elegirFechaYhorario(t.getCodigo_servicio(), gestorServicio);
                 t.setFecha(aux.getFecha());
                 t.setHorario(aux.getHorario());
                 break;
 
             case 2:
-                String dniProfesional=pedirDNIprofesionalXservicio(t.getCodigo_servicio(), t.getHorario(), t.getFecha(), gestorProfesional);
+                String dniProfesional = pedirDNIprofesionalXservicio(t.getCodigo_servicio(), t.getHorario(), t.getFecha(), gestorProfesional);
 
-                if(dniProfesional==null)
-                {
+                if (dniProfesional == null) {
                     break;
                 }
 
                 t.setDni_profesional(dniProfesional);
                 break;
             case 3:
-                String dniCliente= pedirDNIcliente(gestorCliente);
+                String dniCliente = pedirDNIcliente(gestorCliente);
 
-                if(dniCliente==null)
-                {
+                if (dniCliente == null) {
                     break;
                 }
 
@@ -567,4 +568,5 @@ public class GestorTurnos {
     public MapaGenerico<LocalDate, List<Turno>> getListaTurnos() {
         return listaTurnos;
     }
+
 }
