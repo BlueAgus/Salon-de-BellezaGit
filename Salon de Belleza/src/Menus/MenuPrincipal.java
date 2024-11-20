@@ -1,40 +1,104 @@
 package Menus;
 
+import gestores.GestorPersona;
+import gestores.GestorUsuarios;
+
 import java.util.Scanner;
-
-public class MenuPrincipal {
-
-    public void menuPrincipal() {
+ public class MenuPrincipal {
         Scanner scanner = new Scanner(System.in);
-        int opcion;
-        do {
-            System.out.println("Bienvenido a (nombre de la estetica)");
-            System.out.println("¿Quién está ingresando?");
-            System.out.println("--------------------");
-            System.out.println("1. Administrador ");
-            System.out.println("2. Recepcionista");
-            System.out.println("3. Profesional");
-            System.out.println("0. Para salir ");
-            System.out.println("--------------------");
-            System.out.print("Ingrese una opción: ");
-            opcion = scanner.nextInt();
 
-            switch (opcion) {
-                case 1:
-                    //administrador
-                    break;
-                case 2:
-                    //recepcionista
-                    break;
-                case 3:
-                    //profesional
-                    break;
-                case 0:
-                    System.out.println("Saliendo...");
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
+        public void menuPrincipal() {
+            GestorPersona profesionales = new GestorPersona();
+            GestorPersona Administradores = new GestorPersona();
+            GestorPersona Recepcionistas = new GestorPersona();
+
+            GestorUsuarios usuarios = new GestorUsuarios();
+            String archivoUsuarioProfesionales = "usuariosprofesionales.json";
+            String archivoUsuarioAdministradores = "usuariosadministradores.json";
+            String archivoUsuarioRecepcionista = "usuariosrecepcionistas.json";
+
+
+            int opcion;
+            do {
+
+                System.out.println("Bienvenido a Queens!\n");
+                System.out.println("¿Quién está ingresando?");
+                System.out.println("--------------------");
+                System.out.println("1. Administrador ");
+                System.out.println("2. Recepcionista");
+                System.out.println("3. Profesional");
+                System.out.println("0. Para salir ");
+                System.out.println("--------------------");
+                System.out.print("Ingrese una opción: ");
+                opcion = scanner.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        //administrador
+                        System.out.println("Bienvenido administrador ");
+                        if(iniciarSesion(usuarios,archivoUsuarioAdministradores))//si es true tiene su dni registrado
+                        {
+                            MenuAdministrador menuAdministrador=new MenuAdministrador();
+                            if(usuarios.primerIngreso()){
+                                //crea un usuario.
+                            }
+                        }
+                        break;
+                    case 2:
+                        //recepcionista
+                        System.out.println("Bienvenido Recepcionista ");
+                        iniciarSesion(usuarios,archivoUsuarioRecepcionista);
+
+                        break;
+                    case 3:
+                        //profesional
+                        System.out.println("Bienvenido profesional ");
+                        iniciarSesion(usuarios,archivoUsuarioProfesionales);
+                        break;
+                    case 0:
+                        System.out.println("Saliendo...");
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } while (opcion != 0);
+        }
+
+        public boolean pedirDatos(GestorUsuarios usuarios, String nombrearchivo) {
+            System.out.println("Ingresa tu dni");
+            String dni = scanner.nextLine();
+            String contra;
+            String contrapedida;
+            boolean valido = false;
+            boolean tienecuenta=false;
+            if (usuarios.verificarUsuario(dni, nombrearchivo)) {
+                do {
+                    contra = usuarios.DevolverContrasenia(dni);
+                    System.out.println("Ingresa tu contraseña:");
+                    contrapedida = scanner.nextLine();
+
+                    if (contrapedida.equals(contra)) {
+                        valido = true;
+                        return tienecuenta; //
+                    } else {
+                        System.out.println("Contraseña incorrecta. Inténtalo nuevamente.");
+                    }
+                } while (!valido);
+
+            } else {
+                return tienecuenta;
             }
-        } while (opcion != 0);
+        }
+
+        public boolean iniciarSesion(GestorUsuarios usuarios, String nombrearchivo) {
+            if (pedirDatos(usuarios, nombrearchivo)) {
+                System.out.println("Entrando..");//si es true anda todo ok.
+                return true;
+            } else {
+                System.out.println("No tienes cuenta aun...");
+                System.out.println("Verifica que el administrador te haya cargado correctamente..");
+                return false;
+            }
+        }
     }
 }
