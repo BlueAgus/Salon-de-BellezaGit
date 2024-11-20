@@ -83,6 +83,17 @@ public class GestorUsuarios {
         return cambiada;
     }
 
+    public boolean primerIngreso(){
+        HashMap<String,String> aux=LeerArchivoUsuarios("usuariosadministradores.json");
+        for(String valor : aux.values()){
+            if(valor.equals("zapallo"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean eliminarUsuario(String dni, String nombreArchivo){
         if(verificarUsuario(dni,nombreArchivo)==true){
           HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
