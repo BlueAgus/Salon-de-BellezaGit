@@ -1,9 +1,19 @@
 package Menus;
 
+import gestores.GestorFactura;
+import gestores.GestorPersona;
+import gestores.GestorServicio;
+import gestores.GestorTurno;
+
 import java.util.Scanner;
 
 public class MenuRecepcionista {
 
+    private MenuAdministrador menuAdministrador;
+    private GestorPersona gestorPersona;
+    private GestorTurno gestorTurno;
+    private GestorFactura gestorFactura;
+    private GestorServicio gestorServicio;
 
     public void MenuRecepcionista() {
 
@@ -12,11 +22,12 @@ public class MenuRecepcionista {
 
         do {
             System.out.println("Bienvenido al menu de Recepcionista");
-            System.out.println("1.Funciones para agregar");
-            System.out.println("2. ");
-            System.out.println("3. ");
-            System.out.println("4. ");
-            System.out.println("5. ");
+            System.out.println("1.Gestion de clientes");
+            System.out.println("2.Gestion de turnos");
+            System.out.println("3.Gestion de facturas ");
+            System.out.println("4.Ver servicios ");
+            System.out.println("4.Profesionales en el salon");
+            System.out.println("5.Cambiar la disponibilidad de un servicio ");
             System.out.println("6. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
@@ -28,19 +39,19 @@ public class MenuRecepcionista {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-
+                    menuAdministrador.subMenuClientes(gestorPersona);
                     break;
                 case 2:
-
+                    menuAdministrador.menuTurnos(gestorTurno);
                     break;
                 case 3:
-
+                    menuAdministrador.menuFacturas(gestorFactura,gestorPersona);
                     break;
                 case 4:
-
+                    gestorServicio.mostrarServicios();
                     break;
                 case 5:
-
+                    mostrarProfesionales(gestorPersona);
                     break;
                 case 6:
 
@@ -51,20 +62,15 @@ public class MenuRecepcionista {
         } while (opcion != 0);
     }
 
-    public void mostrarMenuRecepcionista() {
+    public void mostrarProfesionales(GestorPersona gestorPersona) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("1.Agregar un Profesional ");
-            System.out.println("2.Agregar un Servicio");
-            System.out.println("3.Agregar un Cliente ");
-            System.out.println("4.Agregar un Turno");
+            System.out.println("1.Todos los profesionales del salon ");
+            System.out.println("2.Profesionales segun servicio ");
             System.out.println("3. ");
-            System.out.println("4. ");
-            System.out.println("5. ");
-            System.out.println("6. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -83,18 +89,12 @@ public class MenuRecepcionista {
                 case 3:
 
                     break;
-                case 4:
 
-                    break;
-                case 5:
-
-                    break;
-                case 6:
-
-                    break;
                 default:
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
+
     }
+
 }

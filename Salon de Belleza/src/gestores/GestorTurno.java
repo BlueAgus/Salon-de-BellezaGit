@@ -75,6 +75,7 @@ public class GestorTurno {
         return true;
     }
 
+    ///mirar
     public boolean eliminarTurno(String codTurno) {
         for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
             for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -88,6 +89,7 @@ public class GestorTurno {
         return false;
     }
 
+    ///mirar
     public Turno buscarTurnoPorCodigo(String codTurno) throws CodigoNoEncontradoException {
         for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
             for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -123,6 +125,7 @@ public class GestorTurno {
       } catch (CodigoNoEncontradoException e) {
          e.getMessage();
       }
+      return false;
     }
 
     /////////////////////////////////////////////MANEJO DE SERVICIOS!!!!////////////////////////////////////////
@@ -377,12 +380,16 @@ public class GestorTurno {
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
     public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorPersona gestorPersona) {
-        List<Profesional> profesionales = gestorPersona.LeerArchivoProfesionales("profesionales.json");
 
-        if (profesionales == null || profesionales.isEmpty()) {
+        List<Persona> personas = gestorPersona.LeerArchivo("profesionales.json");
+
+        if (personas == null || personas.isEmpty()) {
             System.out.println("No hay profesionales disponibles.");
             return null;
         }
+
+            List<Profesional> profesionales = personas.stream().filter(persona -> persona instanceof Profesional).map(persona -> (Profesional) persona).toList();
+
 
         int opc = 0;
         List<Profesional> disponibles = new ArrayList<>();

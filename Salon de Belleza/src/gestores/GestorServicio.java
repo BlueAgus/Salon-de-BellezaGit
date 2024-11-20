@@ -1,15 +1,20 @@
 package gestores;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import enumeraciones.*;
 import excepciones.CodigoNoEncontradoException;
-import model.Depilacion;
-import model.Manicura;
-import model.Pestanias;
-import model.Servicio;
+import model.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalTime;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class GestorServicio {
@@ -338,8 +343,45 @@ public class GestorServicio {
     }
 
     public void mostrarServicios() {
-        almacenServicios.mostrar();///
+        almacenServicios.mostrar();
     }
+
+
+    /////////////ARCHIVOS.
+    public void EscribirPersonasEnArchivo(String nombreArchivo, List<Servicio> servicios) {
+        try(FileWriter fileWriter = new FileWriter(nombreArchivo)){
+            Gson gson = new Gson();
+            String json = gson.toJson(servicios);
+            fileWriter.write(json);
+            // System.out.println("Archivo escrito correctamente.");
+
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public List<Servicio> LeerArchivo(String nombreArchivo) {
+        try (FileReader fileReader = new FileReader(nombreArchivo)){
+            Gson gson = new Gson();
+            Type ListaServicios = new TypeToken<List<Servicio>>() {}.getType();
+            List<Servicio> servicios = gson.fromJson(fileReader, ListaServicios);
+
+            return servicios;
+
+        } catch (JsonSyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 
 }
 
