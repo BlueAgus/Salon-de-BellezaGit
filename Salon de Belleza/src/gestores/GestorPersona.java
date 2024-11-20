@@ -1,10 +1,7 @@
 package gestores;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import enumeraciones.TipoDeProfesional;
-import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
 import excepciones.GeneroInvalidoException;
@@ -12,7 +9,6 @@ import excepciones.TelefonoInvalidoException;
 import model.*;
 
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,7 +28,7 @@ public class GestorPersona {
     // 2 si es profesional,
     // 3 si es recepcionista,
     // 4 si es administrador
-    public boolean agregarPersona(int tipoPersona, GestorServicio servicios) {
+    public boolean agregarPersona(int tipoPersona, GestorServicio gestorServicio) {
         boolean cargado = false;
 
         String dni = "";
@@ -77,7 +73,7 @@ public class GestorPersona {
                     System.out.printf("\nERROR AL AGREGAR CLIENTE\n");
                 }
                 System.out.println(cliente);
-                verificarCarga(cliente);
+                verificarCarga(cliente, gestorServicio);
                 List<Cliente> clientesAux=(Cliente) LeerArchivo("clientes.json");
                 clientesAux.add(cliente);
                 EscribirPersonasEnArchivo("clientes.json",clientesAux);
@@ -87,11 +83,11 @@ public class GestorPersona {
                 Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
 
                 GestorTurno aux = new GestorTurno();
-                String e = aux.pedirCodServicio(servicios);
+                String e = aux.pedirCodServicio(gestorServicio);
                 profesional.agregarProfesion(e);//minimo una profesion.
 
                 do {
-                    System.out.println("Deseas agregar otra profesion?");
+
                     System.out.println("Deseas agregar otra profesion?");
                     System.out.println("1. Si deseo.");
                     System.out.println("2. No deseo.");
@@ -99,7 +95,7 @@ public class GestorPersona {
                     scanner.nextLine();
 
                     if (opcion == 1) {
-                        e = aux.pedirCodServicio(servicios);
+                        e = aux.pedirCodServicio(gestorServicio);
                         profesional.agregarProfesion(e);
                     } else if (opcion != 2) {
                         System.out.println("Ingresa una opcion valida por favor.");
@@ -113,7 +109,7 @@ public class GestorPersona {
                     System.out.printf("\nERROR AL AGREGAR PROFESIONAL\n");
                 }
                 System.out.println(profesional);
-                verificarCarga(profesional);
+                verificarCarga(profesional, gestorServicio);
                 ManejoArchivos a = new ManejoArchivos();
                 a.EscribirUnProfesional(profesional);
                 break;
@@ -126,7 +122,7 @@ public class GestorPersona {
                     System.out.printf("\nERROR AL AGREGAR RECEPCIONISTA\n");
                 }
                 System.out.println(recepcionista);
-                verificarCarga(recepcionista);
+                verificarCarga(recepcionista, gestorServicio);
                 break;
             case 4:
                 Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono);
@@ -138,7 +134,7 @@ public class GestorPersona {
                 }
                 almacenPersonas.agregar(administrador);
                 System.out.println(administrador);
-                verificarCarga(administrador);
+                verificarCarga(administrador, gestorServicio);
                 break;
         }
         return cargado;
@@ -163,12 +159,12 @@ public class GestorPersona {
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
 
-    public void modificarPersona(Persona persona) {
+    public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         boolean continuarModificando = true;
 
         if (persona instanceof Profesional) {
-            modificarProfesional(persona,GestorServicio gestorServicio);
+            modificarProfesional((Profesional) persona,gestorServicio);
         } else {
             while (continuarModificando) {
 
@@ -291,11 +287,12 @@ public class GestorPersona {
             System.out.println(profesional.toString());
             return profesional;
         }
+        return null;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
-    public void verificarCarga(Persona persona) {
+    public void verificarCarga(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         do {
             System.out.println("¿Deseas modificar algo de la persona?");
@@ -307,7 +304,7 @@ public class GestorPersona {
 
             switch (opcion) {
                 case 1:
-                    modificarPersona(persona);
+                    modificarPersona(persona, gestorServicio);
                     break;
                 case 2:
                     System.out.println("....");
@@ -379,7 +376,6 @@ public class GestorPersona {
         return nombreFormateado.toString().trim();
     }
 
-    /////////////apellido
     public String pedirApellido() {
         String apellido = "";
         boolean apellidoValido = false;
