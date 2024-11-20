@@ -1,8 +1,15 @@
 package gestores;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import excepciones.DNInoEncontradoException;
 import model.Persona;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -27,27 +34,31 @@ public class GestorUsuarios {
         return usuarios.get(key);
     }
 ///////////////////////////////////////////////METODOS COOL
-    public void agregarUsuarioDeCero(String dni){
-        if(verificarUsuario(dni)){
-            System.out.println("Ya existe ese dni. ");
+    public void agregarUsuarioDeCero(String dni,String nombreArchivo){
+        if(verificarUsuario(dni,nombreArchivo)){//se fija si existe ese usuario en el archivo.
+            System.out.println("Ya existe ese usuario!. ");
         }else{
-            usuarios.put(dni,pedirContraseña());
+            HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
+            aux.put(dni,pedirContraseña());//guarda y pide la contra
+            guardarEnArchivoUsuarios(nombreArchivo);//guarda en archi
+
         }
     }
 
-    public void agregarUsuario(String dni,String contrasenia) {
-        if (verificarUsuario(dni)) {
-            System.out.println("Ya existe ese dni. ");
+    public void agregarUsuario(String dni,String nombreArchivo,String contrasenia) {
+        if (verificarUsuario(dni,nombreArchivo)) {
+            System.out.println("Ya existe ese usuario... ");
         } else {
             usuarios.put(dni, contrasenia);
         }
+        guardarEnArchivoUsuarios(nombreArchivo);//pisa con el nuevo agregado
     }
     //cambia a un usario que ya existe
     public boolean cambiarContraseña(String dni, String nombreArchivo) {
         boolean cambiada = false;
         GestorUsuarios UsuariosAux = new GestorUsuarios();
 
-        UsuariosAux.LeerArchivo(nombreArchivo);
+        HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
 
         if (UsuariosAux.getClaves().isEmpty()) {
             System.out.println("No hay usuarios disponibles. Agrega uno.");
@@ -57,14 +68,13 @@ public class GestorUsuarios {
         for (String clave : UsuariosAux.getClaves()) {
             if (clave.equals(dni)) {
                 String nuevaContraseña = pedirContraseñaNueva(clave);
-                UsuariosAux.agregarUsuario(clave, nuevaContraseña);
+                UsuariosAux.agregarUsuario(clave,nombreArchivo, nuevaContraseña);
                 cambiada = true;
                 break;
             }
         }
-
         if (cambiada) {
-            UsuariosAux.EscribirArchivo(nombreArchivo);
+            UsuariosAux.guardarEnArchivoUsuarios(nombreArchivo);
             System.out.println("Contraseña cambiada con éxito.");
         } else {
             System.out.println("No se encontró el usuario con el DNI especificado.");
@@ -72,6 +82,17 @@ public class GestorUsuarios {
         return cambiada;
     }
 
+    public boolean eliminarUsuario(String dni, String nombreArchivo){
+        if(verificarUsuario(dni,nombreArchivo)==true){
+          HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
+          aux.remove(dni);
+          guardarEnArchivoUsuarios(nombreArchivo);
+          return true;
+        }else{
+            System.out.println("Ese usuario no existe ! ");
+            return false;
+        }
+    }
 
     public String pedirContraseñaNueva(String contraseniaVieja) {
         String nuevaContrasenia = "";
@@ -86,7 +107,7 @@ public class GestorUsuarios {
                 System.out.println("Has ingresado la misma contraseña. Intenta de nuevo.");
             } else if (nuevaContrasenia.isEmpty()) {
                 System.out.println("La contraseña no puede estar vacía. Intenta de nuevo.");
-            } else if (!nuevaContrasenia.matches(".*\\d.*")) {
+            } else if (!nuevaContrasenia.matches(".*\\d.*")) {//tiene al menos un num?
                 System.out.println("La contraseña debe contener al menos un número. Intenta de nuevo.");
             } else if (nuevaContrasenia.length() < 6 || nuevaContrasenia.length() > 12) {
                 System.out.println("La contraseña debe tener entre 6 y 12 caracteres. Intenta de nuevo.");
@@ -131,19 +152,42 @@ public class GestorUsuarios {
         return contraseña;
     }
 
-    //para cambiar la contra hay que saber si ya esta en el gestor
-    public boolean verificarUsuario( String dni) {
+    //para cambiar la contra hay que saber si ya esta en el archi primero
+    public boolean verificarUsuario( String dni,String nombreArchivo) {
+        HashMap<String,String> aux=LeerArchivoUsuarios(nombreArchivo);
         // Verificar si no hay usuarios
-        if (usuarios == null || usuarios.isEmpty()) {
+        if (aux == null || aux.isEmpty()) {
             System.out.println("No hay usuarios disponibles.. ¡Agrega uno!");
             return false;
         }
-        for (String clave : this.getClaves()) {
+        for (String clave : aux.keySet()) {
             if (clave.equals(dni)) {
-                return true;
+                return true;//eso quiere decir que ya existe este usuario, y tiee su contrasenia
             }
         }
         return false;
+    }
+
+    public void guardarEnArchivoUsuarios(String nombreArchivo) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            gson.toJson(usuarios, writer);
+            System.out.println("Usuarios guardados en el archivo JSON: " + nombreArchivo);
+        } catch (IOException e) {
+            System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
+        }
+    }
+
+    public HashMap<String,String> LeerArchivoUsuarios(String nombreArchivo) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(nombreArchivo)) {
+            Type tipoMapa = new TypeToken<HashMap<String, String>>() {}.getType();
+            usuarios = gson.fromJson(reader, tipoMapa);
+            return usuarios;
+        } catch (IOException e) {
+            System.err.println("Error al cargar el archivo JSON: " + e.getMessage());
+            return new HashMap<>();//devuelve vacio !!!
+        }
     }
 }
 
