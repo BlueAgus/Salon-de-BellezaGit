@@ -343,7 +343,7 @@ public class GestorServicio {
     }
 
     public void mostrarServicios() {
-        almacenServicios.mostrar();///
+        almacenServicios.mostrar();
     }
 
 

@@ -74,6 +74,7 @@ public class GestorTurno {
         return true;
     }
 
+    ///mirar
     public boolean eliminarTurno(String codTurno) {
         for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
             for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -87,6 +88,7 @@ public class GestorTurno {
         return false;
     }
 
+    ///mirar
     public Turno buscarTurnoPorCodigo(String codTurno) throws CodigoNoEncontradoException {
         for (LocalDate fecha : listaTurnos.getMapa().keySet()) {
             for (List<Turno> e : listaTurnos.getMapa().values()) {

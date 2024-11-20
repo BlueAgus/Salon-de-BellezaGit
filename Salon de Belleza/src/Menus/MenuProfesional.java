@@ -11,7 +11,7 @@ public class MenuProfesional {
         int opcion;
 
         do {
-            System.out.println("Bienvenido al menu de Profesoional ");
+            System.out.println("Bienvenido al menu de Profesional ");
             System.out.println("1. ");
             System.out.println("2. ");
             System.out.println("3. ");

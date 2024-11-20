@@ -436,6 +436,30 @@ public class GestorPersona {
         return dni;
     }
 
+    public String pedirDNIsinVerificacion()  {
+        String dni = "";
+        boolean dnivalido = false;
+
+        while (!dnivalido) {
+            System.out.println("Ingrese el DNI: ");
+            dni = scanner.nextLine();
+
+            // no esté vacío
+            if (dni.isEmpty()) {
+                System.out.println("Error: El DNI no puede estar vacío.");
+            }
+            //  contenga números
+            else if (!dni.matches("\\d+")) {
+                System.out.println("Error: El DNI solo puede contener números.");
+            }
+            //  dígitos
+            else if (dni.length() != 8) {
+                System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            }
+        }
+        return dni;
+    }
+
     public String pedirGenero() throws GeneroInvalidoException {
 
         String genero;

@@ -66,6 +66,7 @@ public class GestorFactura {
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
+    ///Para mi seria por rango de fechas o otra funcion
     public List<Factura> verHistorialPorFecha(LocalDate fecha) {
 
         if (fecha == null) {
@@ -83,16 +84,21 @@ public class GestorFactura {
         return historial.filtrarPorCondicion(condicion);
     }
 
+    ///mirar
     public void guardarEnArchivo() {
 
-        try {
-            FileWriter file = new FileWriter(this.nombreArchivoGson);
+        try (FileWriter writer = new FileWriter(nombreArchivoGson))
+        {
             String json = gson.toJson(getHistorial());
-            file.write(json);
-            file.close();
+            writer.write(json);
+
+            gson.toJson(getHistorial(), writer);
+
             System.out.println("Historial de facturas cargados con exito!");
+
         } catch (IOException e) {
-            e.getMessage();
+
+            System.out.println("Error al guardar el archivo");
         }
     }
 
@@ -158,7 +164,6 @@ public class GestorFactura {
         }
     }
 
-
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public GestorAlmacen<Factura> getHistorial() {
         return historial;
@@ -169,4 +174,5 @@ public class GestorFactura {
     }
 
 }
+
 

@@ -127,9 +127,8 @@ public class Factura implements CrearID {
     }
 
 
-
-
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+
     public String getCodigoFactura() {
         return codigoFactura;
     }
@@ -191,19 +190,9 @@ public class Factura implements CrearID {
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
+                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
     }
-// esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
-    //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
-   private String datosClienteParaFactura(){
-        return "------------------"+
-                "Nombre: "+this.cliente.getNombre()+"\n"+
-                "Apellido: "+this.cliente.getApellido()+"\n"+
-                "DNI: "+this.cliente.getDni()+"\n"+
-                "Telefono: "+this.cliente.getTelefono()+"\n"+
-                "-----------------\n";
-   }
 }
