@@ -27,19 +27,18 @@ public class GestorTurno {
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
     public boolean agregarTurno(GestorPersona gestorCliente, GestorPersona gestorProfesional, GestorServicio gestorServicio) {
+
         String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
 
         if (dniCliente == null) {
             return false;
         }
 
-
         String codServicio = pedirCodServicio(gestorServicio);//METODO pedir cod servicio
 
         if (codServicio == null) {
             return false;
         }
-
 
         Turno turno = elegirFechaYhorario(codServicio, gestorServicio);
 

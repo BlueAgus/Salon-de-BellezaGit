@@ -18,7 +18,6 @@ public class Turno {
     private String dni_cliente;         // Cliente que recibirá el servicio
 
     //////////////////////////////////////////////////////// CONSTRUCTORes ////////////////////////////////////////////////////
-    // Constructor de la clase Turno
 
     public Turno(String cod_turno, LocalDate fecha, LocalTime horario, String codigo_servicio, String dni_profesional, String dni_cliente) {
         this.fecha = fecha;

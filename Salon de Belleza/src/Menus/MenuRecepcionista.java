@@ -11,7 +11,7 @@ public class MenuRecepcionista {
 
     private MenuAdministrador menuAdministrador;
 
-    public void MenuRecepcionista(GestorPersona gestorPersona,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
+    public void MenuRecepcionistas(GestorPersona gestorPersona,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -20,8 +20,8 @@ public class MenuRecepcionista {
             System.out.println("Bienvenido al menu de Recepcionista");
             System.out.println("1.Gestion de clientes");
             System.out.println("2.Gestion de turnos");
-            System.out.println("3.Gestion de facturas ");
-            System.out.println("4.Ver servicios ");
+            System.out.println("3.Gestion de facturas");
+            System.out.println("4.Ver servicios");
             System.out.println("4.Profesionales en el salon");
             System.out.println("5.Cambiar la disponibilidad de un servicio ");
             System.out.println("6. ");
@@ -35,10 +35,10 @@ public class MenuRecepcionista {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    menuAdministrador.subMenuClientes(gestorPersona);
+                    menuAdministrador.subMenuClientes(gestorPersona,gestorServicio);
                     break;
                 case 2:
-                    menuAdministrador.menuTurnos(gestorTurno);
+                    menuAdministrador.menuTurnos(gestorTurno,gestorPersona,gestorServicio);
                     break;
                 case 3:
                     menuAdministrador.menuFacturas(gestorFactura,gestorPersona);

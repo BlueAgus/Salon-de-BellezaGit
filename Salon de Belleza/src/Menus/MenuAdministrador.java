@@ -60,7 +60,7 @@ public class MenuAdministrador {
 
     }
 
-    public void menuUsuarios() {
+    public void menuUsuarios(GestorPersona gestorPersona,GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -82,10 +82,10 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    subMenuRecepcionista(gestorPersona);
+                    subMenuRecepcionista(gestorPersona, gestorServicio);
                     break;
                 case 2:
-                    subMenuProfesionales(gestorPersona);
+                    subMenuProfesionales(gestorPersona,gestorServicio);
                     break;
                 case 3:
                     subMenuClientes(gestorPersona);
@@ -106,7 +106,7 @@ public class MenuAdministrador {
     }
 
 
-    public void subMenuRecepcionista(GestorPersona gestorPersona) {
+    public void subMenuRecepcionista(GestorPersona gestorPersona,GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -171,7 +171,7 @@ public class MenuAdministrador {
     }
 
 
-    public void subMenuProfesionales(GestorPersona gestorPersona) {
+    public void subMenuProfesionales(GestorPersona gestorPersona,GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -238,7 +238,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void subMenuClientes(GestorPersona gestorPersona) {
+    public void subMenuClientes(GestorPersona gestorPersona,GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -348,7 +348,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuTurnos(GestorTurno gestorTurno) {
+    public void menuTurnos(GestorTurno gestorTurno,GestorPersona gestorPersona,GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -376,13 +376,14 @@ public class MenuAdministrador {
                     gestorTurno.agregarTurno(gestorPersona, gestorServicio);
                     break;
                 case 2:
-                    gestorTurno.eliminarTurno();
+                    String dni= gestorPersona.pedirDNIsinVerificacion();
+                    gestorTurno.eliminarTurno(dni);
                     break;
                 case 3:
                     gestorTurno.modificarTurno();
                     break;
                 case 4:
-                    gestorTurno.buscarTurnoPorCodigo();
+                    gestorTurno.buscarTurno();
                     break;
                 case 5:
 

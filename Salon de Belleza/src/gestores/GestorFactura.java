@@ -167,8 +167,9 @@ public class GestorFactura {
                         String dni = scan.nextLine();
                         Cliente cliente = pedirCliente(dni);
                         facturaModificada.setCliente(cliente);
-                    } catch (DNInoEncontradoException e) {
-                        e.getMessage();
+                    } catch (DNInoEncontradoException e)
+                    {
+                        System.out.println(e.getMessage());
                     }
 
                     break;
