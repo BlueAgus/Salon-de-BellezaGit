@@ -1,6 +1,6 @@
 package gestores;
-
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoDeProfesional;
@@ -79,7 +79,9 @@ public class GestorPersona {
                 }
                 System.out.println(cliente);
                 verificarCarga(cliente);
-
+                List<Cliente> clientesAux=(Cliente) LeerArchivo("clientes.json");
+                clientesAux.add(cliente);
+                EscribirPersonasEnArchivo("clientes.json",clientesAux);
                 break;
             case 2:
                 int opcion = 0;
@@ -90,6 +92,7 @@ public class GestorPersona {
                 profesional.agregarProfesion(e);//minimo una profesion.
 
                 do {
+                    System.out.println("Deseas agregar otra profesion?");
                     System.out.println("Deseas agregar otra profesion?");
                     System.out.println("1. Si deseo.");
                     System.out.println("2. No deseo.");
@@ -225,7 +228,7 @@ public class GestorPersona {
         }
     }
 
-    public void modificarProfesional(Profesional profesional) {
+    public Profesional modificarProfesional(Profesional profesional,GestorServicio servicios) {
         int opcion;
         boolean continuarModificando = true;
         while (continuarModificando) {
@@ -271,7 +274,9 @@ public class GestorPersona {
                         }
                         break;
                     case 6:
-                        //agregar servicios
+                        GestorTurno aux = new GestorTurno();
+                        String e = aux.pedirCodServicio(servicios);
+                        profesional.agregarProfesion(e);
                         break;
                     case 7:
                         continuarModificando = false;
@@ -285,6 +290,7 @@ public class GestorPersona {
             }
             System.out.println("MODIFICADO EXITOSAMENTE!");
             System.out.println(profesional.toString());
+            return profesional;
         }
     }
 
@@ -486,10 +492,14 @@ public class GestorPersona {
         return genero;  // Retornar el String que contiene el género válido
     }
 
-    public boolean verificarSiExiste( String dni) throws DNInoEncontradoException {
-        for (Persona p : this.almacenPersonas.getAlmacen()) {
+    public boolean verificarSiExiste( String dni,String nombreArchivo) throws DNInoEncontradoException {
+        List<Persona> aux=LeerArchivo(nombreArchivo);
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros en el archivo.");
+        }
+        for (Persona p : aux) {
             if (p.getDni().equals(dni)) {
-                return true;
+                return true;//alguien del archivo tiene ese dni.
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
@@ -528,6 +538,25 @@ public class GestorPersona {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public void guardarPersonaEnArchivo(List<Persona> personas, String nombreArchivo) {
+        Gson gson = configurarGsonConHerencia();
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            gson.toJson(personas, writer);
+            System.out.println("Archivo guardado correctamente: " + nombreArchivo);
+        } catch (IOException e) {
+            System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
+        }
+    }
+    public Gson configurarGsonConHerencia() {
+        RuntimeTypeAdapterFactory<Persona> adapter =
+                RuntimeTypeAdapterFactory.of(Persona.class, "tipo") // Campo "tipo" identifica la subclase
+                        .registerSubtype(Recepcionista.class, "recepcionista")
+                        .registerSubtype(Administrador.class, "administrador")
+                        .registerSubtype(Cliente.class, "cliente");
+
+        return new GsonBuilder().registerTypeAdapterFactory(adapter).create();
     }
 
     /*
