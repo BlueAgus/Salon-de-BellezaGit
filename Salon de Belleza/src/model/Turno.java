@@ -90,6 +90,13 @@ public class Turno {
         this.dni_cliente = dni_cliente;
     }
 
+    public String getCod_turno() {
+        return cod_turno;
+    }
+
+    public void setCod_turno(String cod_turno) {
+        this.cod_turno = cod_turno;
+    }
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     public String toString(GestorServicio gestorServicio, GestorPersona gestorCliente, GestorPersona gestorProfesional) {
@@ -98,16 +105,15 @@ public class Turno {
                     "\n| FECHA : " + fecha +
                     "\n| HORARIO : " + horario +
                     "\n| SERVICIO : " + gestorServicio.buscarServicio(codigo_servicio).getTipoService() +
-                    "\n| PROFESIONAL :" + gestorProfesional.buscarPersona(dni_profesional).getNombre()+ gestorProfesional.buscarPersona(dni_profesional).getApellido()+
-                    "\n| CLIENTE : " + gestorCliente.buscarPersona(dni_cliente).getNombre() + gestorCliente.buscarPersona(dni_cliente).getApellido()+ " DNI : "+ gestorCliente.buscarPersona(dni_cliente).getDni();
-        }
-         catch (CodigoNoEncontradoException e) {
-              return "Error: Servicio no encontrado para el código: " + codigo_servicio;
-       } catch (DNInoEncontradoException e) {
-              return "Error: Cliente o profesional no encontrado.";
-    }    catch (Exception e) {
+                    "\n| PROFESIONAL :" + gestorProfesional.buscarPersona(dni_profesional).getNombre() + gestorProfesional.buscarPersona(dni_profesional).getApellido() +
+                    "\n| CLIENTE : " + gestorCliente.buscarPersona(dni_cliente).getNombre() + gestorCliente.buscarPersona(dni_cliente).getApellido() + " DNI : " + gestorCliente.buscarPersona(dni_cliente).getDni();
+        } catch (CodigoNoEncontradoException e) {
+            return "Error: Servicio no encontrado para el código: " + codigo_servicio;
+        } catch (DNInoEncontradoException e) {
+            return "Error: Cliente o profesional no encontrado.";
+        } catch (Exception e) {
             return "Error inesperado al generar los detalles del turno.";
-    }
+        }
 
     }
 
