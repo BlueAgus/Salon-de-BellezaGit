@@ -90,6 +90,13 @@ public class Turno {
         this.dni_cliente = dni_cliente;
     }
 
+    public String getCod_turno() {
+        return cod_turno;
+    }
+
+    public void setCod_turno(String cod_turno) {
+        this.cod_turno = cod_turno;
+    }
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
     public String toString(GestorServicio gestorServicio, GestorPersona gestorCliente, GestorPersona gestorProfesional) {
