@@ -40,7 +40,9 @@ public class GestorFactura {
 
     private Cliente pedirCliente(String dni) throws DNInoEncontradoException {//propago la excepcion
         GestorPersona persona = new GestorPersona();
+
         return (Cliente) persona.buscarPersona(dni);
+
     }
 
     public void crearFactura() {
@@ -60,7 +62,7 @@ public class GestorFactura {
 
             //mostrarle los turnos del dia de la fecha y los proximos
             System.out.println("Estos son los turnos recientes y proximos del cliente: ");
-            List<Turno> turnosCliente = turnos.obtenerTurnosPorCliente(dni);
+            List<Turno> turnosCliente = turnos.buscarTurnosXdniClienteVigentes(dni);
 
             if (turnosCliente.isEmpty()) {
                 System.out.println("No hay turnos reservados para este cliente.");
@@ -137,7 +139,7 @@ public class GestorFactura {
         System.out.println("Ingrese el codigo de factura:");
         String codigo = scan.nextLine();
 
-        Factura facturaModificada = facturaPorCodigo(codigo);
+        Factura facturaModificada = buscarFacturaPorCodigo(codigo);
 
         if (facturaModificada == null) {
             throw new CodigoNoEncontradoException("El codigo ingresado no existe, ingrese de nuevo.");
@@ -190,7 +192,7 @@ public class GestorFactura {
                         if (rta == 0) {
                             System.out.println("Ingrese el codigo del turno: ");
                             String codTurno = scan.nextLine();
-                            Turno turnoNuevo = turnos.buscarTurnoPorCodigo(codTurno);
+                            Turno turnoNuevo = turnos.buscarTurno(codTurno);
 
                             facturaModificada.agregarTurno(turnoNuevo);
 
@@ -227,7 +229,7 @@ public class GestorFactura {
     }
 
 
-    private Factura facturaPorCodigo(String codigo) {
+    private Factura buscarFacturaPorCodigo(String codigo) {
 
         for (Factura factu : historial.getAlmacen()) {
 

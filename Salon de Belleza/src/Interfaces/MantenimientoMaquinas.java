@@ -5,9 +5,6 @@ import model.Servicio;
 import java.time.LocalDate;
 
 public interface MantenimientoMaquinas {
-    // Programar mantenimiento planificado
-    void programarMantenimiento(LocalDate fecha);
-
     // Marcar máquina como fuera de servicio por falla
     void reportarFalla();
 

@@ -19,6 +19,7 @@ public class Depilacion extends Servicio {
     }
 
    /////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+   //void programarMantenimiento(LocalDate fecha);
 
     public double calcularPrecio() {
         return GestorPrecios.obtenerPrecio(Depilacion.class, this.tipoDepilacion);
