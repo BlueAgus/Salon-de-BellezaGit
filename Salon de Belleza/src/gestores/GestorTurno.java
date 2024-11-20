@@ -95,7 +95,12 @@ public class GestorTurno {
         System.out.println("Avisar a los siguientes clientes que su turno del dia " + fecha + "ha sido cancelado");
         for (Turno t : turnos) {
             if (t.getCodigo_servicio().equals(codServicio)) {
-                Cliente cliente = gestorPersona.buscarPersona(t.getDni_cliente());
+                Cliente cliente = null;
+                try {
+                    cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                } catch (DNInoEncontradoException e) {
+                    System.out.println(e.getMessage());
+                }
                 System.out.println("- " + cliente.getNombre() + " TELEFONO: " + cliente.getTelefono());
             }
         }
