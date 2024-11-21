@@ -1,6 +1,7 @@
 package Menus;
 
 import excepciones.DNInoEncontradoException;
+import excepciones.DNIyaCargadoException;
 import gestores.*;
 import model.*;
 
@@ -20,7 +21,7 @@ public class MenuPrincipal {
     String archivoServicios = "servicios.json";
     String archivoTurnos = "turnos.json";
     String archivoFacturas = "facturas.json";
-
+/*
     public void inicioMenu(GestorPersona profesionales, GestorPersona clientes, GestorPersona administrador, GestorPersona recepcionistas) {
         List<Persona> profesionals = profesionales.leerArchivoPersona(archivoProfesionales);
         List<Profesional> p1 = new ArrayList<>();
@@ -61,10 +62,8 @@ public class MenuPrincipal {
         GestorAlmacen<Recepcionista> RecepcionistaGestorAlmacen = new GestorAlmacen<>();
         profesionalGestorAlmacen.setAlmacen(re2);
         recepcionistas.setAlmacenPersonas(clienteGestorAlmacen);
-
-
     }
-
+*/
     public void menuPrincipal() {
         GestorPersona profesionales = new GestorPersona();
         GestorPersona administradores = new GestorPersona();
@@ -98,25 +97,32 @@ public class MenuPrincipal {
                 case 1:
                     //administrador
                     System.out.println("Bienvenido administrador ");
-                    if (iniciarSesion(administradores, archivoAdministradores))//si es true tiene su dni registrado
+                    if (iniciarSesion(administradores))//si es true tiene su dni registrado
                     {
                         menuAdministrador.mostrarMenu(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
-                        if (usuarios.primerIngreso()) {
-                            //crea un usuario.
-                        }
                     }
                     break;
                 case 2:
                     //recepcionista
-                    menuRecepcionista.MenuRecepcionistas();
-                    System.out.println("Bienvenido Recepcionista ");
-                    iniciarSesion(usuarios, archivoUsuarioRecepcionista);
-
+                    if (primerIngreso(administradores)) {
+                        System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
+                    } else {
+                        if (iniciarSesion(recepcionistas)){
+                            System.out.println("Bienvenido Recepcionista !");
+                            menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
+                        }
+                    }
                     break;
                 case 3:
                     //profesional
-                    System.out.println("Bienvenido profesional ");
-                    iniciarSesion(usuarios, archivoUsuarioProfesionales);
+                    if (primerIngreso(administradores)) {
+                        System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
+                    } else {
+                        if (iniciarSesion(profesionales)) {
+                            System.out.println("Bienvenido profesional! ");
+                            menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
+                        }
+                    }
                     break;
                 case 0:
                     System.out.println("Saliendo...");
@@ -127,66 +133,101 @@ public class MenuPrincipal {
         } while (opcion != 0);
     }
 
-    public boolean pedirDatos(GestorPersona usuarios, String nombrearchivo) {
-        System.out.println("Ingrese el DNI: ");
-        String dni = scanner.nextLine();
-        if (dni.isEmpty()) {
-            System.out.println("Error: El DNI no puede estar vacío.");
-        }
-        //  contenga números
-        else if (!dni.matches("\\d+")) {
-            System.out.println("Error: El DNI solo puede contener números.");
-        }
-        //  dígitos
-        else if (dni.length() != 8) {
-            System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
-        } else {
-            String contra;
-            String contrapedida;
-            boolean valido = false;
-            boolean tienecuenta = false;
-            if (usuarios.verificarUsuario(dni, nombrearchivo)) {
+    public boolean pedirDatos(GestorPersona personaQueDeseaIngresar) {
+        boolean tienecuenta = false;
+        String dni = personaQueDeseaIngresar.pedirDNIsinVerificacion();
+        String contra;
+        String contrapedida;
+        boolean valido = false;
+
+        try {
+            if (personaQueDeseaIngresar.buscarPersonas(dni)) {
                 do {
-                    contra = usuarios.DevolverContrasenia(dni);
-                    System.out.println("Ingresa tu contraseña:");
-                    contrapedida = scanner.nextLine();
+                    contra = personaQueDeseaIngresar.buscarContraseña(dni);
+                    if (contra == null) {
+                        System.out.println("no tiene contrasenia..");
+                        break;
+                    }
+                    contrapedida = pedirContraseña();
 
                     if (contrapedida.equals(contra)) {
                         valido = true;
-                        return tienecuenta; //
+                        tienecuenta = true; //
                     } else {
                         System.out.println("Contraseña incorrecta. Inténtalo nuevamente.");
                     }
                 } while (!valido);
-
-            } else {
-                return tienecuenta;
             }
+        } catch (DNInoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+        return tienecuenta;
+    }
+
+    public boolean iniciarSesion(GestorPersona personas) {
+        if (pedirDatos(personas)) {
+            System.out.println("Entrando..");//si es true anda
+            return true;
+        } else {
+            System.out.println("No tienes cuenta aun...");
+            System.out.println("Verifica que el administrador te haya cargado correctamente..");
+            return false;
         }
     }
 
-    public boolean verificarDniAdministradores(String dni,GestorPersona administradores){
-        List<Administrador> e=administradores.leerArchivoPersona("administradores.json");
-        boolean a=false;
-        for(Persona aux:e){
-            if (aux.getDni().equals(dni)){
-                a= true;
+    public String pedirContraseña() {
+        String contraseña = "";
+        do {
+            System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
+            contraseña = scanner.nextLine();
+
+            // Validación de longitud de la contraseña y de que contenga al menos un número
+            if (contraseña.length() < 6 || contraseña.length() > 12) {
+                System.out.println("Tu contraseña es muy débil o tiene un tamaño incorrecto. Vuelve a intentar.");
+            } else if (!contraseña.matches(".\\d.")) {  // Verifica que haya al menos un número
+                System.out.println("Tu contraseña debe contener al menos un número. Vuelve a intentarlo.");
+            }
+        } while (contraseña.length() < 6 || contraseña.length() > 12 || !contraseña.matches(".\\d.")); // Bucle sigue hasta que la contraseña sea válida
+
+        return contraseña;
+    }
+
+    public boolean primerIngreso(GestorPersona administradores){
+        List<Administrador> adminAux=administradores.leerArchivoAdministradores();
+        boolean primeringreso=false;
+        for( Administrador a:adminAux){
+            if( a.getContraseña().equals("12345678")){
+                primeringreso=true;
+            }
+        }
+        return primeringreso;
+    }
+
+
+    //no se que onda esto... NO LO BORREN POR LAS DUDAS.
+    /*
+    public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
+        List<Administrador> e = administradores.leerArchivoPersona("administradores.json");
+        boolean a = false;
+        for (Persona aux : e) {
+            if (aux.getDni().equals(dni)) {
+                a = true;
+            }
+            return a;
+        }
+    }
+
+    public boolean verificarContraseniaAdministrador(String dni, String contrasenia, GestorPersona administradores) {
+        List<Administrador> e = administradores.leerArchivoPersona("administradores.json");
+        boolean a = false;
+        for (Administrador aux : e) {
+            if (aux.getContraseña().equals(contrasenia)) {
+                a = true;
             }
         }
         return a;
     }
 
-    public boolean verificarContraseniaAdministrador(String dni, String contrasenia,GestorPersona administradores)
-    {
-        List<Administrador> e=administradores.leerArchivoPersona("administradores.json");
-        boolean a=false;
-        for(Administrador aux:e){
-            if (aux.getContraseña().equals(contrasenia)){
-                a= true;
-            }
-        }
-        return a;
-    }
     public boolean verificarDniProfesionales(String dni, GestorPersona profesionales) {
         List<Profesional> e = profesionales.leerArchivoPersona("profesionales.json");
         boolean a = false;
@@ -197,6 +238,7 @@ public class MenuPrincipal {
         }
         return a;
     }
+
     public boolean verificarContraseniaProfesional(String dni, String contrasenia, GestorPersona profesionales) {
         List<Profesional> e = profesionales.leerArchivoPersona("profesionales.json");
         boolean a = false;
@@ -207,6 +249,7 @@ public class MenuPrincipal {
         }
         return a;
     }
+
     public boolean verificarDniRecepcionistas(String dni, GestorPersona recepcionistas) {
         List<Recepcionista> e = recepcionistas.leerArchivoPersona("recepcionistas.json");
         boolean a = false;
@@ -217,6 +260,7 @@ public class MenuPrincipal {
         }
         return a;
     }
+
     public boolean verificarContraseniaRecepcionista(String dni, String contrasenia, GestorPersona recepcionistas) {
         List<Recepcionista> e = recepcionistas.leerArchivoPersona("recepcionistas.json");
         boolean a = false;
@@ -227,15 +271,7 @@ public class MenuPrincipal {
         }
         return a;
     }
-    public boolean iniciarSesion(GestorPersona personas, String nombrearchivo) {
-        if (pedirDatos(personas, nombrearchivo)) {
-            System.out.println("Entrando..");//si es true anda todo ok.
-            return true;
-        } else {
-            System.out.println("No tienes cuenta aun...");
-            System.out.println("Verifica que el administrador te haya cargado correctamente..");
-            return false;
-        }
-    }
+*/
+
 }
 

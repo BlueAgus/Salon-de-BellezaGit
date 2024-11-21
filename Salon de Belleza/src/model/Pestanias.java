@@ -16,13 +16,15 @@ public class Pestanias extends Servicio{
         this.tipoPestanias = tipoPestanias;
     }
 
-    ////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+    ////////////////////////////////// metodos extr //////////////////////////////////////////////
+
     @Override
     public double calcularPrecio() {
         return GestorPrecios.obtenerPrecio(Pestanias.class, this.tipoPestanias);
     }
 
    /////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+
     public TipoPestanias getTipoPestanias() {return tipoPestanias;}
 
     public void setTipoPestanias(TipoPestanias tipoPestanias) {
