@@ -452,7 +452,7 @@ public class GestorServicio {
         return disenio;
     }
 
-    public void reportarFalla(GestorPersona gestorCliente, GestorTurno gestorTurno) {///
+    public void reportarFalla(GestorCliente gestorCliente, GestorTurno gestorTurno) {///
         Servicio servicio = null;
         try {
             servicio = buscarServicio();

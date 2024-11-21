@@ -1,6 +1,6 @@
 package Menus;
 
-import gestores.GestorPersona;
+import gestores.GestorCliente;
 import gestores.GestorServicio;
 import gestores.GestorTurno;
 
@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class MenuProfesional {
 
-    public void menuProfesional(GestorPersona cliente, GestorTurno turnos, String dniProfesional, GestorServicio servicios) {
+    public void menuProfesional(GestorCliente cliente, GestorTurno turnos, String dniProfesional, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
