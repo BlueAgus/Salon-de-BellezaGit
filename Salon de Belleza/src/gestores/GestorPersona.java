@@ -49,7 +49,6 @@ public class GestorPersona <T extends Persona>{
         return filtradas;
     }
 
-
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
     //pasamos 1 si es cliente,
@@ -186,6 +185,40 @@ public class GestorPersona <T extends Persona>{
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
+    }
+
+    public boolean buscarPersonas(String dni) throws DNInoEncontradoException {
+        for (Persona p : almacenPersonas.getAlmacen()) {
+            if (p.getDni().equals(dni)) {
+                return true;
+            }
+        }
+        throw new DNInoEncontradoException("DNI no encontrado!!");
+    }
+
+    public String buscarContraseña(String dni)
+    {
+        for (Persona p : almacenPersonas.getAlmacen()) {
+            if (p.getDni().equals(dni)) {
+
+                if(p instanceof Administrador)
+                {
+                    Administrador administrador= (Administrador) p;
+                    return administrador.getContraseña();
+                }
+                else if(p instanceof  Recepcionista)
+                {
+                    Recepcionista recepcionista= (Recepcionista) p;
+                    return recepcionista.getContraseña();
+                }
+                    else if(p instanceof  Profesional)
+                {
+                  Profesional profesional= (Profesional) p;
+                    return  profesional.getContraseña();
+                }
+            }
+        }
+        return null;
     }
 
     public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
@@ -870,13 +903,4 @@ public class GestorPersona <T extends Persona>{
     }
 
 
-    public GestorAlmacen getAlmacenPersonas() {
-        return almacenPersonas;
-    }
-
-    public void setAlmacenPersonas(GestorAlmacen almacenPersonas) {
-        this.almacenPersonas = almacenPersonas;
-    }
-}
-
-
+    publ

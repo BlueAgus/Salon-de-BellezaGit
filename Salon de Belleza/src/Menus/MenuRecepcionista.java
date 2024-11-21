@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class MenuRecepcionista extends MenuAdministrador {
 
 
-    public void menuRecepcionistas(GestorPersona clientes, GestorPersona profesionales,GestorPersona recepcionista,GestorPersona administrador,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
+    public void menuRecepcionistas(GestorPersona clientes, GestorPersona profesionales,GestorPersona recepcionista,GestorPersona administrador,GestorServicio servicios,GestorTurno turnos,GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -34,16 +34,16 @@ public class MenuRecepcionista extends MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    subMenuClientes(clientes,gestorServicio);
+                    subMenuClientes(clientes,servicios);
                     break;
                 case 2:
-                    menuTurnos(gestorTurno,clientes,gestorServicio);
+                    menuTurnos(turnos,clientes,profesionales,servicios);
                     break;
                 case 3:
-                    menuFacturas(gestorFactura,clientes);
+                    menuFacturas(facturas,clientes);
                     break;
                 case 4:
-                    gestorServicio.mostrarServicios();
+                    servicios.mostrarServicios();
                     break;
                 case 5:
                     mostrarProfesionales(profesionales);
@@ -57,7 +57,7 @@ public class MenuRecepcionista extends MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void mostrarProfesionales(GestorPersona gestorPersona) {
+    public void mostrarProfesionales(GestorPersona profesionales) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -76,6 +76,7 @@ public class MenuRecepcionista extends MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
+                    profesionales.
 
                     break;
                 case 2:
