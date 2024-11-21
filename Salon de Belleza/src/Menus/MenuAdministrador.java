@@ -20,7 +20,6 @@ public class MenuAdministrador {
 
     public void mostrarMenu(String dni, GestorCliente clientes, GestorProfesional profesionales, GestorRecepcionista recepcionista, GestorAdministrador administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
-        Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
