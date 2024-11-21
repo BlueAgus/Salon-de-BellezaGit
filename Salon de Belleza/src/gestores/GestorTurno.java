@@ -36,7 +36,7 @@ public class GestorTurno {
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
-    public boolean agregarTurno(GestorPersona gestorCliente, GestorPersona gestorProfesional, GestorServicio gestorServicio) {
+    public boolean agregarTurno(GestorCliente gestorCliente, GestorProfesional gestorProfesional, GestorServicio gestorServicio) {
 
         String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
 
@@ -85,7 +85,7 @@ public class GestorTurno {
         return true;
     }
 
-    public boolean eliminarTurno(GestorPersona gestorCliente) {
+    public boolean eliminarTurno(GestorCliente gestorCliente) {
 
         String codTurno= buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -98,7 +98,7 @@ public class GestorTurno {
         return false;
     }
 
-    public String buscarCodigoTurno(GestorPersona gestorCliente) {
+    public String buscarCodigoTurno(GestorCliente gestorCliente) {
 
         String dniCliente = gestorCliente.pedirDNIsinVerificacion();
 
@@ -144,7 +144,7 @@ public class GestorTurno {
 
     }
 
-    public void cancelarTurnosXdia(LocalDate fecha, GestorPersona gestorPersona, String codServicio) {
+    public void cancelarTurnosXdia(LocalDate fecha, GestorCliente clientes, String codServicio) {
         List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
 
         System.out.println("Avisar a los siguientes clientes que su turno del dia " + fecha + "ha sido cancelado");
@@ -152,7 +152,8 @@ public class GestorTurno {
             if (t.getCodigo_servicio().equals(codServicio)) {
                 Cliente cliente = null;
                 try {
-                    cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                   // cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                    cliente = clientes.buscarPersona(t.getDni_cliente());
                 } catch (DNInoEncontradoException e) {
                     System.out.println(e.getMessage());
                 }
@@ -162,7 +163,7 @@ public class GestorTurno {
         turnos.clear();
     }
 
-    public Turno buscarTurnoXclienteFechaHorario(GestorPersona gestorCliente) {
+    public Turno buscarTurnoXclienteFechaHorario(GestorCliente gestorCliente) {
 
         String codigoTurno= buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -187,7 +188,7 @@ public class GestorTurno {
         return null;
     }
 
-    public boolean modificarTurno(GestorServicio gestorServicio, GestorPersona gestorProfesional, GestorPersona gestorCliente) {
+    public boolean modificarTurno(GestorServicio gestorServicio, GestorProfesional gestorProfesional, GestorCliente gestorCliente) {
         Turno t;
 
         List<Turno> turnosVigentes = mostrarTurnosVigentes();
@@ -395,7 +396,7 @@ public class GestorTurno {
 
     /////////////////////////////////////////////MANEJO DE CLIENTES!!!!////////////////////////////////////////
 
-    public String pedirDNIcliente(GestorPersona gestorCliente) {
+    public String pedirDNIcliente(GestorCliente gestorCliente) {
         String dniCliente;
         while (true) {
 
@@ -582,7 +583,7 @@ public class GestorTurno {
 
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
-    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorPersona gestorProfesional) {
+    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorProfesional gestorProfesional) {
         List<Profesional> profesionales = gestorProfesional.leerArchivoProfesionales();
 
         if (profesionales == null || profesionales.isEmpty()) {
