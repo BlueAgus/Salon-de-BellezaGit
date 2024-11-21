@@ -4,14 +4,12 @@ import enumeraciones.TipoServicio;
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import excepciones.FacturaNoExistenteException;
-import gestores.GestorFactura;
-import gestores.GestorPersona;
-import gestores.GestorServicio;
-import gestores.GestorTurno;
+import gestores.*;
 import model.*;
 
 import javax.imageio.stream.FileCacheImageInputStream;
 import java.io.StringReader;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,6 +32,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -77,6 +76,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -123,6 +123,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -193,6 +194,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -261,6 +263,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -324,6 +327,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -372,6 +376,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -436,6 +441,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -484,12 +490,11 @@ public class MenuAdministrador {
         do {
             System.out.println("1.Turnos proximos de un cliente especifico");
             System.out.println("2.Historial de turnos de un cliente");
-
-
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -542,6 +547,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -631,6 +637,7 @@ public class MenuAdministrador {
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
@@ -693,36 +700,147 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuPrecios() {
+    public void menuPrecios(GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("1. Modificar precio");
-            System.out.println("2. Aumentar precios");//aumentar todos o por clase
-
+            System.out.println("1. Modificar precio base de un servicio");
+            System.out.println("2. Aumentar TODOS los precios");//aumentar todos o por clase
+            System.out.println("3. Aumentar precios de un tipo de servicio");//aumentar todos o por clase
+            System.out.println("4. Ver todos los precios");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcion) {
                 case 0:
                     System.out.println("Saliendo...");
                     break;
                 case 1:
+                    Servicio servicio;
 
+                    while (true) {
+                        try {
+                            servicio = gestorServicio.buscarServicio();
+                            break;
+                        } catch (CodigoNoEncontradoException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+
+                    double precio;
+
+                    while (true) {
+
+                        try {
+                            System.out.println("Ingrese el nuevo precio para el siguiente servicio(o escriba 'salir' para cancelar): ");
+                            System.out.println(servicio.toString());
+
+                            String opcElegida = scanner.nextLine();
+
+
+                            if (opcElegida.equalsIgnoreCase("salir")) {
+                                System.out.println("Operación cancelada por el usuario.");
+                                return;
+                            }
+
+                            ///pasa a int un string
+                            precio = Double.parseDouble(opcElegida);
+                            if (precio < 0 || precio > 500000) {
+                                System.out.println("Precio fuera de rango! vuelva a intentar un numero entre 0 y 500000");
+                            } else {
+                                break;
+                            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("Entrada no valida. Por favor ingrese un número.");
+                            scanner.nextLine();
+                        }
+                    }
+                    GestorPrecios.modificarPrecio(servicio.getClass(), servicio.getTipoService(), precio);
+                    System.out.println("CAMBIADO EXITOSAMENTE! El precio de " + servicio.getTipoService() + " se ha actualizado: ");
+                    System.out.println("NUEVO PRECIO: " + GestorPrecios.obtenerPrecio(servicio.getClass(), servicio.getTipoService()));
 
                     break;
                 case 2:
 
+                    double porcentaje;
+
+                    while (true) {
+                        try {
+                            System.out.println("Ingrese el porcentaje a aumentar: ");
+                            porcentaje = scanner.nextDouble();
+
+                            if (porcentaje < 0 || porcentaje > 100) {
+                                System.out.println("Porcentaje INVALIDO");
+                            } else {
+                                break;
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("Entrada no válida. Por favor, ingrese un número.");
+                            scanner.next();
+
+                        }
+                    }
+                    GestorPrecios.aumentarTodosLosPrecios(porcentaje);
+                    System.out.println("PRECIOS MODIFICADOS: ");
+                    System.out.println(GestorPrecios.verPrecios());
+
+                    break;
+                case 3:
+                    System.out.println("-----MODIFICANDO-----");
+                    TipoServicio tipoServicio = gestorServicio.pedirTipoServicio();
+
+                    double porcentaje2 = 0;
+
+                    while (true) {
+                        try {
+                            System.out.println("Ingrese el porcentaje a aumentar: ");
+                            porcentaje2 = scanner.nextDouble();
+
+                            if (porcentaje2 < 0 || porcentaje2 > 100) {
+                                System.out.println("Porcentaje INVALIDO");
+                            } else {
+                                break;
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("Entrada no válida. Por favor, ingrese un número.");
+                            scanner.next();
+
+                        }
+                    }
+                    System.out.println("PRECIOS MODIFICADOS:");
+
+                    if (tipoServicio.equals(TipoServicio.DEPILACION)) {
+                        GestorPrecios.aumentarPreciosPorClase(Depilacion.class, porcentaje2);
+                        System.out.println(GestorPrecios.verPrecioDepi());
+                    } else if (tipoServicio.equals(TipoServicio.MANICURA)) {
+                        GestorPrecios.aumentarPreciosPorClase(Manicura.class, porcentaje2);
+                        System.out.println(GestorPrecios.verPreciosManicura());
+                    } else if (tipoServicio.equals(TipoServicio.PESTANIAS)) {
+                        GestorPrecios.aumentarPreciosPorClase(Pestanias.class, porcentaje2);
+                        System.out.println(GestorPrecios.verPrecioPestanias());
+                    }
+                    break;
+                case 4:
+                    System.out.println(GestorPrecios.verPrecios());
                     break;
 
                 default:
                     System.out.println("Opción no válida.");
+                    break;
             }
-        } while (opcion != 0);
 
+
+        } while (opcion != 0);
     }
+
 }
+
+
+
