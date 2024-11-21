@@ -23,7 +23,7 @@ public class Factura implements CrearID {
     private double ajuste = 0.0;
     private LocalDate fecha; // fecha y hora de la creacion de la factura
     private LocalTime hora;
-    GestorServicio gestorServicio;
+    private GestorServicio gestorServicio;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
