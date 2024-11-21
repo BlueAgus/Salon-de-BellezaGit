@@ -26,7 +26,6 @@ public class GestorFactura {
 
     private GestorAlmacen<Factura> historial;
     Gson gson;
-    /// donde pondriamos el nombre del archivo?
     private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
