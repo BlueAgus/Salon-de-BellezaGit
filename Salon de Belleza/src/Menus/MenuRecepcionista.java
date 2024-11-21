@@ -1,10 +1,7 @@
 package Menus;
 
 import excepciones.CodigoNoEncontradoException;
-import gestores.GestorFactura;
-import gestores.GestorPersona;
-import gestores.GestorServicio;
-import gestores.GestorTurno;
+import gestores.*;
 import model.Profesional;
 import model.Servicio;
 
@@ -15,7 +12,7 @@ import java.util.Scanner;
 public class MenuRecepcionista extends MenuAdministrador {
 
 
-    public void menuRecepcionistas(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void menuRecepcionistas(GestorCliente clientes, GestorProfesional profesionales, GestorRecepcionista recepcionista, GestorAdministrador administrador, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -57,7 +54,7 @@ public class MenuRecepcionista extends MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void mostrarProfesionales(GestorPersona profesionales, GestorServicio servicios) {
+    public void mostrarProfesionales(GestorProfesional profesionales, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -87,7 +84,7 @@ public class MenuRecepcionista extends MenuAdministrador {
                             System.out.println(e.getMessage());
                         }
 
-                        for (Profesional p : (List<Profesional>) profesionales.getAlmacenPersonas()) {
+                        for (Profesional p : profesionales.getProfesionales()) {
                             if (p.verificarProfesion(servicio.getCodigo_servicio())) {
                                 System.out.println(p.toString());
                             }
