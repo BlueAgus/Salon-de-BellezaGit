@@ -18,6 +18,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -310,14 +312,18 @@ public class GestorFactura {
 
     public Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
 
-
+        Factura factura = null;
         for (Factura factu : historial.getAlmacen()) {
 
             if (factu.getCodigoFactura().equals(codigo)) {
-                return factu;
+                factura = factu;
             }
         }
-        return null;
+
+        if(factura == null){
+            throw new CodigoNoEncontradoException("El codigo ingresado no existe!");
+        }
+        return factura;
     }
 
 
@@ -368,20 +374,29 @@ public class GestorFactura {
 
     ///Para mi seria por rango de fechas o otra funcion
     //esta muestra las facturas de cualquier cliente en ese dia, pero se podria hacer por rango tambien
-    public List<Factura> verHistorialPorFecha(LocalDate fecha) {
+    public List<Factura> verHistorialPorFecha(String fecha) {
 
-        if (fecha == null) {
-            System.err.println("La fecha proporcionada no registra facturas en la fecha proporcionada.");
+        if (fecha == null || fecha.isEmpty()) {
+            System.out.println("La fecha proporcionada no registra facturas.");
             return new ArrayList<>();
         }
 
-        // Verificación de la fecha futura
-        if (fecha.isAfter(LocalDate.now())) {
-            System.err.println("La fecha proporcionada no puede ser en el futuro.");
-            return new ArrayList<>(); // Retorna lista vacía si la fecha es futura
+        LocalDate fecha1;
+        try {
+            // Convertir el string de fecha a LocalDate
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Ajusta el patrón según el formato de la fecha
+            fecha1 = LocalDate.parse(fecha, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("El formato de fecha proporcionado no es válido.");
+            return new ArrayList<>();
         }
 
-        Predicate<Factura> condicion = factura -> factura.getFecha().equals(fecha);
+        if (fecha1.isAfter(LocalDate.now())) {
+            System.out.println("La fecha proporcionada no puede ser en el futuro.");
+            return new ArrayList<>();
+        }
+
+        Predicate<Factura> condicion = factura -> factura.getFecha().equals(fecha1);
         return historial.filtrarPorCondicion(condicion);
     }
 
@@ -432,7 +447,6 @@ public class GestorFactura {
                 facturasEncontradas.add(factu);  // se agrega a la lisya
             }
         }
-
         if (facturasEncontradas.isEmpty()) {
             throw new DNInoEncontradoException("El DNI ingresado no pertenece a ninguno de nuestros clientes, intente de nuevo.");
         }
