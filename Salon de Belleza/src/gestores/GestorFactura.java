@@ -31,11 +31,11 @@ public class GestorFactura {
     private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public GestorFactura(String nombreArchivoGson) {
+    public GestorFactura() {
 
         this.historial = new GestorAlmacen<>();
         this.gson = new Gson();
-        this.nombreArchivoGson = nombreArchivoGson;
+        this.nombreArchivoGson = "facturas.json";
     }
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
