@@ -2,16 +2,20 @@ package Menus;
 
 import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
+import excepciones.FacturaNoExistenteException;
 import gestores.GestorFactura;
 import gestores.GestorPersona;
 import gestores.GestorServicio;
 import gestores.GestorTurno;
 import model.*;
 
+import java.io.StringReader;
 import java.util.List;
 import java.util.Scanner;
 
 public class MenuAdministrador {
+
+    Scanner scanner = new Scanner(System.in);
 
     public void mostrarMenu(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
@@ -38,13 +42,13 @@ public class MenuAdministrador {
                     menuUsuarios(clientes, profesionales, recepcionista, administrador, servicios);
                     break;
                 case 2:
-                    menuServicio(servicios,clientes,turnos);
+                    menuServicio(servicios, clientes, turnos);
                     break;
                 case 3:
                     menuTurnos(turnos, clientes, profesionales, servicios);
                     break;
                 case 4:
-                    menuFacturas(facturas,clientes);
+                    menuFacturas(facturas, clientes);
                     break;
                 case 5:
 
@@ -307,7 +311,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuServicio(GestorServicio servicios,GestorPersona cliente,GestorTurno turnos) {
+    public void menuServicio(GestorServicio servicios, GestorPersona cliente, GestorTurno turnos) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -332,7 +336,7 @@ public class MenuAdministrador {
                     servicios.agregarServicio();
                     break;
                 case 2:
-                     servicios.eliminarServicio();
+                    servicios.eliminarServicio();
                     break;
                 case 3:
                     servicios.modificarServicio();
@@ -344,7 +348,7 @@ public class MenuAdministrador {
                     servicios.mostrarServicios();
                     break;
                 case 6:
-                    servicios.reportarFalla(cliente,turnos);
+                    servicios.reportarFalla(cliente, turnos);
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -496,7 +500,7 @@ public class MenuAdministrador {
                     break;
                 case 1:
                     String dni = clientes.pedirDNIsinVerificacion();
-                    List<Turno> turnosVigentes= turnos.buscarTurnosXdniClienteVigentes(dni);
+                    List<Turno> turnosVigentes = turnos.buscarTurnosXdniClienteVigentes(dni);
                     int contador1 = 0;
                     if (turnosVigentes.isEmpty()) {
                         System.out.println("El cliente no tiene agendado turnos proximamente");
@@ -509,7 +513,7 @@ public class MenuAdministrador {
                     break;
                 case 2:
                     String dni1 = clientes.pedirDNIsinVerificacion();
-                    List<Turno> historialTurnos= turnos.historialTurnosXcliente(dni1);
+                    List<Turno> historialTurnos = turnos.historialTurnosXcliente(dni1);
                     int contador = 0;
                     if (historialTurnos.isEmpty()) {
                         System.out.println("El cliente no tiene un historial de turnos");
@@ -526,7 +530,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuFacturas(GestorFactura gestorFactura, GestorPersona clientes) {
+    public void menuFacturas(GestorFactura facturas, GestorPersona clientes) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -550,16 +554,39 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    gestorFactura.crearFactura();
+                    facturas.crearFactura();
                     break;
                 case 2:
+                    System.out.println("Para eliminar una factura, se solicita el DNI del cliente");
+                    String dni = clientes.pedirDNIsinVerificacion();
+                    try {
+                        facturas.historialFacturasPorCliente(dni);
+                        System.out.println("Ingrese el codigo de la factura que quiere modificar");
+                        String codigo = scanner.nextLine();
 
+                        facturas.eliminarFactura(codigo);
+
+                    } catch (DNInoEncontradoException | FacturaNoExistenteException a) {
+                        System.out.println(a.getMessage());
+                        System.out.println("¿Desea intentar de nuevo? S/N");
+                        if (!scanner.nextLine().equalsIgnoreCase("S")) {
+                            return;
+                        }
+                    }
                     break;
                 case 3:
+                    System.out.println("Para modificar una factura, se solicita el DNI del cliente al que corresponda");
+                    String dni1 = clientes.pedirDNIsinVerificacion();
+                    try {
+                        facturas.historialFacturasPorCliente(dni1);
+                        facturas.modificarFactura();
+                    } catch (DNInoEncontradoException a) {
+                        System.out.println(a.getMessage());
+                    }
 
                     break;
                 case 4:
-
+                    buscarFacturas(facturas,clientes);
                     break;
                 case 5:
 
@@ -567,7 +594,7 @@ public class MenuAdministrador {
                 case 6:
                     String dni = clientes.pedirDNIsinVerificacion();
                     try {
-                        gestorFactura.historialFacturasPorCliente(dni);
+                        facturas.historialFacturasPorCliente(dni);
 
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
@@ -579,4 +606,39 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
+    public void buscarFacturas(GestorFactura facturas, GestorPersona clientes) {
+
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("1.Buscar por codigo ");
+            System.out.println("2.Buscar por fecha ");
+            System.out.println("3.Buscar por cliente ");
+            System.out.println("0. Salir");
+            System.out.print("Ingrese una opción: ");
+
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 0:
+                    System.out.println("Saliendo...");
+                    break;
+                case 1:
+                    System.out.println("Ingrese el codigo de la factura");
+                    String codigo= scanner.nextLine();
+
+                    Factura factura= facturas.
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 0);
+    }
 }

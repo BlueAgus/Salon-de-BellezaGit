@@ -422,9 +422,8 @@ public class GestorFactura {
         });
 
         // info del cliente
-        Cliente cliente = new Cliente(null, null, dni, null, null);
         GestorPersona persona = new GestorPersona();
-        cliente = (Cliente) persona.buscarPersona(dni);
+        Cliente cliente = (Cliente) persona.buscarPersona(dni);
 
         // mostrar las facturas
         System.out.println("Historial de facturas para el cliente con DNI " + dni +
