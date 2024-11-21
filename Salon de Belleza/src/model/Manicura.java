@@ -19,10 +19,10 @@ public class Manicura extends Servicio  {
         this.tipoManicura = tipoManicura;
         this.disenio = false;
         this.precioDisenio = precioDisenio;
+        this.precio=calcularPrecio();
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-
 
     public static double getPrecioDisenio() {
         return precioDisenio;
