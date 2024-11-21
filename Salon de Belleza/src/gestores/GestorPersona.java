@@ -138,8 +138,6 @@ public class GestorPersona <T extends Persona>{
                 }
                 System.out.println(profesional);
                 verificarCarga(profesional, gestorServicio);
-                ManejoArchivos a = new ManejoArchivos();
-                a.EscribirUnProfesional(profesional);
                 break;
             case 3:
                 String contra2 = pedirContraseña();

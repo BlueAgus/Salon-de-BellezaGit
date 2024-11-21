@@ -704,8 +704,9 @@ public class MenuAdministrador {
         int opcion;
 
         do {
-            System.out.println("1. ");
-            System.out.println("2. ");
+            System.out.println("1. Modificar precio");
+            System.out.println("2. Aumentar precios");//aumentar todos o por clase
+
 
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
@@ -718,11 +719,12 @@ public class MenuAdministrador {
                     break;
                 case 1:
 
+
                     break;
                 case 2:
 
                     break;
-               
+
                 default:
                     System.out.println("Opción no válida.");
             }

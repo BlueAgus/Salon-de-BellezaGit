@@ -13,6 +13,7 @@ import java.util.Map;
 
 
 public final class GestorPrecios {
+
     private static final double precioDepiCera = 12000.0;
     private static final double precioDepiLaser = 18000.0;
 
