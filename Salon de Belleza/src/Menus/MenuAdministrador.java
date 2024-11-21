@@ -314,8 +314,8 @@ public class MenuAdministrador {
 
         do {
             System.out.println("1.Agregar");
-            System.out.println("2. ");
-            System.out.println("3. ");
+            System.out.println("2.Eliminar ");
+            System.out.println("3.Modificar ");
             System.out.println("4. ");
             System.out.println("5.Cambiar la disponibilidad de un servicio ");
             System.out.println("6.Mostrar todos los servicios del salon ");
@@ -332,10 +332,10 @@ public class MenuAdministrador {
                     servicios.agregarServicio();
                     break;
                 case 2:
-                    
+                     servicios.eliminarServicio();
                     break;
                 case 3:
-
+                    servicios.
                     break;
                 case 4:
 
