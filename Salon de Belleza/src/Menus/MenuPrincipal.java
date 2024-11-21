@@ -101,7 +101,8 @@ public class MenuPrincipal {
                         llenarAdministrador(administradores,servicios);
                     } else {
                         System.out.println("Bienvenido administrador ");
-                        if (iniciarSesion(administradores)) {
+                        String dni= iniciarSesion(administradores);
+                        if (dni!=null) {
                             menuAdministrador.mostrarMenu(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
                     }
@@ -111,7 +112,8 @@ public class MenuPrincipal {
                     if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        if (iniciarSesion(recepcionistas)) {
+                        String dni1=iniciarSesion(recepcionistas);
+                        if (dni1!=null) {
                             System.out.println("Bienvenido Recepcionista !");
                             menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
@@ -122,9 +124,10 @@ public class MenuPrincipal {
                     if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        if (iniciarSesion(profesionales)) {
+                        String dni3= iniciarSesion(profesionales);
+                        if (dni3!=null) {
                             System.out.println("Bienvenido profesional! ");
-                            menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
+                            menuProfesional.menuProfesional(clientes, turnos, dni3);
                         }
                     }
                     break;
@@ -144,7 +147,7 @@ public class MenuPrincipal {
         System.out.println("Bienvenido administrador ! ");
     }
 
-    public boolean pedirDatos(GestorPersona personaQueDeseaIngresar) {
+    public String pedirDatos(GestorPersona personaQueDeseaIngresar) {
         boolean tienecuenta = false;
         String dni = personaQueDeseaIngresar.pedirDNIsinVerificacion();
         String contra;
@@ -172,18 +175,26 @@ public class MenuPrincipal {
         } catch (DNInoEncontradoException e) {
             System.out.println(e.getMessage());
         }
-        return tienecuenta;
+        if(valido)
+        {
+            return dni;
+        }
+        else {
+            return null;
+        }
     }
 
-    public boolean iniciarSesion(GestorPersona personas) {
-        if (pedirDatos(personas)) {
-            System.out.println("Entrando..");//si es true anda
-            return true;
+    public String iniciarSesion(GestorPersona personas) {
+
+        String dni=pedirDatos(personas);
+
+        if (dni!=null) {
+            System.out.println("Entrando..");
         } else {
             System.out.println("No tienes cuenta aun...");
             System.out.println("Verifica que el administrador te haya cargado correctamente..");
-            return false;
         }
+        return dni;
     }
 
     public String pedirContraseña() {

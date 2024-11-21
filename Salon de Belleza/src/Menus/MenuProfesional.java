@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class MenuProfesional {
 
-    public void MenuProfesional(GestorPersona cliente, GestorTurno turnos) {
+    public void menuProfesional(GestorPersona cliente, GestorTurno turnos, String dniProfesional) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -15,8 +15,8 @@ public class MenuProfesional {
         do {
             System.out.println("Bienvenido al menu de Profesional ");
             System.out.println("1.Ver historial de turnos ");
-            System.out.println("2. ");
-            System.out.println("3. ");
+            System.out.println("2.Ver turnos próximos");
+            System.out.println("3. Ver turnos por cliente");
             System.out.println("4. ");
             System.out.println("5. ");
             System.out.println("6. ");
@@ -30,13 +30,13 @@ public class MenuProfesional {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    S
-                    turnos.historialTurnosXprofesional()
+                    turnos.historialTurnosXprofesional(dniProfesional);
                     break;
                 case 2:
-
+                    turnos.buscarTurnosXdniProfesionalVigentes(dniProfesional);
                     break;
                 case 3:
+                    
 
                     break;
                 case 4:
