@@ -332,9 +332,7 @@ public class MenuAdministrador {
                     servicios.agregarServicio();
                     break;
                 case 2:
-                    TipoServicio tipoServicio= servicios.pedirTipoServicio();
-
-                    ///servicios.eliminarServicio();
+                    
                     break;
                 case 3:
 
