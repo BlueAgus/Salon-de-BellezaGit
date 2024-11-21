@@ -18,7 +18,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class GestorPersona <T extends Persona>{
+public class GestorPersona<T extends Persona> {
 
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas;
@@ -733,9 +733,7 @@ public class GestorPersona <T extends Persona>{
     }*/
 
 
-
-
-    public void guardarEnArchivoJSON(String rutaArchivo ) {
+    public void guardarEnArchivoJSON(String rutaArchivo) {
         JSONArray jsonArray = new JSONArray();
 
         // Convertir cada objeto Persona a un JSONObject
