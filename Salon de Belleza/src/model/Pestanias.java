@@ -33,8 +33,8 @@ public class Pestanias extends Servicio{
 
     @Override
     public String toString() {
-        return "PESTAÑAS " + this.tipoPestanias +
-                " \nPrecio= " + calcularPrecio() +
-                " \nDuracion=" + duracion ;
+        return "\n| PESTAÑAS:" + this.tipoPestanias +
+                " \n| Precio: " + calcularPrecio() +
+                " \n| Duracion:" + duracion ;
     }
 }

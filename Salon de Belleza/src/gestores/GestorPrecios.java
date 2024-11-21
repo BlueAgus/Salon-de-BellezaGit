@@ -10,8 +10,10 @@ import model.Factura;
 import model.Manicura;
 import model.Pestanias;
 
+import javax.swing.*;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.HashMap;
@@ -162,8 +164,8 @@ public final class GestorPrecios {
         Gson gson = new Gson();
         try (FileWriter writer = new FileWriter(nombreArchivo)) {
             gson.toJson(precios, writer);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error al guardar archivo");
         }
     }
 
@@ -176,8 +178,8 @@ public final class GestorPrecios {
                 precios.clear();
                 precios.putAll(preciosCargados);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error al cargar archivo ");
         }
     }
 }
