@@ -29,6 +29,7 @@ public class GestorCliente {
     public void setClientes(List<Cliente> clientes) { this.clientes = clientes; }
 
     public boolean agregarPersona(GestorServicio gestorServicio) {
+
         boolean cargado = false;
 
         String dni ;
@@ -40,7 +41,7 @@ public class GestorCliente {
                 System.out.printf(e.getMessage());
             }
         }
-
+        
         String nombre = pedirNombre();
         String apellido = pedirApellido();
 

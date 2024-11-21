@@ -25,9 +25,7 @@ public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static Scanner scanner = new Scanner(System.in);
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
-            .create();
+    Gson gson = new Gson();
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorTurno() {
@@ -139,9 +137,7 @@ public class GestorTurno {
                 scanner.nextLine();
             }
         }
-
         return turnosDelCliente.get(opc).getCod_turno();
-
     }
 
     public void cancelarTurnosXdia(LocalDate fecha, GestorCliente clientes, String codServicio) {

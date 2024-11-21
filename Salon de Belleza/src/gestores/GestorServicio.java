@@ -445,6 +445,7 @@ public class GestorServicio {
         return disenio;
     }
 
+
     public void reportarFalla(GestorCliente cliente, GestorTurno gestorTurno) {///
         Servicio servicio = null;
         try {
