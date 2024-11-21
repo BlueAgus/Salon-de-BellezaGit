@@ -232,7 +232,7 @@ public class GestorFactura {
             } else if (opcion == 0) {
                 System.out.println("Ingrese el código del turno:");
                 String codTurno = scan.nextLine();
-                Turno nuevoTurno = turnos.buscarTurno(codTurno);
+                Turno nuevoTurno = turnos.buscarTurnoXcodigo(codTurno);
                 factura.agregarTurno(nuevoTurno);
                 System.out.println("Turno agregado.");
             } else {
