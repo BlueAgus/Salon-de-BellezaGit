@@ -7,9 +7,6 @@ import excepciones.FacturaNoExistenteException;
 import gestores.*;
 import model.*;
 
-import javax.imageio.stream.FileCacheImageInputStream;
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.InputMismatchException;
@@ -52,7 +49,7 @@ public class MenuAdministrador {
                     menuTurnos(turnos, clientes, profesionales, servicios);
                     break;
                 case 4:
-                    menuFacturas(facturas, clientes);
+                    menuFacturas(facturas, clientes,turnos );
                     break;
                 case 5:
 
@@ -697,15 +694,15 @@ public class MenuAdministrador {
 
                             break;
                         case 3:
-                            int año = 0;
+                            int año1 = 0;
 
                             while (true) {
                                 try {
 
                                     System.out.println("Ingrese el año: ");
-                                    año = scanner.nextInt();
+                                    año1 = scanner.nextInt();
 
-                                    if (año < 2024 || año > 2050) {
+                                    if (año1 < 2024 || año1 > 2050) {
                                         System.out.println("Error en la fecha!");
                                     } else {
                                         break;
@@ -715,7 +712,7 @@ public class MenuAdministrador {
                                 }
                             }
 
-                            System.out.println("Ganancia del año "+ año+ facturas.gananciaXaño(año));
+                            System.out.println("Ganancia del año "+ año1 + facturas.gananciaXaño(año1));
 
                             break;
                         case 0:
