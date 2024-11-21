@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import static model.TurnoArchivo.convertirTurno;
 
 public class GestorTurno {
 
@@ -644,20 +643,18 @@ public class GestorTurno {
     }
 
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
-/*
-    public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
 
+    public HashMap<String, List<Turno>> leerArchivoTurnos() {
+/*
         try (FileReader reader = new FileReader(archivoTurnos)) {
             // Deserializar como HashMap<String, List<Turno>>
-            Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {
-            }.getType();
-            HashMap<String, List<Turno>> mapaTemporal = gson.fromJson(reader, tipoMapa);
+            Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {}.getType();
 
             // Convertir las claves de String a LocalDate
             HashMap<LocalDate, List<Turno>> listaTurnos = new HashMap<>();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
 
-            for (Map.Entry<String, List<Turno>> entry : mapaTemporal.entrySet()) {
+            for (Map.Entry<String, List<Turno>> entry : listaTurnos.entrySet()) {
                 LocalDate fecha = LocalDate.parse(entry.getKey(), formatter);
                 listaTurnos.put(fecha, entry.getValue());
             }
@@ -665,19 +662,23 @@ public class GestorTurno {
         } catch (IOException e) {
             System.err.println("Error al cargar el archivo");
             return new HashMap<>(); // Devuelve un mapa vacío en caso de error
-        }
+        }*/
+        return null
+
+
+
+                ;
     }
 
-    public void guardarEnArchivoTurnos(HashMap<LocalDate, List<Turno>> listaTurnos) {
+    public void guardarEnArchivoTurnos(HashMap<String, List<Turno>> listaTurnos) {
         // Crear instancia de Gson para convertir a JSON con formato bonito
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try (FileWriter writer = new FileWriter("turnos.json")) {
-            // Convertir el mapa de turnos a una lista de TurnoArchivo
-            List<TurnoArchivo> turnosConvertidos = convertirMapa(listaTurnos);
+
 
             // Convertir la lista de TurnoArchivo a formato JSON
-            String json = gson.toJson(turnosConvertidos);
+            String json = gson.toJson(listaTurnos);
 
             // Escribir el JSON en el archivo
             writer.write(json);
@@ -719,12 +720,14 @@ public class GestorTurno {
                 turnoOriginal.getDni_profesional(),
                 turnoOriginal.getDni_cliente()
         );
-    }
+    }*/
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
-    public MapaGenerico<LocalDate, List<Turno>> getListaTurnos() {
+    public MapaGenerico<String, List<Turno>> getListaTurnos() {
         return listaTurnos;
     }
 
-*/
+    public void setListaTurnos(HashMap<String, List<Turno>> listaTurnos) {
+        this.listaTurnos.setMapa(listaTurnos);
+    }
 }

@@ -116,19 +116,21 @@ public class MenuPrincipal {
 
     public void inicioSistema(GestorAdministrador admin, GestorCliente clientes, GestorRecepcionista recepcionista, GestorProfesional profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
-        //inicializar personas
-        profesionales.leerArchivoProfesionales();
-        admin.leerArchivoAdministradores();
-        recepcionista.leerArchivoRecepcionistas();
-        clientes.leerArchivoClientes();
+        profesionales.setProfesionales(profesionales.leerArchivoProfesionales());
+        admin.setAdministradores(administradores.leerArchivoAdministradores());
+        recepcionista.setAlmacenPersonas(recepcionista.leerArchivoRecepcionistas());
+        clientes.setClientes(clientes.leerArchivoClientes());
         //inicializar servicio
-        //servicios.LeerArchivo(archivoServicios);
+        servicios.LeerArchivo(archivoServicios);
         //turnos
-        //turnos.leerArchivoTurnos();
+        turnos.setListaTurnos(turnos.leerArchivoTurnos());
+
         //factura
         facturas.leerDesdeGson();
+
         // precios
         GestorPrecios.leerPreciosDesdeArchivo(archivoPrecios);
+    }
     }
 
     public void cerrarSistema(GestorAdministrador admin, GestorCliente clientes, GestorRecepcionista recepcionista, GestorProfesional profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
@@ -161,7 +163,6 @@ public class MenuPrincipal {
         String contrapedida;
         boolean valido = false;
 
-
         do {
             try {
                 if (administradores.buscarPersonas(dni)) {
@@ -188,7 +189,10 @@ public class MenuPrincipal {
             } catch (DNInoEncontradoException e) {
                 throw new RuntimeException(e);
             }
-
+            if(!valido)
+            {
+                System.out.println("Vuelva a intentar");
+            }
         } while (!valido);
 
         if (valido) {

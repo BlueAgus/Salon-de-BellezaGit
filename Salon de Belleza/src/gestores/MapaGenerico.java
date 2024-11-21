@@ -33,4 +33,7 @@ public class MapaGenerico<K, V>{
         return mapa;
     }
 
+    public void setMapa(Map<K, V> mapa) {
+        this.mapa = mapa;
+    }
 }

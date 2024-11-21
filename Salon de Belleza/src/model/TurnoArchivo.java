@@ -21,13 +21,16 @@ public class TurnoArchivo {
         this.dni_cliente = dni_cliente;
     }
 
-    public static TurnoArchivo convertirTurno(Turno turnoOriginal) {
+   /* public static TurnoArchivo convertirTurno(Turno turnoOriginal) {
         // Formateadores para fecha y hora
         DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
 
         // Convertir LocalDate y LocalTime a String
         String fecha = turnoOriginal.getFecha().format(formatoFecha);
+        String horario = turnoOriginal.getHorario().format(formatoHora);
+
+        String fecha = Turno.convertirLocalDateAString(formatoFecha);
         String horario = turnoOriginal.getHorario().format(formatoHora);
 
         // Crear y retornar el nuevo objeto TurnoConStrings
@@ -39,6 +42,6 @@ public class TurnoArchivo {
                 turnoOriginal.getDni_profesional(),
                 turnoOriginal.getDni_cliente()
         );
-    }
+    }*/
 }
 

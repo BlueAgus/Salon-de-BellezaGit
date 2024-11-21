@@ -357,6 +357,8 @@ public class GestorAdministrador {
             //  dígitos
             else if (dni.length() != 8) {
                 System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            } else {
+                dnivalido=true;
             }
         }
         return dni;

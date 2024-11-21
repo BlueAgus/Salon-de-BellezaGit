@@ -453,7 +453,9 @@ public class GestorServicio {
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }
-        gestorTurno.cancelarTurnosXdia(LocalDate.now(), cliente, servicio.getCodigo_servicio());
+        /*
+        LocalDate hoy=Turno.convertirStringALocalDate(LocalDate.now());
+        gestorTurno.cancelarTurnosXdia(hoy, cliente, servicio.getCodigo_servicio());*/
     }
 
    ////////////////////////////////////////GET ////////////////////////////////////////////////////
