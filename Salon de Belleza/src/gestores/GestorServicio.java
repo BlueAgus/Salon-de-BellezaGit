@@ -128,7 +128,7 @@ public class GestorServicio {
         while (continuarModificando) {
             System.out.println("¿Qué te gustaría modificar?");
             System.out.println("1. Tipo de servicio");
-            // System.out.println("2. Precio");
+            System.out.println("2. Precio");
             System.out.println("3. Duración");
             System.out.println("4. Salir");
             int opcion = scanner.nextInt();
@@ -158,14 +158,12 @@ public class GestorServicio {
 
     public void modificarServicioParametro(Servicio servicio) {
 
-
         boolean continuarModificando = true;
         while (continuarModificando) {
             System.out.println("¿Qué te gustaría modificar?");
             System.out.println("1. Tipo de servicio");
-            // System.out.println("2. Precio");
-            System.out.println("3. Duración");
-            System.out.println("4. Salir");
+            System.out.println("2. Duración");
+            System.out.println("0. Salir");
             int opcion = scanner.nextInt();
             scanner.nextLine();
 
@@ -174,12 +172,9 @@ public class GestorServicio {
                     servicio.setTipoService(pedirTipoServicio());
                     break;
                 case 2:
-                    //  servicio.setPrecio(pedirPrecio());
-                    break;
-                case 3:
                     servicio.setDuracion(pedirDuracion());
                     break;
-                case 4:
+                case 3:
                     continuarModificando = false;
                     break;
                 default:
@@ -221,7 +216,6 @@ public class GestorServicio {
         for (int i = 0; i < almacenServicios.getAlmacen().size(); i++) {
             System.out.println(i + "- " + almacenServicios.getAlmacen().get(i));
         }
-
         int opc = 0;
         while (true) {
 
@@ -247,7 +241,6 @@ public class GestorServicio {
                 scanner.nextLine();
             }
         }
-
         return almacenServicios.getAlmacen().get(opc).getCodigo_servicio();
     }
 
@@ -261,7 +254,7 @@ public class GestorServicio {
             System.out.println("2. Pestañas");
             System.out.println("3. Depilación");
             int opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
+            scanner.nextLine();
 
             switch (opcion) {
                 case 1:
@@ -452,17 +445,17 @@ public class GestorServicio {
         return disenio;
     }
 
-    public void reportarFalla(GestorPersona gestorCliente, GestorTurno gestorTurno) {///
+    public void reportarFalla(GestorCliente cliente, GestorTurno gestorTurno) {///
         Servicio servicio = null;
         try {
             servicio = buscarServicio();
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }
-        gestorTurno.cancelarTurnosXdia(LocalDate.now(), gestorCliente, servicio.getCodigo_servicio());
+        gestorTurno.cancelarTurnosXdia(LocalDate.now(), cliente, servicio.getCodigo_servicio());
     }
 
-    ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
+   ////////////////////////////////////////GET ////////////////////////////////////////////////////
 
     public GestorAlmacen<Servicio> getAlmacenServicios() {
         return almacenServicios;
@@ -499,11 +492,7 @@ public class GestorServicio {
 
             return servicios;
 
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
+        }catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return null;

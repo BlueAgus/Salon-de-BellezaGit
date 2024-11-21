@@ -26,9 +26,8 @@ import java.util.stream.Collectors;
 public class GestorFactura {
 
     private GestorAlmacen<Factura> historial;
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
-            .create();
+    Gson gson = new Gson();
+
     private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////

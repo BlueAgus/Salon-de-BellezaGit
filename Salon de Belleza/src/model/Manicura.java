@@ -12,7 +12,6 @@ public class Manicura extends Servicio  {
     private static boolean disenio;
     private static double precioDisenio = GestorPrecios.getPrecioDisenio();
 
-
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
     public Manicura(LocalTime duracion, TipoManicura tipoManicura) {
@@ -32,7 +31,6 @@ public class Manicura extends Servicio  {
     public static void setPrecioDisenio(double precioDisenio) {
         Manicura.precioDisenio = precioDisenio;
     }
-
 
 
     @Override
