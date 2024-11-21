@@ -64,6 +64,7 @@ public class GestorPersona {
                 System.out.println(e.getMessage());
             }
         }
+
         switch (tipoPersona) {
             case 1:
                 Cliente cliente = new Cliente(nombre, apellido, dni, genero, telefono);
@@ -79,7 +80,8 @@ public class GestorPersona {
                 break;
             case 2:
                 int opcion = 0;
-                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono);
+                String contra=pedirContraseña();
+                Profesional profesional = new Profesional(nombre, apellido, dni, genero, telefono,contra);
 
                 GestorTurno aux = new GestorTurno();
                 String e = aux.pedirCodServicio(gestorServicio);
@@ -113,7 +115,8 @@ public class GestorPersona {
                 a.EscribirUnProfesional(profesional);
                 break;
             case 3:
-                Recepcionista recepcionista = new Recepcionista(nombre, apellido, dni, genero, telefono);
+                String contra2=pedirContraseña();
+                Recepcionista recepcionista = new Recepcionista(nombre, apellido, dni, genero, telefono,contra2);
                 cargado = true;
                 if (almacenPersonas.agregar(recepcionista)) {
                     System.out.printf("\nRECEPCIONISTA AGREGADO EXITOSAMENTE \n");
@@ -124,7 +127,8 @@ public class GestorPersona {
                 verificarCarga(recepcionista, gestorServicio);
                 break;
             case 4:
-                Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono);
+                String contra3=pedirContraseña();
+                Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono,contra3);
                 cargado = true;
                 if (almacenPersonas.agregar(administrador)) {
                     System.out.printf("\nADMINISTRADOR AGREGADO EXITOSAMENTE \n");
@@ -151,7 +155,6 @@ public class GestorPersona {
         }
         return false;
     }
-
     public Persona buscarPersona(String dni) throws DNInoEncontradoException {
         for (Persona p : almacenPersonas.getAlmacen()) {
             if (p.getDni().equals(dni)) {
@@ -162,10 +165,6 @@ public class GestorPersona {
     }
 
 
-
-
-
-
     public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         boolean continuarModificando = true;
@@ -174,7 +173,6 @@ public class GestorPersona {
             modificarProfesional((Profesional) persona,gestorServicio);
         } else {
             while (continuarModificando) {
-
                 System.out.println("¿Qué te gustaría modificar?");
                 System.out.println("1. Nombre");
                 System.out.println("2. Apellido");
@@ -488,6 +486,64 @@ public class GestorPersona {
         return genero;  // Retornar el String que contiene el género válido
     }
 
+    //contrasenia entre 6 y 12 caracteres!!
+    public String pedirContraseña() {
+        String contraseña = "";
+        do {
+            System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
+            contraseña = scanner.nextLine();
+
+            // Validación de longitud de la contraseña y de que contenga al menos un número
+            if (contraseña.length() < 6 || contraseña.length() > 12) {
+                System.out.println("Tu contraseña es muy débil o tiene un tamaño incorrecto. Vuelve a intentar.");
+            } else if (!contraseña.matches(".\\d.")) {  // Verifica que haya al menos un número
+                System.out.println("Tu contraseña debe contener al menos un número. Vuelve a intentarlo.");
+            }
+        } while (contraseña.length() < 6 || contraseña.length() > 12 || !contraseña.matches(".\\d.")); // Bucle sigue hasta que la contraseña sea válida
+
+        return contraseña;
+    }
+    public String pedirContraseñaNueva(String contraseniaVieja) {
+        String nuevaContrasenia = "";
+        int opcion;
+
+        do {
+            System.out.println("La contraseña actual es: " + contraseniaVieja);
+            pedirContraseña();
+
+            // Validación: Contraseña no puede ser vacía y debe ser diferente
+            if (nuevaContrasenia.equals(contraseniaVieja)) {
+                System.out.println("Has ingresado la misma contraseña. Intenta de nuevo.");
+            } else if (nuevaContrasenia.isEmpty()) {
+                System.out.println("La contraseña no puede estar vacía. Intenta de nuevo.");
+            } else if (!nuevaContrasenia.matches(".\\d.")) {//tiene al menos un num?
+                System.out.println("La contraseña debe contener al menos un número. Intenta de nuevo.");
+            } else if (nuevaContrasenia.length() < 6 || nuevaContrasenia.length() > 12) {
+                System.out.println("La contraseña debe tener entre 6 y 12 caracteres. Intenta de nuevo.");
+            } else {
+                System.out.println("Has establecido la nueva contraseña: " + nuevaContrasenia);
+                System.out.println("¿Deseas modificarla de nuevo?");
+                System.out.println("1. Sí, deseo modificarla de nuevo.");
+                System.out.println("2. No, estoy satisfecho.");
+
+                // Validar entrada del usuario
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Por favor, selecciona una opción válida (1 o 2):");
+                    scanner.next();
+                }
+                opcion = scanner.nextInt();scanner.nextLine();
+                if (opcion == 2) {
+                    System.out.println("Contraseña definitiva establecida.");
+                    break;
+                } else if (opcion != 1) {
+                    System.out.println("Opción no válida. Intenta de nuevo.");
+                }
+            }
+        } while (true);
+
+        return nuevaContrasenia;
+    }
+
     ///////VERIFICACIONES
     public boolean verificarSiExisteAdministrador( String dni) throws DNInoEncontradoException {
         List<Administrador> aux=leerArchivoAdministradores();
@@ -540,7 +596,7 @@ public class GestorPersona {
 
     /////////////////////////MANEJO DE ARCHIVOS DE PERSONAS.//////////////////////////
     //ADMINISTRADOR
-public void guardarArchivoAdministradores(List<Administrador> administradores) {
+   public void guardarArchivoAdministradores(List<Administrador> administradores) {
     Gson gson = new Gson();
 
     try (FileWriter fileWriter = new FileWriter("administradores.json")) {
@@ -551,7 +607,7 @@ public void guardarArchivoAdministradores(List<Administrador> administradores) {
         System.out.println("No se puede guardar el archivo: " + e.getMessage());
     }
 }
-public List<Administrador> leerArchivoAdministradores() {
+   public List<Administrador> leerArchivoAdministradores() {
         Gson gson = new Gson();
         List<Administrador> listaAdministradores = new ArrayList<>();
 
@@ -586,7 +642,7 @@ public List<Administrador> leerArchivoAdministradores() {
         }
     }
     //profesional
-public List<Profesional> leerArchivoProfesionales() {
+    public List<Profesional> leerArchivoProfesionales() {
     Gson gson = new Gson();
     List<Profesional> listaProfesionales = new ArrayList<>();
     try (FileReader fileReader = new FileReader("profesionales.json")) {
@@ -597,7 +653,7 @@ public List<Profesional> leerArchivoProfesionales() {
     }
     return listaProfesionales;
 }
-public void guardarArchivoProfesionales(List<Profesional> profesionales) {
+    public void guardarArchivoProfesionales(List<Profesional> profesionales) {
         Gson gson = new Gson();
         try (FileWriter fileWriter = new FileWriter("profesionales.json")) {
             gson.toJson(profesionales, fileWriter);
@@ -606,7 +662,7 @@ public void guardarArchivoProfesionales(List<Profesional> profesionales) {
         }
     }
    //Clientes
-public void guardarArchivoClientes(List<Cliente> clientes) {
+    public void guardarArchivoClientes(List<Cliente> clientes) {
     Gson gson = new Gson();
     try (FileWriter fileWriter = new FileWriter("clientes.json")) {
         gson.toJson(clientes, fileWriter);
@@ -614,7 +670,7 @@ public void guardarArchivoClientes(List<Cliente> clientes) {
         System.out.println("No se puede guardar el archivo: " + e.getMessage());
     }
 }
-public List<Cliente> leerArchivoClientes() {
+    public List<Cliente> leerArchivoClientes() {
         Gson gson = new Gson();
         List<Cliente> listaClientes = new ArrayList<>();
         try (FileReader fileReader = new FileReader("clientes.json")) {
