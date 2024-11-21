@@ -30,7 +30,6 @@ public class MenuAdministrador {
             System.out.println("3.Menu de turnos");
             System.out.println("4.Menu de facturas");
             System.out.println("5. ");
-            System.out.println("6. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -55,14 +54,10 @@ public class MenuAdministrador {
                 case 5:
 
                     break;
-                case 6:
-
-                    break;
                 default:
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
-
     }
 
     public void menuUsuarios(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio gestorServicio) {
@@ -121,8 +116,8 @@ public class MenuAdministrador {
             System.out.println("RECEPCIONISTA");
             System.out.println("1.Agregar");
             System.out.println("2.Eliminar");
-            System.out.println("3.Buscar por su dni ");
-            System.out.println("4.Modificar datos ");
+            System.out.println("3.Buscar por su dni");
+            System.out.println("4.Modificar datos");
             System.out.println("5. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
@@ -706,7 +701,6 @@ public class MenuAdministrador {
         do {
             System.out.println("1. Modificar precio");
             System.out.println("2. Aumentar precios");//aumentar todos o por clase
-
 
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
