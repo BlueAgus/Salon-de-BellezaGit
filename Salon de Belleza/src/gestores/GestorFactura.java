@@ -1,6 +1,7 @@
 package gestores;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import enumeraciones.TipoDePago;
@@ -18,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class GestorFactura {
 
     private GestorAlmacen<Factura> historial;
-    Gson gson;
+ Gson gson;
     private final String nombreArchivoGson;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -477,11 +479,11 @@ public class GestorFactura {
 
     ////////////////////////////////////////////////////////MANEJO DE ARCHIVOS ////////////////////////////////////////////////////
     //mirar
-    public void guardarEnArchivo() {
+    public void guardarEnArchivo(List<Factura> facturas) {
 
         try {
             FileWriter file = new FileWriter(this.nombreArchivoGson);
-            String json = gson.toJson(getHistorial());
+            String json = gson.toJson(facturas);
             file.write(json);
             file.close();
             System.out.println("Historial de facturas cargados con exito!");

@@ -34,6 +34,7 @@ public class MenuPrincipal {
         GestorFactura facturas = new GestorFactura();
 
 
+
         MenuAdministrador menuAdministrador = new MenuAdministrador();
         MenuRecepcionista menuRecepcionista = new MenuRecepcionista();
         MenuProfesional menuProfesional = new MenuProfesional();
@@ -145,9 +146,9 @@ public class MenuPrincipal {
 
         servicios.EscribirServiciosEnArchivo(archivoServicios,servicios.getAlmacenServicios().getAlmacen());
         //turnos
-        turnos.guardarEnArchivoTurnos();
+        turnos.guardarEnArchivoTurnos(turnos.getListaTurnos());
         //factura
-        facturas.guardarEnArchivo();
+        facturas.guardarEnArchivo(facturas.getHistorial().getAlmacen());
         // precios
         GestorPrecios.guardarPreciosEnArchivo(archivoPrecios);
         System.out.println("Se ha cerrado el sistema. ");

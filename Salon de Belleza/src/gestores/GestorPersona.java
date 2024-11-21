@@ -23,11 +23,11 @@ public class GestorPersona<T extends Persona> {
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Persona> almacenPersonas;
 
-    private <T extends Persona> GestorPersona crearGestorParaClase(Class<T> tipoPersona) {
+    private <T extends Persona> GestorPersona crearGestorParaClase(Class<T> tipoPersona, String nombreArchivo) {
         GestorPersona gestor = new GestorPersona();
 
         // Leer personas desde un archivo específico para la clase
-        List<Persona> personas = gestor.leerArchivoPersona(); // Ajusta esta parte si el archivo depende de la clase
+        List<Persona> personas = gestor.leerArchivoPersona(nombreArchivo); // Ajusta esta parte si el archivo depende de la clase
         List<T> personasFiltradas = filtrarPorClase(personas, tipoPersona);
 
         // Configurar el almacén

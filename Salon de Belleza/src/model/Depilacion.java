@@ -1,6 +1,6 @@
 package model;
 
-import Interfaces.MantenimientoMaquinas;
+
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;

@@ -661,7 +661,7 @@ public class GestorTurno {
         }
     }
 
-    public void guardarEnArchivoTurnos() {
+    public void guardarEnArchivoTurnos(MapaGenerico<LocalDate, List<Turno>> listaTurnos) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
         try (FileWriter writer = new FileWriter("turnos.json")) {
             gson.toJson(listaTurnos, writer);
