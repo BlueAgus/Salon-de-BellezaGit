@@ -18,7 +18,7 @@ public class MenuAdministrador {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void mostrarMenu(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void mostrarMenu(Administrador administrador, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -40,7 +40,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    menuUsuarios(clientes, profesionales, recepcionista, administrador, servicios);
+                    menuUsuarios(administrador, clientes, profesionales, recepcionista, administradores, servicios);
                     break;
                 case 2:
                     menuServicio(servicios, clientes, turnos);
@@ -60,7 +60,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuUsuarios(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio gestorServicio) {
+    public void menuUsuarios(Administrador administrador, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -70,7 +70,7 @@ public class MenuAdministrador {
             System.out.println("1.Recepcionista");
             System.out.println("2.Profesionales");
             System.out.println("3.Clientes");
-            System.out.println("4.");
+            System.out.println("4. Modificar mis datos.");
             System.out.println("5.");
             System.out.println("6. ");
             System.out.println("0. Salir");
@@ -93,6 +93,7 @@ public class MenuAdministrador {
                     subMenuClientes(clientes, gestorServicio);
                     break;
                 case 4:
+                     administradores.modificarPersona(administrador, gestorServicio);
 
                     break;
                 case 5:
