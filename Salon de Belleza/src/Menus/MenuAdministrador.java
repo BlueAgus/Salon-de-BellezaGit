@@ -7,10 +7,11 @@ import excepciones.FacturaNoExistenteException;
 import gestores.*;
 import model.*;
 
-import javax.imageio.stream.FileCacheImageInputStream;
-import java.io.StringReader;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MenuAdministrador {
@@ -48,7 +49,7 @@ public class MenuAdministrador {
                     menuTurnos(turnos, clientes, profesionales, servicios);
                     break;
                 case 4:
-                    menuFacturas(facturas, clientes);
+                    menuFacturas(facturas, clientes,turnos );
                     break;
                 case 5:
 
@@ -532,7 +533,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuFacturas(GestorFactura facturas, GestorPersona clientes) {
+    public void menuFacturas(GestorFactura facturas, GestorPersona clientes, GestorTurno gestorTurno) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -543,6 +544,8 @@ public class MenuAdministrador {
             System.out.println("3.Modificar ");
             System.out.println("4.Buscar");
             System.out.println("5.Ver historial de facturas");
+            System.out.println("6.Ver historial de facturas por cliente");
+            System.out.println("7.Resumen de ganancia");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -617,6 +620,108 @@ public class MenuAdministrador {
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
+                    break;
+                case 7:
+                    int opc = 0;
+                    while (true) {
+                        System.out.println("Seleccione una opción: ");
+                        System.out.println("1- Ganancia de un día específico");
+                        System.out.println("2- Ganancia de un mes específico");
+                        System.out.println("3- Ganancia de un año específico");
+                        System.out.println("0- SALIR");
+
+
+                        try {
+                            opc = scanner.nextInt();
+
+                            if (opc < 0 || opc > 3) {
+                                System.out.println("Opcion no valida");
+                            } else {
+                                break;
+                            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("OPCION INVALIDA");
+                        }
+
+                    }
+
+                    switch (opc) {
+                        case 1:
+                            LocalDate fecha = gestorTurno.pedirFecha();
+
+                            if (fecha == null) {
+                                break;
+                            } else {
+                                System.out.println("Ganancia del día: " + fecha + " " + facturas.gananciaXdia(fecha));
+                            }
+
+                            break;
+                        case 2:
+
+                            int mes = 0;
+                            int año = 0;
+
+                            while (true) {
+                                try {
+                                    System.out.println("Ingrese el mes: ");
+                                    mes = scanner.nextInt();
+
+                                    System.out.println("Ingrese el año: ");
+                                    año = scanner.nextInt();
+
+
+                                    if (mes < 0 || mes > 12 || año < 2024 || año > 2050) {
+                                        System.out.println("Error en la fecha!");
+                                    } else {
+                                        LocalDate fechaHoy = LocalDate.now();
+
+                                        LocalDate fechaIngresada = LocalDate.of(año, mes, 1);
+
+                                        // Verificar si la fecha ingresada es posterior a la actual
+                                        if (fechaIngresada.isAfter(fechaHoy)) {
+                                            System.out.println("La fecha ingresada es posterior a hoy.");
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                } catch (InputMismatchException e) {
+                                    System.out.println("Opcion invalida, ingrese una opcion valida");
+                                }
+
+                                System.out.println("Ganancia: " + Month.of(mes).getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault()) + " " + año + ": " + facturas.gananciaXmes(mes, año));
+
+                            }
+
+                            break;
+                        case 3:
+                            int año1 = 0;
+
+                            while (true) {
+                                try {
+
+                                    System.out.println("Ingrese el año: ");
+                                    año1 = scanner.nextInt();
+
+                                    if (año1 < 2024 || año1 > 2050) {
+                                        System.out.println("Error en la fecha!");
+                                    } else {
+                                        break;
+                                    }
+                                } catch (InputMismatchException e) {
+                                    System.out.println("Opcion invalida, ingrese una opcion valida");
+                                }
+                            }
+
+                            System.out.println("Ganancia del año "+ año1 + facturas.gananciaXaño(año1));
+
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            System.out.println("Opcion invalida");
+                    }
+
+
                     break;
                 default:
                     System.out.println("Opción no válida.");
