@@ -121,6 +121,7 @@ public class GestorFactura {
             if (seCargo) {
                 System.out.println("La factura fue ingresada correctamente, aqui tiene los detalles:");
                 System.out.println(factura);
+                verificarCarga(factura, scan);
             }
 
         } catch (TurnoExistenteException | FacturaYaExistenteException e) {
@@ -214,6 +215,30 @@ public class GestorFactura {
         }
     }
 
+    public void verificarCarga(Factura factura, Scanner scanner) {
+        int opcion;
+        do {
+            System.out.println("¿Deseas modificar algo de la factura?");
+            System.out.println("1. Sí");
+            System.out.println("2. No");
+
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    modificarFactura();
+                    break;
+                case 2:
+                    System.out.println("....");
+                    break;
+                default:
+                    System.out.println("Opción no válida, selecciona nuevamente.");
+                    break;
+            }
+        } while (opcion != 2 && opcion != 1);
+    }
+
     private void gestionarTurnos(Factura factura, Scanner scan, GestorTurno turnos) {
         try {
             System.out.println("Turnos actuales:");
@@ -283,7 +308,7 @@ public class GestorFactura {
         factura.setFecha(nuevaFecha);
     }
 
-    private Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
+    public Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
 
 
         for (Factura factu : historial.getAlmacen()) {
@@ -421,9 +446,8 @@ public class GestorFactura {
         });
 
         // info del cliente
-        Cliente cliente = new Cliente(null, null, dni, null, null);
         GestorPersona persona = new GestorPersona();
-        cliente = (Cliente) persona.buscarPersona(dni);
+        Cliente cliente = (Cliente) persona.buscarPersona(dni);
 
         // mostrar las facturas
         System.out.println("Historial de facturas para el cliente con DNI " + dni +
@@ -446,5 +470,8 @@ public class GestorFactura {
         return nombreArchivoGson;
     }
 
+
+
 }
+
 
