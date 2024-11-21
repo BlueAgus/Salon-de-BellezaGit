@@ -67,7 +67,6 @@ public final class GestorPrecios {
         mapaPrecios.put(tipo, nuevoPrecio);
     }
 
-
     // solo va a usarse para  manicura
     public static double agregarDisenio(Enum<?> tipo) {
         if (!(tipo instanceof TipoManicura)) {
@@ -88,8 +87,6 @@ public final class GestorPrecios {
         }
         precioDisenio = nuevoPrecioDisenio;
     }
-
-
 
     public static void aumentarTodosLosPrecios(double porcentaje) {
         if (porcentaje < 0) {
@@ -153,41 +150,5 @@ public final class GestorPrecios {
 
         // Retornar el valor del descuento aplicado
     }
-
-
-
-    ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
-/*
-    public static double ajustarPrecioPorTipoPago(double precioBase, TipoDePago tipoPago) {
-        int porcentajeAjuste = tipoPago.getPorcentajeAjuste();
-        double ajuste = (porcentajeAjuste / 100.0) * precioBase;
-        return precioBase + ajuste;
-    }*/
-    // no estoy segura si manejar lo de tipos de pago aca porque tendria que hacer otros atributos cargarlo
-    //con mas cosas y capaz asi como esta en el enum esta bien.
-
-    /*
-     public static void aplicarDescuento(String codigoFactura, double porcentajeDescuento, List<Factura> facturas) throws CodigoNoEncontradoException {
-
-        if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
-            throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100.");
-        }
-
-       // buscar factura con el codigo
-        Factura factura = facturas.stream()
-                .filter(f -> f.getCodigoFactura().equals(codigoFactura))
-                .findFirst()
-                .orElseThrow(() -> new CodigoNoEncontradoException("Factura con código " + codigoFactura + " no encontrada."));
-
-        // Calcular y aplicar el descuento
-        double precioOriginal = factura.getPrecioFinal();
-        double descuento = precioOriginal * (porcentajeDescuento / 100);
-        double nuevoPrecioFinal = precioOriginal - descuento;
-
-        // Actualizar el precio final en la factura
-        factura.setPrecioFinal(nuevoPrecioFinal);
-
-        System.out.println("Descuento del " + porcentajeDescuento + "% aplicado. Nuevo precio final: " + nuevoPrecioFinal);
-    }*/
 
 }

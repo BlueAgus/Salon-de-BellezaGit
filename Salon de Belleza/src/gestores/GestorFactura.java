@@ -131,7 +131,6 @@ public class GestorFactura {
         }
     }
 
-
     ///aca se entiende que anterior a este metodo se muestran las facturas y de ahi se saca el codigo, todas las del dni de la persona que queremos
     public void modificarFactura() {
         Factura facturaModificada = null;
@@ -303,8 +302,6 @@ public class GestorFactura {
         return tipo;
     }
 
-
-
     public void modificarFechaFactura(Factura factura) {
         LocalDate nuevaFecha = LocalDate.now();
         factura.setFecha(nuevaFecha);
@@ -326,7 +323,6 @@ public class GestorFactura {
         return factura;
     }
 
-
     public boolean agregarFactura(Factura factura) throws FacturaYaExistenteException {
         for (Factura f : historial.getAlmacen()) {
             if (f.getCodigoFactura().equals(factura.getCodigoFactura())) {
@@ -335,7 +331,6 @@ public class GestorFactura {
         }
         return historial.agregar(factura);
     }
-
 
     public boolean eliminarFactura(String codigoFactura) throws FacturaNoExistenteException {
         Factura facturaAEliminar = null;
@@ -431,7 +426,6 @@ public class GestorFactura {
         }
     }
 
-
     public void historialFacturasPorCliente(String dni) throws DNInoEncontradoException {
         // Validar si el DNI es null o está vacío
         if (dni == null || dni.isEmpty()) {
@@ -460,9 +454,8 @@ public class GestorFactura {
         });
 
         // info del cliente
-        Cliente cliente = new Cliente(null, null, dni, null, null);
         GestorPersona persona = new GestorPersona();
-        cliente = (Cliente) persona.buscarPersona(dni);
+        Cliente cliente = (Cliente) persona.buscarPersona(dni);
 
         // mostrar las facturas
         System.out.println("Historial de facturas para el cliente con DNI " + dni +
