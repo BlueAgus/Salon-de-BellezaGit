@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
-import model.Cliente;
-import model.LocalTimeAdapter;
-import model.Profesional;
-import model.Turno;
+import model.*;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -20,6 +17,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+
+import static model.TurnoArchivo.convertirTurno;
 
 public class GestorTurno {
 
@@ -86,7 +85,7 @@ public class GestorTurno {
 
     public boolean eliminarTurno(GestorCliente gestorCliente) {
 
-        String codTurno= buscarCodigoTurno(gestorCliente);
+        String codTurno = buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
                 if (t.getCod_turno().equals(codTurno)) {
@@ -149,7 +148,7 @@ public class GestorTurno {
             if (t.getCodigo_servicio().equals(codServicio)) {
                 Cliente cliente = null;
                 try {
-                   // cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                    // cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
                     cliente = clientes.buscarPersona(t.getDni_cliente());
                 } catch (DNInoEncontradoException e) {
                     System.out.println(e.getMessage());
@@ -162,7 +161,7 @@ public class GestorTurno {
 
     public Turno buscarTurnoXclienteFechaHorario(GestorCliente gestorCliente) {
 
-        String codigoTurno= buscarCodigoTurno(gestorCliente);
+        String codigoTurno = buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
                 if (t.getCod_turno().equals(codigoTurno)) {
@@ -638,7 +637,7 @@ public class GestorTurno {
     }
 
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
-
+/*
     public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
 
         try (FileReader reader = new FileReader(archivoTurnos)) {
@@ -662,20 +661,63 @@ public class GestorTurno {
         }
     }
 
-    public void guardarEnArchivoTurnos(MapaGenerico<LocalDate, List<Turno>> listaTurnos) {
-       /// Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
+    public void guardarEnArchivoTurnos(HashMap<LocalDate, List<Turno>> listaTurnos) {
+        // Crear instancia de Gson para convertir a JSON con formato bonito
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
         try (FileWriter writer = new FileWriter("turnos.json")) {
-            gson.toJson(listaTurnos, writer);
-            System.out.println("Usuarios guardados en el archivo");
+            // Convertir el mapa de turnos a una lista de TurnoArchivo
+            List<TurnoArchivo> turnosConvertidos = convertirMapa(listaTurnos);
+
+            // Convertir la lista de TurnoArchivo a formato JSON
+            String json = gson.toJson(turnosConvertidos);
+
+            // Escribir el JSON en el archivo
+            writer.write(json);
+
         } catch (IOException e) {
-            System.err.println("Error al guardar el archivo");
+            System.err.println("Error al guardar el archivo: " + e.getMessage());
         }
     }
 
+    public List<TurnoArchivo> convertirMapa(HashMap<LocalDate, List<Turno>> mapa) {
+        List<TurnoArchivo> turnosConvertidos = new ArrayList<>();
+
+        // Recorrer todo el mapa
+        for (List<Turno> turnos : mapa.values()) {
+            // Recorrer cada Turno en la lista y convertirlo
+            for (Turno turno : turnos) {
+                TurnoArchivo turnoConvertido = convertirTurno(turno);
+                turnosConvertidos.add(turnoConvertido);
+            }
+        }
+        return turnosConvertidos;
+    }
+
+    public TurnoArchivo convertirTurno(Turno turnoOriginal) {
+        // Formateadores para fecha y hora
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+
+        // Convertir LocalDate y LocalTime a String
+        String fecha = turnoOriginal.getFecha().format(formatoFecha);
+        String horario = turnoOriginal.getHorario().format(formatoHora);
+
+        // Crear y retornar el nuevo objeto TurnoArchivo
+        return new TurnoArchivo(
+                turnoOriginal.getCod_turno(),
+                fecha,
+                horario,
+                turnoOriginal.getCodigo_servicio(),
+                turnoOriginal.getDni_profesional(),
+                turnoOriginal.getDni_cliente()
+        );
+    }
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
     public MapaGenerico<LocalDate, List<Turno>> getListaTurnos() {
         return listaTurnos;
     }
 
+*/
 }
