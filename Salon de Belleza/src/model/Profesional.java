@@ -36,6 +36,11 @@ public class Profesional extends Persona {
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
 
 

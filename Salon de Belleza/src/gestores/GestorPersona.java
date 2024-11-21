@@ -38,7 +38,6 @@ public class GestorPersona<T extends Persona> {
         return gestor;
     }
 
-
     private <T extends Persona> List<T> filtrarPorClase(List<Persona> personas, Class<T> tipoPersona) {
         List<T> filtradas = new ArrayList<>();
         for (Persona persona : personas) {
@@ -196,25 +195,19 @@ public class GestorPersona<T extends Persona> {
         throw new DNInoEncontradoException("DNI no encontrado!!");
     }
 
-    public String buscarContraseña(String dni)
-    {
+    public String buscarContraseña(String dni) {
         for (Persona p : almacenPersonas.getAlmacen()) {
             if (p.getDni().equals(dni)) {
 
-                if(p instanceof Administrador)
-                {
-                    Administrador administrador= (Administrador) p;
+                if (p instanceof Administrador) {
+                    Administrador administrador = (Administrador) p;
                     return administrador.getContraseña();
-                }
-                else if(p instanceof  Recepcionista)
-                {
-                    Recepcionista recepcionista= (Recepcionista) p;
+                } else if (p instanceof Recepcionista) {
+                    Recepcionista recepcionista = (Recepcionista) p;
                     return recepcionista.getContraseña();
-                }
-                    else if(p instanceof  Profesional)
-                {
-                  Profesional profesional= (Profesional) p;
-                    return  profesional.getContraseña();
+                } else if (p instanceof Profesional) {
+                    Profesional profesional = (Profesional) p;
+                    return profesional.getContraseña();
                 }
             }
         }
@@ -488,8 +481,7 @@ public class GestorPersona<T extends Persona> {
                     dnivalido = true;
                 }
             }
-        }
-        return dni;
+        } return dni;
     }
 
     public String pedirDNIsinVerificacion() {
@@ -540,20 +532,41 @@ public class GestorPersona<T extends Persona> {
         return genero;  // Retornar el String que contiene el género válido
     }
 
-    //contrasenia entre 6 y 12 caracteres!!
+    //contraseña entre 6 y 12 caracteres!!
     public String pedirContraseña() {
+        boolean confirmado = false;
+        int opcion;
         String contraseña = "";
+
         do {
+
             System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
             contraseña = scanner.nextLine();
 
             // Validación de longitud de la contraseña y de que contenga al menos un número
             if (contraseña.length() < 6 || contraseña.length() > 12) {
                 System.out.println("Tu contraseña es muy débil o tiene un tamaño incorrecto. Vuelve a intentar.");
-            } else if (!contraseña.matches(".\\d.")) {  // Verifica que haya al menos un número
+                continue;  // Vuelve al principio del ciclo si la contraseña no es válida
+            } else if (!contraseña.matches(".*\\d.*")) {  // Verifica que haya al menos un número
                 System.out.println("Tu contraseña debe contener al menos un número. Vuelve a intentarlo.");
+                continue;
             }
-        } while (contraseña.length() < 6 || contraseña.length() > 12 || !contraseña.matches(".\\d.")); // Bucle sigue hasta que la contraseña sea válida
+
+            System.out.println("La contraseña ingresada es: " + contraseña);
+            System.out.println("Deseas modificar la contraseña?");
+            System.out.println("1. SI deseo");
+            System.out.println("2. NO deseo");
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            if (opcion == 2) {
+                System.out.println("Contraseña guardada");
+                confirmado = true;
+            } else if (opcion != 1 && opcion != 2) {
+                System.out.println("No has ingresado una opción correcta");
+            }
+
+        } while (!confirmado);
 
         return contraseña;
     }
@@ -900,5 +913,12 @@ public class GestorPersona<T extends Persona> {
         return personas;
     }
 
+    public GestorAlmacen<Persona> getAlmacenPersonas() {
+        return almacenPersonas;
+    }
 
-    publ
+    public void setAlmacenPersonas(GestorAlmacen<Persona> almacenPersonas) {
+        this.almacenPersonas = almacenPersonas;
+    }
+
+}

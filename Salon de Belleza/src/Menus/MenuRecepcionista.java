@@ -1,10 +1,15 @@
 package Menus;
 
+import excepciones.CodigoNoEncontradoException;
 import gestores.GestorFactura;
 import gestores.GestorPersona;
 import gestores.GestorServicio;
 import gestores.GestorTurno;
+import model.Profesional;
+import model.Servicio;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuRecepcionista extends MenuAdministrador {
@@ -46,7 +51,7 @@ public class MenuRecepcionista extends MenuAdministrador {
                     servicios.mostrarServicios();
                     break;
                 case 5:
-                    mostrarProfesionales(profesionales);
+                    mostrarProfesionales(profesionales,servicios);
                     break;
                 case 6:
 
@@ -57,7 +62,7 @@ public class MenuRecepcionista extends MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void mostrarProfesionales(GestorPersona profesionales) {
+    public void mostrarProfesionales(GestorPersona profesionales,GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -65,7 +70,6 @@ public class MenuRecepcionista extends MenuAdministrador {
         do {
             System.out.println("1.Todos los profesionales del salon ");
             System.out.println("2.Profesionales segun servicio ");
-            System.out.println("3. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -76,16 +80,27 @@ public class MenuRecepcionista extends MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    profesionales.
-
+                      profesionales.
                     break;
                 case 2:
+                    List<Profesional> lista= new ArrayList<>();
+                    Servicio servicio = null;
+                    while(true){
+                        try {
+                            servicio = servicios.buscarServicio();
+                        } catch (CodigoNoEncontradoException e) {
+                            System.out.println(e.getMessage());
+                        }
 
+                        for (Profesional p : (List<Profesional>) profesionales.getAlmacenPersonas()) {
+                            if (p.verificarProfesion(servicio.getCodigo_servicio()))
+                            {
+                                System.out.println(p.toString());
+                                lista.add(p);
+                            }
+                        }
+                    }
                     break;
-                case 3:
-
-                    break;
-
                 default:
                     System.out.println("Opción no válida.");
             }

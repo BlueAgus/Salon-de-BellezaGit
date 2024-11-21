@@ -29,7 +29,7 @@ public class Main {
         GestorTurno turnos = new GestorTurno();
 
       //  Manicura manicura= new Manicura(200, LocalTime.of(1,30),true,TipoManicura.ESCULPIDAS);
-        Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", "223456346");
+        ///Profesional profesional= new Profesional("Daniela", "Vega", "45131280", "F", "223456346");
         Cliente cliente= new Cliente("Martina", "Rios", "44365444", "F", "223654789");
 
        // turnos.agregarTurno(manicura, profesional, cliente);
