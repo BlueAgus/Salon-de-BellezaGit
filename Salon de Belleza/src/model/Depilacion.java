@@ -41,13 +41,6 @@ public class Depilacion extends Servicio {
         this.tipoDepilacion = tipoDepilacion;
     }
 
-    ///uso interfaz
-  /*  @Override
-    public void MantenimientoMaquinas(Servicio servicio) {
-        System.out.println("aca ira el metodo");
-    }*/
-
-
    ////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
 
     @Override

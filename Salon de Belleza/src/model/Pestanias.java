@@ -1,6 +1,4 @@
 package model;
-
-import enumeraciones.Disponibilidad;
 import enumeraciones.TipoPestanias;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;

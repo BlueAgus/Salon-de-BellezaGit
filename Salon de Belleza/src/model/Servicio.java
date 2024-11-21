@@ -1,6 +1,6 @@
 package model;
 
-import enumeraciones.Disponibilidad;
+
 import enumeraciones.TipoServicio;
 import interfaces.CrearID;
 
@@ -11,7 +11,7 @@ import java.util.TimerTask;
 
 public abstract class Servicio implements CrearID {
 
-    private String codigo_servicio ; //
+    protected String codigo_servicio ; //
     protected TipoServicio tipoService;
     protected LocalTime duracion;
     protected double precio;
@@ -61,14 +61,6 @@ public abstract class Servicio implements CrearID {
 
     public void setDuracion(LocalTime duracion) {
         this.duracion = duracion;
-    }
-
-    public Disponibilidad getDisponibilidad() {
-        return disponibilidad;
-    }
-
-    public void setDisponibilidad(Disponibilidad disponibilidad) {
-        this.disponibilidad = disponibilidad;
     }
 
     public double getPrecio() {
