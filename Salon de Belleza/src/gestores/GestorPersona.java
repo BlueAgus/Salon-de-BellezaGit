@@ -235,7 +235,8 @@ public class GestorPersona<T extends Persona> {
                 System.out.println("3. DNI");
                 System.out.println("4. Genero");
                 System.out.println("5. Telefono");
-                System.out.println("6. Salir");
+                System.out.println("7. Contraseña");
+                System.out.println("8. Salir");
                 try {
                     opcion = scanner.nextInt();
                     scanner.nextLine();
@@ -271,6 +272,19 @@ public class GestorPersona<T extends Persona> {
                         case 6:
                             continuarModificando = false;
                             break;
+                            case 7:
+                            if(persona instanceof Administrador){
+                                Administrador admin = (Administrador) persona;
+                                admin.setContraseña(pedirContraseñaNueva(admin.getContraseña()));
+
+                            }else if(persona instanceof Recepcionista){
+                                Recepcionista recep = (Recepcionista) persona;
+                                recep.setContraseña(pedirContraseñaNueva(recep.getContraseña()));
+
+                            }else{
+                                System.out.println("El cliente no es un usuario en sistema.");
+                            }
+                            break;
                         default:
                             System.out.println("Opción no válida.");
                     }
@@ -296,7 +310,8 @@ public class GestorPersona<T extends Persona> {
             System.out.println("4. Genero");
             System.out.println("5. Telefono");
             System.out.println("6. Servicios que ofrece");
-            System.out.println("7. Salir");
+            System.out.println("7. Modificar contraseña");
+            System.out.println("8. Salir");
             try {
                 opcion = scanner.nextInt();
                 scanner.nextLine();
@@ -335,6 +350,9 @@ public class GestorPersona<T extends Persona> {
                         profesional.agregarProfesion(e);
                         break;
                     case 7:
+                        profesional.setContraseña(pedirContraseñaNueva(profesional.getContraseña()));
+                        break;
+                    case 8:
                         continuarModificando = false;
                         break;
                     default:
