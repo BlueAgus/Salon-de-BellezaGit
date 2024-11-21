@@ -242,7 +242,6 @@ public class GestorFactura {
         }
     }
 
-
     private void modificarCliente(Factura factura, Scanner scan) {
         GestorPersona persona = new GestorPersona();
 
