@@ -21,7 +21,7 @@ public class MenuPrincipal {
     String archivoServicios = "servicios.json";
     String archivoTurnos = "turnos.json";
     String archivoFacturas = "facturas.json";
-
+/*
     public void inicioMenu(GestorPersona profesionales, GestorPersona clientes, GestorPersona administrador, GestorPersona recepcionistas) {
         List<Persona> profesionals = profesionales.leerArchivoPersona(archivoProfesionales);
         List<Profesional> p1 = new ArrayList<>();
@@ -63,7 +63,7 @@ public class MenuPrincipal {
         profesionalGestorAlmacen.setAlmacen(re2);
         recepcionistas.setAlmacenPersonas(clienteGestorAlmacen);
     }
-
+*/
     public void menuPrincipal() {
         GestorPersona profesionales = new GestorPersona();
         GestorPersona administradores = new GestorPersona();
@@ -97,17 +97,17 @@ public class MenuPrincipal {
                 case 1:
                     //administrador
                     System.out.println("Bienvenido administrador ");
-                    if (iniciarSesion(administradores, archivoAdministradores))//si es true tiene su dni registrado
+                    if (iniciarSesion(administradores))//si es true tiene su dni registrado
                     {
                         menuAdministrador.mostrarMenu(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                     }
                     break;
                 case 2:
                     //recepcionista
-                    if (primeringreso) {
+                    if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        if (iniciarSesion(recepcionistas, archivoRecepcionista)) {
+                        if (iniciarSesion(recepcionistas)){
                             System.out.println("Bienvenido Recepcionista !");
                             menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
@@ -115,10 +115,10 @@ public class MenuPrincipal {
                     break;
                 case 3:
                     //profesional
-                    if (primeringreso) {
+                    if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        if (iniciarSesion(profesionales, archivoProfesionales)) {
+                        if (iniciarSesion(profesionales)) {
                             System.out.println("Bienvenido profesional! ");
                             menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
@@ -133,7 +133,7 @@ public class MenuPrincipal {
         } while (opcion != 0);
     }
 
-    public boolean pedirDatos(GestorPersona personaQueDeseaIngresar, String nombrearchivoDeEsasPersonas) {
+    public boolean pedirDatos(GestorPersona personaQueDeseaIngresar) {
         boolean tienecuenta = false;
         String dni = personaQueDeseaIngresar.pedirDNIsinVerificacion();
         String contra;
@@ -164,8 +164,8 @@ public class MenuPrincipal {
         return tienecuenta;
     }
 
-    public boolean iniciarSesion(GestorPersona personas, String nombrearchivo) {
-        if (pedirDatos(personas, nombrearchivo)) {
+    public boolean iniciarSesion(GestorPersona personas) {
+        if (pedirDatos(personas)) {
             System.out.println("Entrando..");//si es true anda
             return true;
         } else {
@@ -191,6 +191,18 @@ public class MenuPrincipal {
 
         return contraseña;
     }
+
+    public boolean primerIngreso(GestorPersona administradores){
+        List<Administrador> adminAux=administradores.leerArchivoAdministradores();
+        boolean primeringreso=false;
+        for( Administrador a:adminAux){
+            if( a.getContraseña().equals("12345678")){
+                primeringreso=true;
+            }
+        }
+        return primeringreso;
+    }
+
 
     //no se que onda esto... NO LO BORREN POR LAS DUDAS.
     /*

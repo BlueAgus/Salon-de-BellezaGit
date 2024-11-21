@@ -845,10 +845,6 @@ public class GestorPersona<T extends Persona> {
         return listaAux;
     }
 
-<<<<<<< Updated upstream
-    public void guardarEnArchivoJSON(String rutaArchivo) {
-=======
-
 
 /*
     public void guardarEnArchivoJSON(String rutaArchivo ) {
@@ -986,10 +982,7 @@ public class GestorPersona<T extends Persona> {
         return personas;
     }
 
-<<<<<<< Updated upstream
 
-    publ
-=======
 */
     public GestorAlmacen getAlmacenPersonas() {
         return almacenPersonas;
@@ -1002,4 +995,3 @@ public class GestorPersona<T extends Persona> {
 }
 
 
->>>>>>> Stashed changes
