@@ -13,19 +13,15 @@ import java.util.Scanner;
 public class MenuPrincipal {
     Scanner scanner = new Scanner(System.in);
 
-    static String archivoProfesionales = "profesionales.json";
-    static String archivoAdministradores = "administradores.json";
-    static String archivoRecepcionista = "recepcionistas.json";
-    static String archivoCliente = "clientes.json";
     static String archivoPrecios = "precios.json";
     static String archivoServicios = "servicios.json";
     static String archivoTurnos = "turnos.json";
     static String archivoFacturas = "facturas.json";
 
-    GestorProfesional profesionales = new GestorPersona<>();
-    GestorPersona<Administrador> administradores = new GestorPersona<>();
-    GestorPersona<Recepcionista> recepcionistas = new GestorPersona<>();
-    GestorPersona<Cliente> clientes = new GestorPersona<>();
+    GestorProfesional profesionales = new GestorProfesional();
+    GestorAdministrador administradores = new GestorAdministrador();
+    GestorRecepcionista recepcionistas = new GestorRecepcionista();
+    GestorCliente clientes = new GestorCliente();
 
 
     GestorServicio servicios = new GestorServicio();
@@ -39,10 +35,7 @@ public class MenuPrincipal {
         MenuRecepcionista menuRecepcionista = new MenuRecepcionista();
         MenuProfesional menuProfesional = new MenuProfesional();
 
-        List<Administrador> aux=  administradores.leerArchivoAdministradores(archivoAdministradores);
-
-        administradores.setAlmacenPersonas(aux);
-        ///inicioSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
+        inicioSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
 
         int opcion;
         do {
@@ -122,11 +115,11 @@ public class MenuPrincipal {
         } while (opcion != 0);
     }
 
-    public void inicioSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void inicioSistema(GestorAdministrador admin, GestorCliente clientes, GestorRecepcionista recepcionista, GestorProfesional profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         //inicializar personas
         profesionales.leerArchivoProfesionales();
-        admin.leerArchivoAdministradores(archivoAdministradores);
+        admin.leerArchivoAdministradores();
         recepcionista.leerArchivoRecepcionistas();
         clientes.leerArchivoClientes();
         //inicializar servicio
@@ -139,12 +132,12 @@ public class MenuPrincipal {
         GestorPrecios.leerPreciosDesdeArchivo(archivoPrecios);
     }
 
-    public void cerrarSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void cerrarSistema(GestorAdministrador admin, GestorCliente clientes, GestorRecepcionista recepcionista, GestorProfesional profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
         //gaurda tooodo en archivos.
-        profesionales.guardarArchivoProfesionales(profesionales.getAlmacenPersonas().getAlmacen());
-        admin.guardarArchivoAdministradores(admin.getAlmacenPersonas().getAlmacen());
-        recepcionista.guardarArchivoAdministradores(recepcionista.getAlmacenPersonas().getAlmacen());
-        clientes.guardarArchivoClientes(clientes.getAlmacenPersonas().getAlmacen());
+        profesionales.guardarArchivoProfesionales(profesionales.getAlmacen());
+        admin.guardarArchivoAdministradores(admin.getAdministradores());
+        recepcionista.guardarArchivoRecepcionistas(recepcionista.getAlmacenPersonas());
+        clientes.guardarArchivoClientes(clientes.ge);
 
         servicios.EscribirServiciosEnArchivo(archivoServicios, servicios.getAlmacenServicios().getAlmacen());
         //turnos
