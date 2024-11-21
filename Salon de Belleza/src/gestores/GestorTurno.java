@@ -1,17 +1,24 @@
 package gestores;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
-import model.Persona;
+import model.Cliente;
 import model.Profesional;
 import model.Turno;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class GestorTurno {
 
@@ -75,17 +82,82 @@ public class GestorTurno {
         return true;
     }
 
-    public boolean eliminarTurno(String dniCliente, LocalDate fecha, LocalTime horario) {
+    public boolean eliminarTurno() {
 
+        String codTurno= buscarCodigoTurno();
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
-                if (t.getDni_cliente().equals(dniCliente) && t.getFecha().equals(fecha) && t.getHorario().equals(horario)) {
+                if (t.getCod_turno().equals(codTurno)) {
                     return e.remove(t);
                 }
             }
         }
 
         return false;
+    }
+
+    public String buscarCodigoTurno() {
+        System.out.println("Ingrese el DNI del cliente: ");
+        String dniCliente = scanner.nextLine();
+
+        int i = 0;
+        List<Turno> turnosDelCliente = new ArrayList<>();
+
+        for (List<Turno> list : listaTurnos.getMapa().values()) {
+            for (Turno t : list) {
+                if (t.getDni_cliente().equals(dniCliente)) {
+                    System.out.println(i + "-" + t.toString());
+                    turnosDelCliente.add(t);
+                    i++;
+                }
+            }
+        }
+        int opc = 0;
+        while (true) {
+
+            try {
+                System.out.println("OPCION: (o escriba 'salir' para cancelar) ");
+                String opcElegida = scanner.nextLine();
+
+
+                if (opcElegida.equalsIgnoreCase("salir")) {
+                    System.out.println("Operación cancelada por el usuario.");
+                    return null;
+                }
+
+                ///pasa a int un string
+                opc = Integer.parseInt(opcElegida);
+                if (opc < 0 || opc > turnosDelCliente.size()) {
+                    System.out.println("Selección inválida. Inténtelo de nuevo.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no valida. Por favor ingrese un número.");
+                scanner.nextLine();
+            }
+        }
+
+        return turnosDelCliente.get(opc).getCod_turno();
+
+    }
+
+    public void cancelarTurnosXdia(LocalDate fecha, GestorPersona gestorPersona, String codServicio) {
+        List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
+
+        System.out.println("Avisar a los siguientes clientes que su turno del dia " + fecha + "ha sido cancelado");
+        for (Turno t : turnos) {
+            if (t.getCodigo_servicio().equals(codServicio)) {
+                Cliente cliente = null;
+                try {
+                    cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                } catch (DNInoEncontradoException e) {
+                    System.out.println(e.getMessage());
+                }
+                System.out.println("- " + cliente.getNombre() + " TELEFONO: " + cliente.getTelefono());
+            }
+        }
+        turnos.clear();
     }
 
     public Turno buscarTurnoXclienteFechaHorario(String dniCliente, LocalDate fecha, LocalTime horario) {
@@ -101,7 +173,7 @@ public class GestorTurno {
         return null;
     }
 
-    public Turno buscarTurno(String codTurno){
+    public Turno buscarTurno(String codTurno) {
 
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
@@ -222,6 +294,7 @@ public class GestorTurno {
         return turnosVigentes;
     }
 
+
     public void mostrarHistorialTurnos() {
         int i = 0;
         for (List<Turno> list : listaTurnos.getMapa().values()) {
@@ -340,7 +413,7 @@ public class GestorTurno {
             }
 
             try {
-                gestorCliente.verificarSiExiste(dniCliente);
+                gestorCliente.verificarSiExisteCliente(dniCliente);
                 return dniCliente;
 
             } catch (DNInoEncontradoException e) {
@@ -425,7 +498,7 @@ public class GestorTurno {
         while (!valido) {
             /// agregar filtros
             System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
- n
+
             ///lo guarda en un string para verificar que no haya escrito salir
             String fechaIngresada = scanner.nextLine();
 
@@ -440,6 +513,8 @@ public class GestorTurno {
 
                 if (fecha.isBefore(LocalDate.now())) {
                     System.out.println("Error: La fecha debe ser en el futuro.");
+                } else if (fecha.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                    System.out.println("Error: No se pueden seleccionar turnos en domingo.");
                 } else {
                     valido = true;
                 }
@@ -461,8 +536,18 @@ public class GestorTurno {
 
         ////agregar metodo que busque el servicio por codigo
         int i = 0; ///para el indice de horarios disponibles
-        long hora = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getHour();
-        long minutos = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getMinute();
+        long hora = 0;
+        try {
+            hora = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getHour();
+        } catch (CodigoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+        long minutos = 0;
+        try {
+            minutos = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getMinute();
+        } catch (CodigoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
 
         System.out.println("Turnos disponibles del dia: " + fecha);
         while (horaInicio.isBefore(horaFin)) {///recorre todos los horarios
@@ -507,14 +592,13 @@ public class GestorTurno {
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
     public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorPersona gestorProfesional) {
-        List<Persona> personas = gestorProfesional.LeerArchivo("profesionales.json");
+        List<Profesional> profesionales = gestorProfesional.leerArchivoProfesionales();
 
-        if (personas == null || personas.isEmpty()) {
+        if (profesionales == null || profesionales.isEmpty()) {
             System.out.println("No hay profesionales disponibles.");
             return null;
         }
 
-        List<Profesional> profesionales = personas.stream().filter(persona -> persona instanceof Profesional).map(persona -> (Profesional) persona).toList();
 
         int opc = 0;
         List<Profesional> disponibles = new ArrayList<>();
@@ -571,8 +655,38 @@ public class GestorTurno {
 
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
 
-    public void leerArchivoTurnos() {
+    public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader("turnos.json")) {
+            // Deserializar como HashMap<String, List<Turno>>
+            Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {
+            }.getType();
+            HashMap<String, List<Turno>> mapaTemporal = gson.fromJson(reader, tipoMapa);
 
+            // Convertir las claves de String a LocalDate
+            HashMap<LocalDate, List<Turno>> listaTurnos = new HashMap<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            for (Map.Entry<String, List<Turno>> entry : mapaTemporal.entrySet()) {
+                LocalDate fecha = LocalDate.parse(entry.getKey(), formatter);
+                listaTurnos.put(fecha, entry.getValue());
+            }
+
+            return listaTurnos;
+        } catch (IOException e) {
+            System.err.println("Error al cargar el archivo JSON: " + e.getMessage());
+            return new HashMap<>(); // Devuelve un mapa vacío en caso de error
+        }
+    }
+
+    public void guardarEnArchivoTurnos() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
+        try (FileWriter writer = new FileWriter("turnos.json")) {
+            gson.toJson(listaTurnos, writer);
+            System.out.println("Usuarios guardados en el archivo JSON: turnos.json");
+        } catch (IOException e) {
+            System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
+        }
     }
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////

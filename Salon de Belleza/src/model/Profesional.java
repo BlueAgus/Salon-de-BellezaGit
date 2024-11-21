@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Profesional extends Persona {
-
+    private String contraseña;
     private List<String> cod_servicios;
 
    ///////////////////////////// CONSTRUCTOR //////////////////////////////////////////////
 
-    public Profesional(String nombre, String apellido, String dni, String genero, String telefono) {
+    public Profesional(String nombre, String apellido, String dni, String genero, String telefono,String contraseña) {
         super(nombre, apellido, dni, genero, telefono);
         this.cod_servicios = new ArrayList<>();
+        this.contraseña=contraseña;
     }
 
   /////////////////////////////////GET ////////////////////////////////////////////////////
@@ -28,7 +29,13 @@ public class Profesional extends Persona {
         return cod_servicios.contains(cod_servicio);
     }
 
+    public String getContraseña() {
+        return contraseña;
+    }
 
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
 }
 
 
