@@ -35,6 +35,17 @@ public class GestorAlmacen<T> {
         }
     }
 
+    public ArrayList<T> filtrarPorCondicion(Predicate<T> condicion) {
+        ArrayList<T> resultado = new ArrayList<>();
+
+        for (T elemento : almacen) {
+            if (condicion.test(elemento)) {
+                resultado.add(elemento);
+            }
+        }
+        return resultado;
+    }
+
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
     public List<T> getAlmacen() {
