@@ -167,6 +167,54 @@ public class GestorPersona<T extends Persona> {
         return cargado;
     }
 
+    public Administrador cargarUnAdministrador(GestorServicio servicio){
+        String dni = "";
+        while (true) {
+            try {
+                dni = pedirDNI();
+                break;
+            } catch (DNIyaCargadoException e) {
+                System.out.printf(e.getMessage());
+            }
+        }
+
+        String nombre = pedirNombre();
+        String apellido = pedirApellido();
+
+        String genero = "";
+        while (true) {
+            try {
+                genero = pedirGenero();
+                break;
+            } catch (GeneroInvalidoException e) {
+                System.out.printf(e.getMessage());
+            }
+        }
+
+        String telefono = "";
+        while (true) {
+            try {
+                telefono = pedirTelefono();
+                break;
+            } catch (TelefonoInvalidoException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        String contra3 = pedirContraseña();
+        Administrador administrador = new Administrador(nombre, apellido, dni, genero, telefono, contra3);
+        if (almacenPersonas.agregar(administrador)) {
+            System.out.printf("\nADMINISTRADOR AGREGADO EXITOSAMENTE \n");
+        } else {
+            System.out.printf("\nERROR AL AGREGAR ADMINISTRADOR\n");
+        }
+        almacenPersonas.agregar(administrador);
+        System.out.println(administrador);
+        verificarCarga(administrador,servicio);
+
+        return administrador;
+    }
+
+
     //estos buscan en la list ano en el archivo a
     public boolean eliminarPersona(String dni) {
         try {
