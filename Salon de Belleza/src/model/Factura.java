@@ -50,7 +50,7 @@ public class Factura implements CrearID {
         for (Turno turno : turnosPorCliente) {
             try {
                 // Obtener el servicio correspondiente al código
-                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                Servicio servicio = gestorServicio.buscarServicioCodigo(turno.getCodigo_servicio());
                 TipoServicio tipoServicio = servicio.getTipoService();
 
                 // Incrementar la cantidad de este servicio
@@ -77,7 +77,7 @@ public class Factura implements CrearID {
         for (Turno turno : turnosPorCliente) {
             try {
                 // Obtener el servicio correspondiente al código
-                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                Servicio servicio = gestorServicio.buscarServicioCodigo(turno.getCodigo_servicio());
                 precioBase += servicio.calcularPrecio();
             } catch (CodigoNoEncontradoException e) {
                 System.out.println("Servicio no encontrado para el código: " + turno.getCodigo_servicio());

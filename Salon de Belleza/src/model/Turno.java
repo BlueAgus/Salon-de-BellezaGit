@@ -103,7 +103,7 @@ public class Turno {
             return "\n        TURNO: " +
                     "\n| FECHA : " + fecha +
                     "\n| HORARIO : " + horario +
-                    "\n| SERVICIO : " + gestorServicio.buscarServicio(codigo_servicio).getTipoService() +
+                    "\n| SERVICIO : " + gestorServicio.buscarServicioCodigo(codigo_servicio).getTipoService() +
                     "\n| PROFESIONAL :" + gestorProfesional.buscarPersona(dni_profesional).getNombre()+ gestorProfesional.buscarPersona(dni_profesional).getApellido()+
                     "\n| CLIENTE : " + gestorCliente.buscarPersona(dni_cliente).getNombre() + gestorCliente.buscarPersona(dni_cliente).getApellido()+ " DNI : "+ gestorCliente.buscarPersona(dni_cliente).getDni();
         }

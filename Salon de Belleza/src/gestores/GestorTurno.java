@@ -529,13 +529,13 @@ public class GestorTurno {
         int i = 0; ///para el indice de horarios disponibles
         long hora = 0;
         try {
-            hora = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getHour();
+            hora = (long) gestorServicio.buscarServicioCodigo(cod_servicio).getDuracion().getHour();
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }
         long minutos = 0;
         try {
-            minutos = (long) gestorServicio.buscarServicio(cod_servicio).getDuracion().getMinute();
+            minutos = (long) gestorServicio.buscarServicioCodigo(cod_servicio).getDuracion().getMinute();
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }

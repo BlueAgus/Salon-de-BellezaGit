@@ -72,9 +72,9 @@ public class GestorServicio {
 
         mostrarServicios();
 
-        while (true){
+        while (true) {
             System.out.println("Ingrese el código('salir' si quiere cancelar la operacion): ");
-            String cod_Servicio= scanner.nextLine();
+            String cod_Servicio = scanner.nextLine();
 
             if (cod_Servicio.equalsIgnoreCase("salir")) {
                 System.out.println("Operación cancelada por el usuario.");
@@ -92,13 +92,19 @@ public class GestorServicio {
 
     }
 
-    public void buscarServicioXtipo()
-    {
-        TipoServicio tipoServicio= pedirTipoServicio();
-        for(Servicio s: almacenServicios.getAlmacen())
-        {
-            if(s.getTipoService().equals(tipoServicio))
-            {
+    public Servicio buscarServicioCodigo(String codServicio) {
+        for (Servicio s : almacenServicios.getAlmacen()) {
+            if (s.getCodigo_servicio().equals(codServicio)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public void mostrarServicioXtipo() {
+        TipoServicio tipoServicio = pedirTipoServicio();
+        for (Servicio s : almacenServicios.getAlmacen()) {
+            if (s.getTipoService().equals(tipoServicio)) {
                 System.out.println(s.toString());
             }
         }
@@ -107,12 +113,47 @@ public class GestorServicio {
     // Función que permite modificar un servicio existente
     public void modificarServicio() {
 
-        Servicio servicio= null;
+        Servicio servicio = null;
         try {
             servicio = buscarServicio();
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }
+
+        boolean continuarModificando = true;
+        while (continuarModificando) {
+            System.out.println("¿Qué te gustaría modificar?");
+            System.out.println("1. Tipo de servicio");
+            // System.out.println("2. Precio");
+            System.out.println("3. Duración");
+            System.out.println("4. Salir");
+            int opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    servicio.setTipoService(pedirTipoServicio());
+                    break;
+                case 2:
+                    //  servicio.setPrecio(pedirPrecio());
+                    break;
+                case 3:
+                    servicio.setDuracion(pedirDuracion());
+                    break;
+                case 4:
+                    continuarModificando = false;
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+
+            System.out.println("Servicio modificado:");
+            System.out.println(servicio);
+        }
+    }
+
+    public void modificarServicioParametro(Servicio servicio) {
+
 
         boolean continuarModificando = true;
         while (continuarModificando) {
@@ -160,7 +201,7 @@ public class GestorServicio {
 
             switch (opcion) {
                 case 1:
-                    modificarServicio(servicio);
+                    modificarServicioParametro(servicio);
                     break;
                 case 2:
                     System.out.println("....");
@@ -408,9 +449,14 @@ public class GestorServicio {
         return disenio;
     }
 
-    public void reportarFalla(GestorPersona gestorCliente, GestorTurno gestorTurno, String codServicio) {///
-
-        gestorTurno.cancelarTurnosXdia(LocalDate.now(), gestorCliente, codServicio);
+    public void reportarFalla(GestorPersona gestorCliente, GestorTurno gestorTurno) {///
+        Servicio servicio = null;
+        try {
+            servicio = buscarServicio();
+        } catch (CodigoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+        gestorTurno.cancelarTurnosXdia(LocalDate.now(), gestorCliente, servicio.getCodigo_servicio());
     }
 
     ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
