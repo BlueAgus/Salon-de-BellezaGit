@@ -92,8 +92,27 @@ public class GestorServicio {
 
     }
 
+    public void buscarServicioXtipo()
+    {
+        TipoServicio tipoServicio= pedirTipoServicio();
+        for(Servicio s: almacenServicios.getAlmacen())
+        {
+            if(s.getTipoService().equals(tipoServicio))
+            {
+                System.out.println(s.toString());
+            }
+        }
+    }
+
     // Función que permite modificar un servicio existente
-    public void modificarServicio(Servicio servicio) {
+    public void modificarServicio() {
+
+        Servicio servicio= null;
+        try {
+            servicio = buscarServicio();
+        } catch (CodigoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
 
         boolean continuarModificando = true;
         while (continuarModificando) {

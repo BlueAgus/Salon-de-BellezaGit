@@ -62,7 +62,7 @@ public class Manicura extends Servicio  {
     @Override
     public String toString() {
         return " MANICURA " + tipoManicura +
-                (disenio ? " con diseño " : " sin diseño ")+
+                (disenio ? " con diseño "+ GestorPrecios.getPrecioDisenio() : " sin diseño ")+
                 " \nPrecio= " + calcularPrecio() +
                 " \nDuracion= " + duracion ;
     }

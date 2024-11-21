@@ -17,6 +17,7 @@ public abstract class Servicio implements CrearID {
     protected double precio;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+
     public Servicio(TipoServicio tipoService, LocalTime duracion) {
 
         this.tipoService = tipoService;
