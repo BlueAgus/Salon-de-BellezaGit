@@ -56,8 +56,10 @@ public class GestorServicio {
         }
     }
 
-    public boolean eliminarServicio(String cod_servicio) {
+    public boolean eliminarServicio() {
 
+        String cod_servicio= pedirParaBuscar();
+        
         for (Servicio servicio : almacenServicios.getAlmacen()) {
             if (servicio.getCodigo_servicio().equals(cod_servicio)) {
                 return almacenServicios.eliminar(servicio);
@@ -65,6 +67,8 @@ public class GestorServicio {
         }
         return false;
     }
+
+
 
     public Servicio buscarServicio(String cod_Servicio) throws CodigoNoEncontradoException {
 
@@ -135,27 +139,44 @@ public class GestorServicio {
             }
         } while (opcion != 2 && opcion != 1);
     }
-/*
-    public void pedirParaBuscar()
+
+    public String pedirParaBuscar()
     {
-        TipoServicio tipoServicio=pedirTipoServicio();
 
-        if(tipoServicio== TipoServicio.DEPILACION)
-        {
-            TipoDepilacion tipoDepilacion=pedirTipoDepilacion();
-            mostrar
+       for (int i=0; i<almacenServicios.getAlmacen().size(); i++)
+       {
+           System.out.println(i+"- "+ almacenServicios.getAlmacen().get(i));
+       }
 
+        int opc = 0;
+        while (true) {
+
+            try {
+                System.out.println("OPCION: (o escriba 'salir' para cancelar) ");
+                String opcElegida = scanner.nextLine();
+
+
+                if (opcElegida.equalsIgnoreCase("salir")) {
+                    System.out.println("Operación cancelada por el usuario.");
+                    return null;
+                }
+
+                ///pasa a int un string
+                opc = Integer.parseInt(opcElegida);
+                if (opc < 0 || opc > almacenServicios.getAlmacen().size()) {
+                    System.out.println("Selección inválida. Inténtelo de nuevo.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no valida. Por favor ingrese un número.");
+                scanner.nextLine();
+            }
         }
-        else if(tipoServicio== TipoServicio.MANICURA)
-        {
-            TipoManicura tipoManicura= pedirTipoManicura();
-        }
-        else if(tipoServicio== TipoServicio.PESTANIAS)
-        {
-            TipoPestanias tipoPestanias=pedirTipoPestanias();
-        }
-    } public void mostrarServicio(T)
-    */
+
+        return almacenServicios.getAlmacen().get(opc).getCodigo_servicio();
+
+    }
 
 
     // Validación para el tipo de servicio
