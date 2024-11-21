@@ -24,6 +24,7 @@ import java.util.*;
 public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
+    private static final String archivoTurnos = "turnos.json";
     private static Scanner scanner = new Scanner(System.in);
     Gson gson = new Gson();
 
@@ -639,7 +640,8 @@ public class GestorTurno {
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
 
     public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
-        try (FileReader reader = new FileReader("turnos.json")) {
+
+        try (FileReader reader = new FileReader(archivoTurnos)) {
             // Deserializar como HashMap<String, List<Turno>>
             Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {
             }.getType();
