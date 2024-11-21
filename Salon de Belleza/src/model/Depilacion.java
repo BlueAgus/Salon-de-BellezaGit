@@ -4,7 +4,9 @@ import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;
+import gestores.GestorTurno;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Depilacion extends Servicio {
@@ -19,7 +21,11 @@ public class Depilacion extends Servicio {
     }
 
    /////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-   //void programarMantenimiento(LocalDate fecha);
+   public void programarMantenimiento(LocalDate fecha){
+       GestorTurno turnos = new GestorTurno();
+
+
+   }
 
     public double calcularPrecio() {
         return GestorPrecios.obtenerPrecio(Depilacion.class, this.tipoDepilacion);
@@ -34,13 +40,6 @@ public class Depilacion extends Servicio {
     public void setTipoDepilacion(TipoDepilacion tipoDepilacion) {
         this.tipoDepilacion = tipoDepilacion;
     }
-
-    ///uso interfaz
-  /*  @Override
-    public void MantenimientoMaquinas(Servicio servicio) {
-        System.out.println("aca ira el metodo");
-    }*/
-
 
    ////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
 
