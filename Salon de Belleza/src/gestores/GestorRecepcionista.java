@@ -207,7 +207,7 @@ public class GestorRecepcionista {
 
             switch (opcion) {
                 case 1:
-                    modificarPersona(persona, gestorServicio);
+                    modificarPersona(persona);
                     break;
                 case 2:
                     System.out.println("....");

@@ -3,7 +3,6 @@ package model;
 import enumeraciones.TipoDePago;
 import enumeraciones.TipoServicio;
 import excepciones.*;
-import gestores.GestorPersona;
 import gestores.GestorServicio;
 import interfaces.CrearID;
 

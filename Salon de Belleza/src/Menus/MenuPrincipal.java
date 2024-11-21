@@ -138,14 +138,14 @@ public class MenuPrincipal {
         recepcionista.guardarArchivoRecepcionistas(recepcionista.getAlmacenPersonas());
         clientes.guardarArchivoClientes(clientes.getClientes());
 
-        servicios.EscribirServiciosEnArchivo(archivoServicios, servicios.getAlmacenServicios().getAlmacen());
+        /*servicios.EscribirServiciosEnArchivo(archivoServicios, servicios.getAlmacenServicios().getAlmacen());
         //turnos
         turnos.guardarEnArchivoTurnos(turnos.getListaTurnos());
         //factura
         facturas.guardarEnArchivo(facturas.getHistorial().getAlmacen());
         // precios
         GestorPrecios.guardarPreciosEnArchivo(archivoPrecios);
-        System.out.println("Se ha cerrado el sistema. ");
+        System.out.println("Se ha cerrado el sistema. ");*/
     }
 
     public void llenarAdministrador() {

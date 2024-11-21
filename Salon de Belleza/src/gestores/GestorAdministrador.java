@@ -205,7 +205,7 @@ public class GestorAdministrador {
 
             switch (opcion) {
                 case 1:
-                    modificarAdministrador(persona, administradors);
+                    modificarAdministrador(persona);
                     break;
                 case 2:
                     System.out.println("....");

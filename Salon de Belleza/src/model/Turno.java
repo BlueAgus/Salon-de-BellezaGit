@@ -2,7 +2,8 @@ package model;
 
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
-import gestores.GestorPersona;
+import gestores.GestorCliente;
+import gestores.GestorProfesional;
 import gestores.GestorServicio;
 
 import java.time.LocalDate;
@@ -98,7 +99,7 @@ public class Turno {
     }
 
     //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
-    public String toString(GestorServicio gestorServicio, GestorPersona gestorCliente, GestorPersona gestorProfesional) {
+    public String toString(GestorServicio gestorServicio, GestorCliente gestorCliente, GestorProfesional gestorProfesional) {
         try {
             return "\n        TURNO: " +
                     "\n| FECHA : " + fecha +
