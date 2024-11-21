@@ -28,7 +28,6 @@ public class MenuAdministrador {
             System.out.println("2.Menu de servicios");
             System.out.println("3.Menu de turnos");
             System.out.println("4.Menu de facturas");
-            System.out.println("5. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -49,11 +48,9 @@ public class MenuAdministrador {
                     menuTurnos(turnos, clientes, profesionales, servicios);
                     break;
                 case 4:
-                    menuFacturas(facturas, clientes,turnos );
+                    menuFacturas(facturas, clientes, turnos);
                     break;
-                case 5:
 
-                    break;
                 default:
                     System.out.println("Opción no válida.");
             }
@@ -66,14 +63,11 @@ public class MenuAdministrador {
         int opcion;
 
         do {
-            ///esta bien no tener un admnistrador??
-            System.out.println("1.Recepcionista");
-            System.out.println("2.Profesionales");
-            System.out.println("3.Clientes");
-            System.out.println("4. Modificar mis datos.");
-            System.out.println("5.");
-            System.out.println("6. ");
-            System.out.println("0. Salir");
+            System.out.println("1.Gestionar recepcionistas");
+            System.out.println("2.Gestionar profesionales");
+            System.out.println("3.Gestionar clientes");
+            System.out.println("4.Gestionar mis datos");
+            System.out.println("0.Salir");
             System.out.print("Ingrese una opción: ");
 
             opcion = scanner.nextInt();
@@ -93,15 +87,10 @@ public class MenuAdministrador {
                     subMenuClientes(clientes, gestorServicio);
                     break;
                 case 4:
-                     administradores.modificarPersona(administrador, gestorServicio);
+                    administradores.modificarPersona(administrador, gestorServicio);
 
                     break;
-                case 5:
 
-                    break;
-                case 6:
-
-                    break;
                 default:
                     System.out.println("Opción no válida.");
             }
@@ -109,7 +98,7 @@ public class MenuAdministrador {
     }
 
 
-    public void subMenuRecepcionista(GestorPersona recepcionistas, GestorServicio gestorServicio) {
+    public void subMenuRecepcionista(GestorPersona recepcionistas, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -120,7 +109,6 @@ public class MenuAdministrador {
             System.out.println("2.Eliminar");
             System.out.println("3.Buscar por su dni");
             System.out.println("4.Modificar datos");
-            System.out.println("5. ");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -132,13 +120,17 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    recepcionistas.agregarPersona(3, gestorServicio);
+                    recepcionistas.agregarPersona(3, servicios);
                     break;
                 case 2:
                     System.out.println("¿Cual es el dni del Recepcionista que desea eliminar?");
 
                     String dni = recepcionistas.pedirDNIsinVerificacion();
-                    recepcionistas.eliminarPersona(dni);
+                    if (recepcionistas.eliminarPersona(dni)) {
+                        System.out.println("Recepcionista eliminado exitosamente!");
+                    } else {
+                        System.out.println("Error al eliminar recepcionista");
+                    }
                     break;
                 case 3:
 
@@ -162,13 +154,11 @@ public class MenuAdministrador {
                     try {
                         Recepcionista recepcionista = (Recepcionista) recepcionistas.buscarPersona(dni2);
                         System.out.println(recepcionista);
+                        recepcionistas.modificarPersona(recepcionista, servicios);
 
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
-                    break;
-                case 5:
-
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -188,10 +178,9 @@ public class MenuAdministrador {
             System.out.println("2.Eliminar");
             System.out.println("3.Modificar datos");
             System.out.println("4.Buscar por DNI");
-            ///LISTAR O MOSTRAR O VER
-            System.out.println("5.Lista de todos los profesionales del salon ");
+            System.out.println("5.Mostrar profesionales del salon ");
             ///o 3 listar, 1 listra manicura etc
-            System.out.println("6.Lista de profesionales que realicen determinado servicio");
+            System.out.println("6.Mostrar profesionales por servicio específico");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -209,7 +198,11 @@ public class MenuAdministrador {
                     System.out.println("¿Cual es el dni del profesional que desea eliminar?");
 
                     String dni = profesionales.pedirDNIsinVerificacion();
-                    profesionales.eliminarPersona(dni);
+                    if(profesionales.eliminarPersona(dni)) {
+                        System.out.println("Profesional eliminado exitosamente!");
+                    }else {
+                        System.out.println("Error al eliminar");
+                    }
                     break;
 
                 case 3:
@@ -219,6 +212,9 @@ public class MenuAdministrador {
 
                     try {
                         Profesional profesional = (Profesional) profesionales.buscarPersona(dni2);
+
+                        System.out.println(profesional);
+
                         profesionales.modificarProfesional(profesional, servicios);
 
                     } catch (DNInoEncontradoException a) {
@@ -241,15 +237,34 @@ public class MenuAdministrador {
                     }
                     break;
                 case 5:
-
+                    profesionales.mostrarTodos();
                     break;
+
+                case 6:
+                    Servicio servicio = null;
+                    while (true) {
+                        try {
+                            servicio = servicios.buscarServicio();
+                        } catch (CodigoNoEncontradoException e) {
+                            System.out.println(e.getMessage());
+                        }
+
+                        for (Profesional p : (List<Profesional>) profesionales.getAlmacenPersonas()) {
+                            if (p.verificarProfesion(servicio.getCodigo_servicio())) {
+                                System.out.println(p.toString());
+                            }
+                        }
+                        break;
+                    }
+
+                break;
                 default:
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
     }
 
-    public void subMenuClientes(GestorPersona clientes, GestorServicio gestorServicio) {
+    public void subMenuClientes(GestorPersona clientes, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -260,7 +275,7 @@ public class MenuAdministrador {
             System.out.println("2.Eliminar");
             System.out.println("3.Buscar por su dni ");
             System.out.println("4.Modificar datos ");
-            System.out.println("5.Mostrar todos lo clientes del salon");
+            System.out.println("5.Mostrar todos lo clientes");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -272,13 +287,17 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    clientes.agregarPersona(1, gestorServicio);
+                    clientes.agregarPersona(1, servicios);
                     break;
                 case 2:
                     System.out.println("¿Cual es el dni del cliente que desea eliminar?");
 
                     String dni = clientes.pedirDNIsinVerificacion();
-                    clientes.eliminarPersona(dni);
+                    if(clientes.eliminarPersona(dni)) {
+                        System.out.println("Cliente eliminado exitosamente!");
+                    }else {
+                        System.out.println("Error al eliminar el cliente");
+                    }
                     break;
                 case 3:
 
@@ -300,12 +319,15 @@ public class MenuAdministrador {
                     String dni2 = clientes.pedirDNIsinVerificacion();
                     try {
                         Persona persona = clientes.buscarPersona(dni2);
+                        System.out.println(persona);
+
+                        clientes.modificarPersona(persona, servicios);
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
                     break;
                 case 5:
-
+                    clientes.mostrarTodos();
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -319,11 +341,12 @@ public class MenuAdministrador {
         int opcion;
 
         do {
+            System.out.println("SERVICIOS");
             System.out.println("1.Agregar");
             System.out.println("2.Eliminar ");
             System.out.println("3.Modificar ");
             System.out.println("4.Buscar servicio por tipo ");
-            System.out.println("5.Mostrar todos los servicios del salon ");
+            System.out.println("5.Mostrar todos los servicios");
             System.out.println("6.Reportar falla de un servicio");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
@@ -335,12 +358,19 @@ public class MenuAdministrador {
                 case 0:
                     System.out.println("Saliendo...");
                     break;
+
                 case 1:
                     servicios.agregarServicio();
                     break;
+
                 case 2:
-                    servicios.eliminarServicio();
+                    if(servicios.eliminarServicio()){
+                        System.out.println("Servicio eliminado exitosamente");
+                    }else {
+                        System.out.println("Error al eliminar servicio");
+                    }
                     break;
+
                 case 3:
                     servicios.modificarServicio();
                     break;
@@ -666,10 +696,11 @@ public class MenuAdministrador {
                                 try {
                                     System.out.println("Ingrese el mes: ");
                                     mes = scanner.nextInt();
+                                    scanner.nextLine();
 
                                     System.out.println("Ingrese el año: ");
                                     año = scanner.nextInt();
-
+                                    scanner.nextLine();
 
                                     if (mes < 0 || mes > 12 || año < 2024 || año > 2050) {
                                         System.out.println("Error en la fecha!");
@@ -702,6 +733,7 @@ public class MenuAdministrador {
 
                                     System.out.println("Ingrese el año: ");
                                     año1 = scanner.nextInt();
+                                    scanner.nextLine();
 
                                     if (año1 < 2024 || año1 > 2050) {
                                         System.out.println("Error en la fecha!");
@@ -713,7 +745,7 @@ public class MenuAdministrador {
                                 }
                             }
 
-                            System.out.println("Ganancia del año "+ año1 + facturas.gananciaXaño(año1));
+                            System.out.println("Ganancia del año " + año1 + facturas.gananciaXaño(año1));
 
                             break;
                         case 0:

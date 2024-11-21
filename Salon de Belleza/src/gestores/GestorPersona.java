@@ -360,6 +360,14 @@ public class GestorPersona<T extends Persona> {
         }
     }
 
+    public void mostrarTodos()
+    {
+        for (Persona p: almacenPersonas.getAlmacen())
+        {
+            System.out.println(p.toString());
+        }
+    }
+
     public void verificarCarga(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         do {
