@@ -1,11 +1,9 @@
 package Menus;
 
 import excepciones.DNInoEncontradoException;
-import excepciones.DNIyaCargadoException;
 import gestores.*;
 import model.*;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -149,89 +147,105 @@ public class MenuPrincipal {
         System.out.println("Se ha cerrado el sistema. ");
     }
 
-    public void llenarAdministrador(GestorPersona personas, GestorServicio servicios) {
-        List<Administrador> aux = new ArrayList<>();
-        aux.add(personas.cargarUnAdministrador(servicios));
-        personas.guardarArchivoAdministradores(aux);
+    public void llenarAdministrador(GestorAdministrador administradores) {
+
+        administradores.guardarArchivoAdministradores(administradores.getAdministradores());
         System.out.println("Bienvenido administrador ! ");
     }
 
-    public String pedirDatos(GestorPersona personaQueDeseaIngresar) {
+    public String pedirDatos(GestorAdministrador admin, GestorCliente clientes, GestorRecepcionista recepcionista, GestorProfesional profesionales) {
         boolean tienecuenta = false;
-        String dni = personaQueDeseaIngresar.pedirDNIsinVerificacion();
+        String dni = admin.pedirDNIsinVerificacion();
         String contra;
         String contrapedida;
         boolean valido = false;
 
+
         try {
-            if (personaQueDeseaIngresar.buscarPersonas(dni)) {
-                do {
-                    contra = personaQueDeseaIngresar.buscarContraseña(dni);
-                    if (contra == null) {
-                        System.out.println("no tiene contrasenia..");
-                        break;
-                    }
-                    contrapedida = pedirContraseña();
+            if (admin.buscarPersonas(dni)) {
+                Administrador=admin.buscarPersona(dni);
 
-                    if (contrapedida.equals(contra)) {
-                        valido = true;
-                        tienecuenta = true; //
-                    } else {
-                        System.out.println("Contraseña incorrecta. Inténtalo nuevamente.");
-                    }
-                } while (!valido);
+            }else if (clientes.buscarPersonas(dni)){
+             Cliente c=clientes.buscarPersona(dni)
+            }else if(recepcionista.buscarPersonas(dni)) {
+                Recepcionista recepcionista=recepcionistas.buscarPersona(dni);
+            }else if(profesionales.buscarPersonas(dni)) {
+                Profesional p=profesionales.b
             }
-        } catch (DNInoEncontradoException e) {
-            System.out.println(e.getMessage());
+            do {
+                contra = personaQueDeseaIngresar.buscarContraseña(dni);
+                if (contra == null) {
+                    System.out.println("no tiene contrasenia..");
+                    break;
+                }
+                contrapedida = pedirContraseña();
+
+                if (contrapedida.equals(contra)) {
+                    valido = true;
+                    tienecuenta = true; //
+                } else {
+                    System.out.println("Contraseña incorrecta. Inténtalo nuevamente.");
+                }
+            } while (!valido);
         }
-        if (valido) {
-            return dni;
-        } else {
-            return null;
-        }
+    } catch(
+    DNInoEncontradoException e)
+
+    {
+        System.out.println(e.getMessage());
     }
+        if(valido)
 
-    public String iniciarSesion(GestorPersona personas) {
-
-        String dni = pedirDatos(personas);
-
-        if (dni != null) {
-            System.out.println("Entrando..");
-        } else {
-            System.out.println("No tienes cuenta aun...");
-            System.out.println("Verifica que el administrador te haya cargado correctamente..");
-        }
+    {
         return dni;
+    } else
+
+    {
+        return null;
     }
+}
 
-    public String pedirContraseña() {
-        String contraseña = "";
-        do {
-            System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
-            contraseña = scanner.nextLine();
+public String iniciarSesion(GestorPersona personas) {
 
-            // Validación de longitud de la contraseña y de que contenga al menos un número
-            if (contraseña.length() < 6 || contraseña.length() > 12) {
-                System.out.println("Tu contraseña es muy débil o tiene un tamaño incorrecto. Vuelve a intentar.");
-            } else if (!contraseña.matches(".\\d.")) {  // Verifica que haya al menos un número
-                System.out.println("Tu contraseña debe contener al menos un número. Vuelve a intentarlo.");
-            }
-        } while (contraseña.length() < 6 || contraseña.length() > 12 || !contraseña.matches(".\\d.")); // Bucle sigue hasta que la contraseña sea válida
+    String dni = pedirDatos(personas);
 
-        return contraseña;
+    if (dni != null) {
+        System.out.println("Entrando..");
+    } else {
+        System.out.println("No tienes cuenta aun...");
+        System.out.println("Verifica que el administrador te haya cargado correctamente..");
     }
+    return dni;
+}
 
-    public boolean primerIngreso(GestorPersona administradores) {
-        List<Administrador> adminAux = administradores.leerArchivoAdministradores(archivoAdministradores);
-        boolean primeringreso = false;
-        for (Administrador a : adminAux) {
-            if (a.getContraseña().equals("12345678") && a.getDni().equals("12345678")) {
-                primeringreso = true;
-            }
+public String pedirContraseña() {
+    String contraseña = "";
+    do {
+        System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
+        contraseña = scanner.nextLine();
+
+        // Validación de longitud de la contraseña y de que contenga al menos un número
+        if (contraseña.length() < 6 || contraseña.length() > 12) {
+            System.out.println("Tu contraseña es muy débil o tiene un tamaño incorrecto. Vuelve a intentar.");
+        } else if (!contraseña.matches(".\\d.")) {  // Verifica que haya al menos un número
+            System.out.println("Tu contraseña debe contener al menos un número. Vuelve a intentarlo.");
         }
-        return primeringreso;
+    } while (contraseña.length() < 6 || contraseña.length() > 12 || !contraseña.matches(".\\d.")); // Bucle sigue hasta que la contraseña sea válida
+
+    return contraseña;
+}
+
+public boolean primerIngreso(GestorAdministrador administradores) {
+    List<Administrador> adminAux = administradores.leerArchivoAdministradores();
+    boolean primeringreso = false;
+    for (Administrador a : adminAux) {
+        if (a.getContraseña().equals("12345678") && a.getDni().equals("12345678")) {
+            primeringreso = true;
+        }
     }
-    
+    return primeringreso;
+}
+
 //no se que onda esto... NO LO BORREN POR LAS DUDAS.
     /*
     public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
