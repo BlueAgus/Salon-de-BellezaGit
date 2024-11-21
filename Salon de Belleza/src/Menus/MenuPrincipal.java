@@ -98,7 +98,7 @@ public class MenuPrincipal {
                 case 1:
                     //administrador
                     if (primerIngreso(administradores)) {
-                        llenarAdministrador(administradores);
+                        llenarAdministrador(administradores,servicios);
                     } else {
                         System.out.println("Bienvenido administrador ");
                         if (iniciarSesion(administradores)) {
