@@ -10,9 +10,8 @@ public class Manicura extends Servicio  {
 
     private TipoManicura tipoManicura;
     private static boolean disenio;
+    private static double precioDisenio = GestorPrecios.getPrecioDisenio();
 
-    ///si TipoServicio es por defecto no lo pedimos
-    // hay un precio base? VER PRECIO DEPILACION
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
@@ -20,15 +19,20 @@ public class Manicura extends Servicio  {
         super(TipoServicio.MANICURA, duracion);
         this.tipoManicura = tipoManicura;
         this.disenio = false;
+        this.precioDisenio = precioDisenio;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
-    //implementacion interfaz, faltaaaaaaaaaaaa
-   /* @Override
-    public void MantenimientoMaquinas(Servicio servicio) {
-        System.out.println("aca ira el metodo ");
-    }*/
+
+    public static double getPrecioDisenio() {
+        return precioDisenio;
+    }
+
+    public static void setPrecioDisenio(double precioDisenio) {
+        Manicura.precioDisenio = precioDisenio;
+    }
+
 
 
     @Override

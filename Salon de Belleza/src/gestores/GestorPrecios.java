@@ -1,12 +1,18 @@
 package gestores;
 //Capaz la logica de poner precio directamente en los enum no esta tan buena, entonces es mejor manejarlo de aca
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import enumeraciones.*;
 import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
 import model.Factura;
 import model.Manicura;
 import model.Pestanias;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -152,4 +158,28 @@ public final class GestorPrecios {
         // Retornar el valor del descuento aplicado
     }
 
+    public static void guardarPreciosEnArchivo(String nombreArchivo) {
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            gson.toJson(precios, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cargarPreciosDesdeArchivo(String nombreArchivo) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(nombreArchivo)) {
+            Type tipoMapa = new TypeToken<Map<Class<?>, Map<Enum<?>, Double>>>() {}.getType();
+            Map<Class<?>, Map<Enum<?>, Double>> preciosCargados = gson.fromJson(reader, tipoMapa);
+            if (preciosCargados != null) {
+                precios.clear();
+                precios.putAll(preciosCargados);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+
