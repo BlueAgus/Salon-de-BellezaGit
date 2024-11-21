@@ -92,13 +92,17 @@ public class GestorServicio {
 
     }
 
-    public Servicio buscarServicioCodigo(String codServicio) {
+    public Servicio buscarServicioCodigo(String codServicio)throws CodigoNoEncontradoException {
+        Servicio servicio = null;
         for (Servicio s : almacenServicios.getAlmacen()) {
             if (s.getCodigo_servicio().equals(codServicio)) {
-                return s;
+                servicio = s;
             }
         }
-        return null;
+        if(servicio == null){
+            throw new CodigoNoEncontradoException("El codigo ingresado no existe..");
+        }
+        return servicio;
     }
 
     public void mostrarServicioXtipo() {

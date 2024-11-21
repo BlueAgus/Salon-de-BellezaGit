@@ -308,7 +308,7 @@ public class GestorFactura {
         factura.setFecha(nuevaFecha);
     }
 
-    private Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
+    public Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
 
 
         for (Factura factu : historial.getAlmacen()) {
