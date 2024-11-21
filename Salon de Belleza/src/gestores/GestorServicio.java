@@ -139,7 +139,7 @@ public class GestorServicio {
                     servicio.setTipoService(pedirTipoServicio());
                     break;
                 case 2:
-                    //  servicio.setPrecio(pedirPrecio());
+                      servicio.setPrecio(pedirPrecio());
                     break;
                 case 3:
                     servicio.setDuracion(pedirDuracion());
@@ -508,7 +508,6 @@ public class GestorServicio {
         }
         return null;
     }
-
 
 }
 
