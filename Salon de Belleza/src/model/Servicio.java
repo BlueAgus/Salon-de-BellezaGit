@@ -14,7 +14,7 @@ public abstract class Servicio implements CrearID {
     protected String codigo_servicio ; //
     protected TipoServicio tipoService;
     protected LocalTime duracion;
-    protected double precio;
+    protected double precio = 10.0;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
