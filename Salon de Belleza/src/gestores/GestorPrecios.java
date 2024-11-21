@@ -198,7 +198,7 @@ public final class GestorPrecios {
     public static String verPrecioDepi() {
         return
                 "Depilacion con cera: " + precioDepiCera +
-                        "Depilacion con Laser: " + precioDepiLaser +
+                        "Depilacion con Laser: " + precioDepiLaser;
 
     }
 

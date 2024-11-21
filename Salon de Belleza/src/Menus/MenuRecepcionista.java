@@ -45,7 +45,7 @@ public class MenuRecepcionista extends MenuAdministrador {
                     menuTurnos(turnos,clientes,profesionales,servicios);
                     break;
                 case 3:
-                    menuFacturas(facturas,clientes);
+                    menuFacturas(facturas,clientes, turnos);
                     break;
                 case 4:
                     servicios.mostrarServicios();

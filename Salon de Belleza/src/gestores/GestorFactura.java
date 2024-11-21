@@ -131,6 +131,64 @@ public class GestorFactura {
         }
     }
 
+    public boolean agregarFactura(Factura factura) throws FacturaYaExistenteException {
+        for (Factura f : historial.getAlmacen()) {
+            if (f.getCodigoFactura().equals(factura.getCodigoFactura())) {
+                throw new FacturaYaExistenteException("La factura ya existe en el historial.");
+            }
+        }
+        return historial.agregar(factura);
+    }
+
+    public boolean eliminarFactura(String codigoFactura) throws FacturaNoExistenteException {
+        Factura facturaAEliminar = null;
+        Scanner scan = new Scanner(System.in);
+        boolean seBorro = false;
+
+        // Buscar la factura por código
+        for (Factura f : historial.getAlmacen()) {
+            if (f.getCodigoFactura().equals(codigoFactura)) {
+                facturaAEliminar = f;
+                break;
+            }
+        }
+
+        if (facturaAEliminar == null) {
+            throw new FacturaNoExistenteException("La factura que desea eliminar no existe.");
+        }
+
+        System.out.println("¿Está seguro que desea eliminar la factura del cliente "
+                + facturaAEliminar.getCliente().getNombre() + "? (SI/NO)");
+        String rta = scan.nextLine().toLowerCase();
+
+        if (rta.equals("si")) {
+            historial.eliminar(facturaAEliminar);
+            System.out.println("Factura eliminada exitosamente.");
+            seBorro = true;
+        } else {
+            System.out.println("La factura no fue eliminada.");
+        }
+
+
+        return seBorro;
+    }
+
+    public Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
+
+        Factura factura = null;
+        for (Factura factu : historial.getAlmacen()) {
+
+            if (factu.getCodigoFactura().equals(codigo)) {
+                factura = factu;
+            }
+        }
+
+        if(factura == null){
+            throw new CodigoNoEncontradoException("El codigo ingresado no existe!");
+        }
+        return factura;
+    }
+
     ///aca se entiende que anterior a este metodo se muestran las facturas y de ahi se saca el codigo, todas las del dni de la persona que queremos
     public void modificarFactura() {
         Factura facturaModificada = null;
@@ -202,6 +260,8 @@ public class GestorFactura {
         } while (opcion != 0);
     }
 
+
+    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
     private void aplicarDescuento(Factura factura, Scanner scan) {
 
         try{
@@ -209,7 +269,7 @@ public class GestorFactura {
             // metodo de descuento en gestor precios
             System.out.println("Ingrese el porcentaje de descuento");
             double desc = scan.nextDouble();
-           GestorPrecios.aplicarDescuento(factura.getCodigoFactura(), desc, historial.getAlmacen());
+            GestorPrecios.aplicarDescuento(factura.getCodigoFactura(), desc, historial.getAlmacen());
 
         }catch (CodigoNoEncontradoException e){
             System.out.println(e.getMessage());
@@ -281,6 +341,7 @@ public class GestorFactura {
             System.out.println(e.getMessage());
         }
     }
+
     private TipoDePago pedirTipoPago() {
         TipoDePago tipo = null;
         Scanner scan = new Scanner(System.in);
@@ -307,68 +368,6 @@ public class GestorFactura {
         factura.setFecha(nuevaFecha);
     }
 
-    public Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
-
-        Factura factura = null;
-        for (Factura factu : historial.getAlmacen()) {
-
-            if (factu.getCodigoFactura().equals(codigo)) {
-                factura = factu;
-            }
-        }
-
-        if(factura == null){
-            throw new CodigoNoEncontradoException("El codigo ingresado no existe!");
-        }
-        return factura;
-    }
-
-    public boolean agregarFactura(Factura factura) throws FacturaYaExistenteException {
-        for (Factura f : historial.getAlmacen()) {
-            if (f.getCodigoFactura().equals(factura.getCodigoFactura())) {
-                throw new FacturaYaExistenteException("La factura ya existe en el historial.");
-            }
-        }
-        return historial.agregar(factura);
-    }
-
-    public boolean eliminarFactura(String codigoFactura) throws FacturaNoExistenteException {
-        Factura facturaAEliminar = null;
-        Scanner scan = new Scanner(System.in);
-        boolean seBorro = false;
-
-        // Buscar la factura por código
-        for (Factura f : historial.getAlmacen()) {
-            if (f.getCodigoFactura().equals(codigoFactura)) {
-                facturaAEliminar = f;
-                break;
-            }
-        }
-
-        if (facturaAEliminar == null) {
-            throw new FacturaNoExistenteException("La factura que desea eliminar no existe.");
-        }
-
-        System.out.println("¿Está seguro que desea eliminar la factura del cliente "
-                + facturaAEliminar.getCliente().getNombre() + "? (SI/NO)");
-        String rta = scan.nextLine().toLowerCase();
-
-        if (rta.equals("si")) {
-            historial.eliminar(facturaAEliminar);
-            System.out.println("Factura eliminada exitosamente.");
-            seBorro = true;
-        } else {
-            System.out.println("La factura no fue eliminada.");
-        }
-
-
-        return seBorro;
-    }
-
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-
-    ///Para mi seria por rango de fechas o otra funcion
-    //esta muestra las facturas de cualquier cliente en ese dia, pero se podria hacer por rango tambien
     public List<Factura> verHistorialPorFecha(String fecha) {
 
         if (fecha == null || fecha.isEmpty()) {
@@ -393,37 +392,6 @@ public class GestorFactura {
 
         Predicate<Factura> condicion = factura -> factura.getFecha().equals(fecha1);
         return historial.filtrarPorCondicion(condicion);
-    }
-
-    //mirar
-    public void guardarEnArchivo() {
-
-        try {
-            FileWriter file = new FileWriter(this.nombreArchivoGson);
-            String json = gson.toJson(getHistorial());
-            file.write(json);
-            file.close();
-            System.out.println("Historial de facturas cargados con exito!");
-
-        } catch (IOException e) {
-            e.getMessage();
-        }
-    }
-
-    public void leerDesdeGson() {
-        try (FileReader file = new FileReader(nombreArchivoGson)) {
-            this.historial = gson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {}.getType());
-            if (this.historial == null) {
-                this.historial = new GestorAlmacen<>();
-            }
-            System.out.println("Historial de facturas cargado exitosamente.");
-        } catch (FileNotFoundException e) {
-            System.out.println("No se encontró el archivo. Se iniciará con un historial vacío.");
-            this.historial = new GestorAlmacen<>();
-        } catch (IOException | JsonSyntaxException e) {
-            System.out.println("Ocurrió un error al cargar el archivo: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public void historialFacturasPorCliente(String dni) throws DNInoEncontradoException {
@@ -468,7 +436,76 @@ public class GestorFactura {
         }
     }
 
+    public double gananciaXdia(LocalDate fecha){
 
+        double total=0;
+        for(Factura f: historial.getAlmacen())
+        {
+            if(f.getFecha().equals(fecha))
+            {
+                total+=f.getPrecioFinal();
+            }
+        }
+        return total;
+    }
+
+    public double gananciaXmes(int mes, int año){
+
+        double total=0;
+        for(Factura f: historial.getAlmacen())
+        {
+            if(f.getFecha().getMonthValue() == mes && f.getFecha().getYear() == año)
+            {
+                total+=f.getPrecioFinal();
+            }
+        }
+        return total;
+    }
+
+    public double gananciaXaño(int año){
+
+        double total=0;
+        for(Factura f: historial.getAlmacen())
+        {
+            if(f.getFecha().getYear() == año)
+            {
+                total+=f.getPrecioFinal();
+            }
+        }
+        return total;
+    }
+
+    ////////////////////////////////////////////////////////MANEJO DE ARCHIVOS ////////////////////////////////////////////////////
+    //mirar
+    public void guardarEnArchivo() {
+
+        try {
+            FileWriter file = new FileWriter(this.nombreArchivoGson);
+            String json = gson.toJson(getHistorial());
+            file.write(json);
+            file.close();
+            System.out.println("Historial de facturas cargados con exito!");
+
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
+
+    public void leerDesdeGson() {
+        try (FileReader file = new FileReader(nombreArchivoGson)) {
+            this.historial = gson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {}.getType());
+            if (this.historial == null) {
+                this.historial = new GestorAlmacen<>();
+            }
+            System.out.println("Historial de facturas cargado exitosamente.");
+        } catch (FileNotFoundException e) {
+            System.out.println("No se encontró el archivo. Se iniciará con un historial vacío.");
+            this.historial = new GestorAlmacen<>();
+        } catch (IOException | JsonSyntaxException e) {
+            System.out.println("Ocurrió un error al cargar el archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public GestorAlmacen<Factura> getHistorial() {
         return historial;
