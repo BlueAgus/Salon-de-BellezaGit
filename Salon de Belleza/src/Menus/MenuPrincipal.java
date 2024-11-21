@@ -71,7 +71,7 @@ public class MenuPrincipal {
 
         GestorServicio servicios = new GestorServicio();
         GestorTurno turnos = new GestorTurno();
-        GestorFactura facturas = new GestorFactura();
+        GestorFactura facturas = new GestorFactura(archivoFacturas);
 
 
         MenuAdministrador menuAdministrador = new MenuAdministrador();
