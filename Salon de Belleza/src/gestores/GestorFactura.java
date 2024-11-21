@@ -363,8 +363,13 @@ public class GestorFactura {
     }
 
     public void modificarFechaFactura(Factura factura) {
-        LocalDate nuevaFecha = LocalDate.now();
+        String nuevaFecha = convertirFechaAString(LocalDate.now());
         factura.setFecha(nuevaFecha);
+    }
+
+    public static String convertirFechaAString(LocalDate fecha) {
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Puedes ajustar el formato según necesites
+        return fecha.format(formatoFecha);
     }
 
     public List<Factura> verHistorialPorFecha(String fecha) {
@@ -434,9 +439,7 @@ public class GestorFactura {
 
         }
     }
-
-    public double gananciaXdia(LocalDate fecha) {
-
+    public double gananciaXdia(String fecha) {
         double total = 0;
         for (Factura f : historial.getAlmacen()) {
             if (f.getFecha().equals(fecha)) {
@@ -445,7 +448,7 @@ public class GestorFactura {
         }
         return total;
     }
-
+/*
     public double gananciaXmes(int mes, int año) {
 
         double total = 0;
@@ -467,7 +470,7 @@ public class GestorFactura {
         }
         return total;
     }
-
+*/
     ////////////////////////////////////////////////////////MANEJO DE ARCHIVOS ////////////////////////////////////////////////////
     //mirar
     public void guardarEnArchivo(List<Factura> facturas) {

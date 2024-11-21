@@ -9,6 +9,7 @@ import model.*;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Locale;
@@ -665,8 +666,8 @@ public class MenuAdministrador {
                     while (true) {
                         System.out.println("Seleccione una opción: ");
                         System.out.println("1- Ganancia de un día específico");
-                        System.out.println("2- Ganancia de un mes específico");
-                        System.out.println("3- Ganancia de un año específico");
+                        //System.out.println("2- Ganancia de un mes específico");
+                       // System.out.println("3- Ganancia de un año específico");
                         System.out.println("0- SALIR");
 
 
@@ -687,11 +688,12 @@ public class MenuAdministrador {
                     switch (opc) {
                         case 1:
                             LocalDate fecha = gestorTurno.pedirFecha();
+                            String f=convertirFechaAString(fecha);
 
                             if (fecha == null) {
                                 break;
                             } else {
-                                System.out.println("Ganancia del día: " + fecha + " " + facturas.gananciaXdia(fecha));
+                                System.out.println("Ganancia del día: " + fecha + " " + facturas.gananciaXdia(f));
                             }
 
                             break;
@@ -728,7 +730,7 @@ public class MenuAdministrador {
                                     System.out.println("Opcion invalida, ingrese una opcion valida");
                                 }
 
-                                System.out.println("Ganancia: " + Month.of(mes).getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault()) + " " + año + ": " + facturas.gananciaXmes(mes, año));
+                              //  System.out.println("Ganancia: " + Month.of(mes).getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault()) + " " + año + ": " + facturas.gananciaXmes(mes, año));
 
                             }
 
@@ -753,7 +755,7 @@ public class MenuAdministrador {
                                 }
                             }
 
-                            System.out.println("Ganancia del año " + año1 + facturas.gananciaXaño(año1));
+                            //System.out.println("Ganancia del año " + año1 + facturas.gananciaXaño(año1));
 
                             break;
                         case 0:
@@ -981,6 +983,11 @@ public class MenuAdministrador {
             }
 
         } while (opcion != 0);
+    }
+
+    public static String convertirFechaAString(LocalDate fecha) {
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Puedes ajustar el formato según necesites
+        return fecha.format(formatoFecha);
     }
 }
 
