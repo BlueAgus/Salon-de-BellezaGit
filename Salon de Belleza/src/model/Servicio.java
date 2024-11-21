@@ -13,11 +13,8 @@ public abstract class Servicio implements CrearID {
 
     private String codigo_servicio ; //
     protected TipoServicio tipoService;
-    // protected double precio; sacamos precio de las clases para centralizar en gestorPrecios
     protected LocalTime duracion;
     protected double precio;
-    protected Disponibilidad disponibilidad; // se refiere al puesto donde se realiza el servicio
-    ///VER DISPONIBILIDAD!!!!!!!!!!!!!!!!!
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public Servicio(TipoServicio tipoService, LocalTime duracion) {
@@ -25,7 +22,6 @@ public abstract class Servicio implements CrearID {
         this.tipoService = tipoService;
         this.precio = calcularPrecio();
         this.duracion = duracion;
-        this.disponibilidad = Disponibilidad.DISPONIBLE;
         this.codigo_servicio = this.generarIDEunico();
     }
 
