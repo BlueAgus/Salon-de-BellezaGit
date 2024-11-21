@@ -1,6 +1,7 @@
 package gestores;
 
 import excepciones.DNInoEncontradoException;
+import model.Cliente;
 import model.Persona;
 import model.Profesional;
 import model.Turno;
@@ -88,6 +89,24 @@ public class GestorTurno {
         return false;
     }
 
+    public void cancelarTurnosXdia(LocalDate fecha, GestorPersona gestorPersona, String codServicio) {
+        List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
+
+        System.out.println("Avisar a los siguientes clientes que su turno del dia " + fecha + "ha sido cancelado");
+        for (Turno t : turnos) {
+            if (t.getCodigo_servicio().equals(codServicio)) {
+                Cliente cliente = null;
+                try {
+                    cliente = (Cliente) gestorPersona.buscarPersona(t.getDni_cliente());
+                } catch (DNInoEncontradoException e) {
+                    System.out.println(e.getMessage());
+                }
+                System.out.println("- " + cliente.getNombre() + " TELEFONO: " + cliente.getTelefono());
+            }
+        }
+        turnos.clear();
+    }
+
     public Turno buscarTurnoXclienteFechaHorario(String dniCliente, LocalDate fecha, LocalTime horario) {
 
         for (List<Turno> e : listaTurnos.getMapa().values()) {
@@ -101,7 +120,7 @@ public class GestorTurno {
         return null;
     }
 
-    public Turno buscarTurno(String codTurno) {
+    public Turno buscarTurno(String codTurno){
 
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
@@ -425,7 +444,7 @@ public class GestorTurno {
         while (!valido) {
             /// agregar filtros
             System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
- n
+
             ///lo guarda en un string para verificar que no haya escrito salir
             String fechaIngresada = scanner.nextLine();
 

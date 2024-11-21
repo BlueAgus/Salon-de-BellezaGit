@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -334,6 +335,12 @@ public class GestorServicio {
             disenio = false;
         }
         return disenio;
+    }
+
+    public void reportarFalla( GestorPersona gestorCliente, GestorTurno gestorTurno)
+    {///
+
+        gestorTurno.cancelarTurnosXdia(LocalDate.now(), gestorCliente, codServicio);
     }
 
     ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
