@@ -18,6 +18,7 @@ public class Depilacion extends Servicio {
     public Depilacion(LocalTime duracion, TipoDepilacion tipoDepilacion) {
         super(TipoServicio.DEPILACION, duracion);
         this.tipoDepilacion = tipoDepilacion;
+        this.precio=calcularPrecio();
     }
 
    /////////////////////////////////////// metodos extr ////////////////////////////////////////////////////

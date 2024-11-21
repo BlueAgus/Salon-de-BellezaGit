@@ -24,10 +24,15 @@ public class GestorCliente {
     public GestorCliente() {
     }
 
+    public List<Cliente> getClientes() { return clientes; }
+
+    public void setClientes(List<Cliente> clientes) { this.clientes = clientes; }
+
     public boolean agregarPersona(GestorServicio gestorServicio) {
+
         boolean cargado = false;
 
-        String dni = "";
+        String dni ;
         while (true) {
             try {
                 dni = pedirDNI();
@@ -36,11 +41,11 @@ public class GestorCliente {
                 System.out.printf(e.getMessage());
             }
         }
-
+        
         String nombre = pedirNombre();
         String apellido = pedirApellido();
 
-        String genero = "";
+        String genero ;
         while (true) {
             try {
                 genero = pedirGenero();
@@ -50,7 +55,7 @@ public class GestorCliente {
             }
         }
 
-        String telefono = "";
+        String telefono ;
         while (true) {
             try {
                 telefono = pedirTelefono();
@@ -91,7 +96,7 @@ public class GestorCliente {
         throw new DNInoEncontradoException("DNI no encontrado!!");
     }
 
-    public void modificarPersona(Cliente cliente, GestorServicio gestorServicio) {
+    public void modificarPersona(Cliente cliente) {
         int opcion;
         boolean continuarModificando = true;
 
@@ -168,7 +173,7 @@ public class GestorCliente {
 
             switch (opcion) {
                 case 1:
-                    modificarPersona(cliente, gestorServicio);
+                    modificarPersona(cliente);
                     break;
                 case 2:
                     System.out.println("....");
@@ -319,6 +324,9 @@ public class GestorCliente {
             //  dígitos
             else if (dni.length() != 8) {
                 System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            }
+            else {
+                dnivalido = true;
             }
         }
         return dni;

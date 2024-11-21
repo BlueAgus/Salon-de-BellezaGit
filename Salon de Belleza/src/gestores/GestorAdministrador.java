@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GestorAdministrador {
+
     private static Scanner scanner = new Scanner(System.in);
     private List<Administrador> administradores ;
     private static final String archivoAdministradores="administradores.json";

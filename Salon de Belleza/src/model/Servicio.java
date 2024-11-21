@@ -14,14 +14,13 @@ public abstract class Servicio implements CrearID {
     protected String codigo_servicio ; //
     protected TipoServicio tipoService;
     protected LocalTime duracion;
-    protected double precio = 10.0;
+    protected double precio = 0.0;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
     public Servicio(TipoServicio tipoService, LocalTime duracion) {
 
         this.tipoService = tipoService;
-        this.precio = calcularPrecio();
         this.duracion = duracion;
         this.codigo_servicio = this.generarIDEunico();
     }

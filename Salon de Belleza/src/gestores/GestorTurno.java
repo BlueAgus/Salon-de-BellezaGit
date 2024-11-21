@@ -24,10 +24,9 @@ import java.util.*;
 public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
+    private static final String archivoTurnos = "turnos.json";
     private static Scanner scanner = new Scanner(System.in);
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
-            .create();
+    Gson gson = new Gson();
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorTurno() {
@@ -139,9 +138,7 @@ public class GestorTurno {
                 scanner.nextLine();
             }
         }
-
         return turnosDelCliente.get(opc).getCod_turno();
-
     }
 
     public void cancelarTurnosXdia(LocalDate fecha, GestorCliente clientes, String codServicio) {
@@ -643,7 +640,8 @@ public class GestorTurno {
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
 
     public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
-        try (FileReader reader = new FileReader("turnos.json")) {
+
+        try (FileReader reader = new FileReader(archivoTurnos)) {
             // Deserializar como HashMap<String, List<Turno>>
             Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {
             }.getType();
