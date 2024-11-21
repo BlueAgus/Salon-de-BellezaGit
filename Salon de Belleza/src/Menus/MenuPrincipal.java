@@ -192,7 +192,8 @@ public class MenuPrincipal {
         return contraseña;
     }
 
-    //no se que onda esto...
+    //no se que onda esto... NO LO BORREN POR LAS DUDAS.
+    /*
     public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
         List<Administrador> e = administradores.leerArchivoPersona("administradores.json");
         boolean a = false;
@@ -200,8 +201,8 @@ public class MenuPrincipal {
             if (aux.getDni().equals(dni)) {
                 a = true;
             }
+            return a;
         }
-        return a;
     }
 
     public boolean verificarContraseniaAdministrador(String dni, String contrasenia, GestorPersona administradores) {
@@ -258,8 +259,7 @@ public class MenuPrincipal {
         }
         return a;
     }
-
-
+*/
 
 }
 
