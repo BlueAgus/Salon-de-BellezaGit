@@ -38,7 +38,7 @@ public class MenuAdministrador {
                     menuUsuarios(clientes, profesionales, recepcionista, administrador, servicios);
                     break;
                 case 2:
-                    menuServicio(servicios);
+                    menuServicio(servicios,clientes,turnos);
                     break;
                 case 3:
                     menuTurnos(turnos, clientes, profesionales, servicios);
@@ -307,7 +307,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuServicio(GestorServicio servicios) {
+    public void menuServicio(GestorServicio servicios,GestorPersona cliente,GestorTurno turnos) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -317,8 +317,8 @@ public class MenuAdministrador {
             System.out.println("2.Eliminar ");
             System.out.println("3.Modificar ");
             System.out.println("4.Buscar servicio por tipo ");
-            System.out.println("5.Cambiar la disponibilidad de un servicio ");
-            System.out.println("6.Mostrar todos los servicios del salon ");
+            System.out.println("5.Mostrar todos los servicios del salon ");
+            System.out.println("6.Reportar falla de un servicio");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -338,13 +338,13 @@ public class MenuAdministrador {
                     servicios.modificarServicio();
                     break;
                 case 4:
-
+                    servicios.mostrarServiciosXtipo();
                     break;
                 case 5:
-
+                    servicios.mostrarServicios();
                     break;
                 case 6:
-                    servicios.mostrarServicios();
+                    servicios.reportarFalla(cliente,turnos);
                     break;
                 default:
                     System.out.println("Opción no válida.");
