@@ -162,10 +162,6 @@ public class GestorPersona {
     }
 
 
-
-
-
-
     public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
         int opcion;
         boolean continuarModificando = true;
@@ -197,21 +193,21 @@ public class GestorPersona {
                             try {
                                 persona.setDni(pedirDNI());
                             } catch (DNIyaCargadoException e) {
-                                System.out.printf(e.getMessage());
+                                System.out.println(e.getMessage());
                             }
                             break;
                         case 4:
                             try {
                                 persona.setGenero(pedirGenero());
                             } catch (GeneroInvalidoException e) {
-                                System.out.printf(e.getMessage());
+                                System.out.println(e.getMessage());
                             }
                             break;
                         case 5:
                             try {
-                                persona.setTelefono((pedirTelefono()));
+                                persona.setTelefono(pedirTelefono());
                             } catch (TelefonoInvalidoException e) {
-                                System.out.println(e);
+                                System.out.println(e.getMessage());
                             }
                             break;
                         case 6:
@@ -230,7 +226,7 @@ public class GestorPersona {
         }
     }
 
-    public Profesional modificarProfesional(Profesional profesional,GestorServicio servicios) {
+    public void modificarProfesional(Profesional profesional,GestorServicio servicios) {
         int opcion;
         boolean continuarModificando = true;
         while (continuarModificando) {
@@ -292,9 +288,7 @@ public class GestorPersona {
             }
             System.out.println("MODIFICADO EXITOSAMENTE!");
             System.out.println(profesional.toString());
-            return profesional;
         }
-        return null;
     }
 
     public void verificarCarga(Persona persona, GestorServicio gestorServicio) {

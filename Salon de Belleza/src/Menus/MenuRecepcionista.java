@@ -7,11 +7,10 @@ import gestores.GestorTurno;
 
 import java.util.Scanner;
 
-public class MenuRecepcionista {
+public class MenuRecepcionista extends MenuAdministrador {
 
-    private MenuAdministrador menuAdministrador;
 
-    public void MenuRecepcionistas(GestorPersona gestorPersona,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
+    public void menuRecepcionistas(GestorPersona clientes, GestorPersona profesionales,GestorPersona recepcionista,GestorPersona administrador,GestorServicio gestorServicio,GestorTurno gestorTurno,GestorFactura gestorFactura) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -35,19 +34,19 @@ public class MenuRecepcionista {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    menuAdministrador.subMenuClientes(gestorPersona,gestorServicio);
+                    subMenuClientes(clientes,gestorServicio);
                     break;
                 case 2:
-                    menuAdministrador.menuTurnos(gestorTurno,gestorPersona,gestorServicio);
+                    menuTurnos(gestorTurno,clientes,gestorServicio);
                     break;
                 case 3:
-                    menuAdministrador.menuFacturas(gestorFactura,gestorPersona);
+                    menuFacturas(gestorFactura,clientes);
                     break;
                 case 4:
                     gestorServicio.mostrarServicios();
                     break;
                 case 5:
-                    mostrarProfesionales(gestorPersona);
+                    mostrarProfesionales(profesionales);
                     break;
                 case 6:
 

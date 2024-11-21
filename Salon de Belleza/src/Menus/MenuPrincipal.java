@@ -1,7 +1,6 @@
 package Menus;
 
-import gestores.GestorPersona;
-import gestores.GestorUsuarios;
+import gestores.*;
 
 import java.util.Scanner;
  public class MenuPrincipal {
@@ -9,19 +8,32 @@ import java.util.Scanner;
 
         public void menuPrincipal() {
             GestorPersona profesionales = new GestorPersona();
-            GestorPersona Administradores = new GestorPersona();
-            GestorPersona Recepcionistas = new GestorPersona();
+            GestorPersona administradores = new GestorPersona();
+            GestorPersona recepcionistas = new GestorPersona();
+            GestorPersona clientes=new GestorPersona();
+
+            GestorServicio servicios= new GestorServicio();
+            GestorTurno turnos= new GestorTurno();
+            GestorFactura facturas = new GestorFactura();
 
             GestorUsuarios usuarios = new GestorUsuarios();
             String archivoUsuarioProfesionales = "usuariosprofesionales.json";
             String archivoUsuarioAdministradores = "usuariosadministradores.json";
             String archivoUsuarioRecepcionista = "usuariosrecepcionistas.json";
+            String archivoUsuarioCliente= "usuariosclientes.json";
 
+            String archivoServicios= "servicios.json";
+            String archivoTurnos= "turnos.json";
+            String archivoFacturas= "facturas.json";
+
+            MenuAdministrador menuAdministrador=new MenuAdministrador();
+            MenuRecepcionista menuRecepcionista=new MenuRecepcionista();
+            MenuProfesional menuProfesional= new MenuProfesional();
 
             int opcion;
             do {
 
-                System.out.println("Bienvenido a Queens!\n");
+                System.out.println("Bienvenido a Estetica Queens!\n");
                 System.out.println("¿Quién está ingresando?");
                 System.out.println("--------------------");
                 System.out.println("1. Administrador ");
@@ -38,7 +50,7 @@ import java.util.Scanner;
                         System.out.println("Bienvenido administrador ");
                         if(iniciarSesion(usuarios,archivoUsuarioAdministradores))//si es true tiene su dni registrado
                         {
-                            MenuAdministrador menuAdministrador=new MenuAdministrador();
+                           menuAdministrador.mostrarMenu(clientes,profesionales,recepcionistas,administradores,servicios,turnos,facturas);
                             if(usuarios.primerIngreso()){
                                 //crea un usuario.
                             }
@@ -46,6 +58,7 @@ import java.util.Scanner;
                         break;
                     case 2:
                         //recepcionista
+                        menuRecepcionista.MenuRecepcionistas();
                         System.out.println("Bienvenido Recepcionista ");
                         iniciarSesion(usuarios,archivoUsuarioRecepcionista);
 
