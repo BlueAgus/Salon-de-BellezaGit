@@ -601,6 +601,21 @@ public class GestorPersona<T extends Persona> {
     }
 
     ///////VERIFICACIONES
+    /*
+    public boolean verificarSiExisteSinArchivos(String dni, GestorPersona e) {
+        boolean dniRepetido = false;
+        for (Object a : e.getAlmacenPersonas().getAlmacen()) {
+            if (a.getDni().equals(dni)) {
+                dniRepetido = true;
+                break;
+            }
+        }
+        if (dniRepetido) {
+            throw new DNIyaCargadoException("DNI ya cargado en el sistema: " + dni);
+        }
+    }
+    */
+
     public boolean verificarSiExisteAdministrador(String dni) throws DNInoEncontradoException {
         List<Administrador> aux = leerArchivoAdministradores();
         if (aux == null || aux.isEmpty()) {
@@ -613,6 +628,71 @@ public class GestorPersona<T extends Persona> {
         }
         throw new DNInoEncontradoException("\nDNI no encontrado en administradores!!");
     }
+
+    public boolean verificarSiExisteGeneral(String dni, String nombreArchivo) throws DNInoEncontradoException {
+        List<? extends Persona> aux = leerArchivoPersona(nombreArchivo);
+
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros en el archivo: " + nombreArchivo);
+        }
+
+        for (Persona p : aux) {
+            if (p.getDni().equals(dni)) {
+                return true; // El DNI se encontró
+            }
+        }
+
+        throw new DNInoEncontradoException("\nDNI no encontrado en el archivo: " + nombreArchivo);
+    }
+/*
+    public boolean verificarSiExisteGeneral(String dni,String nombreArchivo) throws DNInoEncontradoException {
+        if(nombreArchivo.equals("profesionales.json")) {
+            List<Profesional> aux =(Profesional) leerArchivoPersona(nombreArchivo);
+            if (aux == null || aux.isEmpty()) {
+                throw new DNInoEncontradoException("\nNo hay registros de profesionales..");
+            }
+            for (Persona p : aux) {
+                if (p.getDni().equals(dni)) {
+                    return true;//alguien del archivo tiene ese dni.
+                }
+            }
+            throw new DNInoEncontradoException("\nDNI no encontrado en profesionales!!");
+        }else if(nombreArchivo.equals("administradores.json")){
+            List<Administrador> aux = leerArchivoPersona(nombreArchivo);
+            if (aux == null || aux.isEmpty()) {
+                throw new DNInoEncontradoException("\nNo hay registros de administradores..");
+            }
+            for (Persona p : aux) {
+                if (p.getDni().equals(dni)) {
+                    return true;//alguien del archivo tiene ese dni.
+                }
+            }
+            throw new DNInoEncontradoException("\nDNI no encontrado en administradores!!");
+        }else if(nombreArchivo.equals("recepcionistas.json")){
+            List<Recepcionista> aux = leerArchivoPersona(nombreArchivo);
+            if (aux == null || aux.isEmpty()) {
+                throw new DNInoEncontradoException("\nNo hay registros de recepcionistas..");
+            }
+            for (Persona p : aux) {
+                if (p.getDni().equals(dni)) {
+                    return true;//alguien del archivo tiene ese dni.
+                }
+            }
+            throw new DNInoEncontradoException("\nDNI no encontrado en recepcionistas!!");
+        }else if(nombreArchivo.equals("clientes.json")){
+            List<Cliente> aux = leerArchivoPersona(nombreArchivo);
+            if (aux == null || aux.isEmpty()) {
+                throw new DNInoEncontradoException("\nNo hay registros de clientes..");
+            }
+            for (Persona p : aux) {
+                if (p.getDni().equals(dni)) {
+                    return true;//alguien del archivo tiene ese dni.
+                }
+            }
+            throw new DNInoEncontradoException("\nDNI no encontrado en clientes!!");
+        }
+        return false;
+    }*/
 
     public boolean verificarSiExisteCliente(String dni) throws DNInoEncontradoException {
         List<Cliente> aux = leerArchivoClientes();
@@ -752,21 +832,27 @@ public class GestorPersona<T extends Persona> {
         return listaClientes;
     }
 
-   /* public List<Persona> leerArchivoPersona() {
+    public List<Persona> leerArchivoPersona(String nombreArchivo) {
         Gson gson = new Gson();
-        List<Persona> listaClientes = new ArrayList<>();
-        try (FileReader fileReader = new FileReader("clientes.json")) {
+        List<Persona> listaAux = new ArrayList<>();
+        try (FileReader fileReader = new FileReader(nombreArchivo)) {
             Type listType = new TypeToken<List<Persona>>() {
             }.getType();
-            listaClientes = gson.fromJson(fileReader, listType);
+            listaAux = gson.fromJson(fileReader, listType);
         } catch (IOException e) {
             System.out.println("No se puede leer el archivo: " + e.getMessage());
         }
-        return listaClientes;
-    }*/
+        return listaAux;
+    }
 
-
+<<<<<<< Updated upstream
     public void guardarEnArchivoJSON(String rutaArchivo) {
+=======
+
+
+/*
+    public void guardarEnArchivoJSON(String rutaArchivo ) {
+>>>>>>> Stashed changes
         JSONArray jsonArray = new JSONArray();
 
         // Convertir cada objeto Persona a un JSONObject
@@ -900,5 +986,20 @@ public class GestorPersona<T extends Persona> {
         return personas;
     }
 
+<<<<<<< Updated upstream
 
     publ
+=======
+*/
+    public GestorAlmacen getAlmacenPersonas() {
+        return almacenPersonas;
+    }
+
+    public void setAlmacenPersonas(GestorAlmacen almacenPersonas) {
+        this.almacenPersonas = almacenPersonas;
+    }
+
+}
+
+
+>>>>>>> Stashed changes
