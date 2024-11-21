@@ -122,9 +122,9 @@ public class MenuPrincipal {
         recepcionista.leerArchivoRecepcionistas();
         clientes.leerArchivoClientes();
         //inicializar servicio
-        servicios.LeerArchivo(archivoServicios);
+        //servicios.LeerArchivo(archivoServicios);
         //turnos
-        turnos.leerArchivoTurnos();
+        //turnos.leerArchivoTurnos();
         //factura
         facturas.leerDesdeGson();
         // precios

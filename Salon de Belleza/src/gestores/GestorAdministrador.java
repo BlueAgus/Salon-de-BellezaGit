@@ -496,9 +496,7 @@ public class GestorAdministrador {
     }
 
     public List<Administrador> leerArchivoAdministradores() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
+        Gson gson=new Gson();
         List<Administrador> listaAdministradores = new ArrayList<>();
 
         try (FileReader fileReader = new FileReader(archivoAdministradores)) {

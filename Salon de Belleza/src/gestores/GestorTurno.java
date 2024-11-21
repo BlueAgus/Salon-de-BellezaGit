@@ -25,7 +25,7 @@ public class GestorTurno {
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static final String archivoTurnos = "turnos.json";
     private static Scanner scanner = new Scanner(System.in);
-    Gson gson = new Gson();
+  Gson gson = new Gson();
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorTurno() {

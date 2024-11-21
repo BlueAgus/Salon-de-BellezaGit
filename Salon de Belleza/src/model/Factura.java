@@ -9,6 +9,7 @@ import interfaces.CrearID;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Factura implements CrearID {
@@ -20,8 +21,7 @@ public class Factura implements CrearID {
     private List<Turno> turnosPorCliente;
     private double descuento;
     private double ajuste = 0.0;
-    private LocalDate fecha; // fecha y hora de la creacion de la factura
-    private LocalTime hora;
+    private String fecha;
     private GestorServicio gestorServicio;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -35,12 +35,17 @@ public class Factura implements CrearID {
         this.ajuste = 0.0;
         this.turnosPorCliente = new ArrayList<>();
         this.cliente = cliente;
-        this.fecha = LocalDate.now();
-        this.hora = LocalTime.now();
+        this.fecha = convertirFechaAString(LocalDate.now());
+       // this.hora = LocalTime.now();
         this.gestorServicio = gestorServicio;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
+    public static String convertirFechaAString(LocalDate fecha) {
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Puedes ajustar el formato según necesites
+        return fecha.format(formatoFecha);
+    }
 
     public String detallesDeServicios() {
         StringBuilder detalles = new StringBuilder();
@@ -158,20 +163,20 @@ public class Factura implements CrearID {
         this.turnosPorCliente = turnosPorCliente;
     }
 
-    public LocalDate getFecha() {
+    public double getAjuste() {
+        return ajuste;
+    }
+
+    public void setAjuste(double ajuste) {
+        this.ajuste = ajuste;
+    }
+
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
-    }
-
-    public LocalTime getHora() {
-        return hora;
-    }
-
-    public void setHora(LocalTime hora) {
-        this.hora = hora;
     }
 
     public Cliente getCliente() {
@@ -204,7 +209,7 @@ public class Factura implements CrearID {
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
                         "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
-                        "| Hora : " + hora + "\n" +
+
                         "=========================================\n";
     }
 
