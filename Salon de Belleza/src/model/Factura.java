@@ -20,6 +20,7 @@ public class Factura implements CrearID {
     private Cliente cliente;
     private List<Turno> turnosPorCliente;
     private double descuento;
+    private double ajuste = 0.0;
     private LocalDate fecha; // fecha y hora de la creacion de la factura
     private LocalTime hora;
     GestorServicio gestorServicio;
@@ -32,6 +33,7 @@ public class Factura implements CrearID {
         this.tipoPago = tipoPago;
         this.precioFinal = 0.0;
         this.descuento = 0.0;
+        this.ajuste = 0.0;
         this.turnosPorCliente = new ArrayList<>();
         this.cliente = cliente;
         this.fecha = LocalDate.now();
@@ -81,8 +83,11 @@ public class Factura implements CrearID {
                 System.out.println("Servicio no encontrado para el código: " + turno.getCodigo_servicio());
             }
         }
-
         this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
+
+        // Calcula explícitamente el ajuste para mostrarlo en la factura
+        this.ajuste = this.precioFinal - precioBase;
+
         return this.precioFinal;
     }
 
@@ -195,12 +200,21 @@ public class Factura implements CrearID {
                 "| Detalles Factura: " +
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
-                        "| Descuento aplicado : " + descuento + "\n" + //deberia agregar un atributo descuento y calcular el descuento??
+                        "| Descuento aplicado : " + descuento + "\n" +
+                        "| Ajuste aplicado : " + mostrarAjuste() + "\n" +
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
                         "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
                         "| Hora : " + hora + "\n" +
                         "=========================================\n";
+    }
+
+    private String mostrarAjuste() {
+        if (ajuste == 0) {
+            return "Sin ajuste";
+        }
+        // aca muestra el signo del numero , si es posi o negativo
+        return String.format("%+.2f", ajuste);
     }
 }
 

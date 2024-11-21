@@ -66,7 +66,7 @@ public class GestorAlmacen<T> {
         return almacen;
     }
 
-    //public void setAlmacen(List<T> almacen) {this.almacen = almacen;}
+    public void setAlmacen(List<T> almacen) {this.almacen = almacen;}
 
 
 }
