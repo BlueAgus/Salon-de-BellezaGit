@@ -170,7 +170,6 @@ public class GestorPersona <T extends Persona>{
         return cargado;
     }
 
-
     //estos buscan en la list ano en el archivo a
     public boolean eliminarPersona(String dni) {
         try {
@@ -190,7 +189,6 @@ public class GestorPersona <T extends Persona>{
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
-
 
     public void modificarPersona(Persona persona, GestorServicio gestorServicio) {
         int opcion;
