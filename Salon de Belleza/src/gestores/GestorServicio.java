@@ -22,7 +22,7 @@ public class GestorServicio {
 
     private static Scanner scanner = new Scanner(System.in);
     private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
-    Gson gson=new Gson();
+    Gson gson = new Gson();
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
@@ -56,7 +56,9 @@ public class GestorServicio {
         }
     }
 
-    public boolean eliminarServicio(String cod_servicio) {
+    public boolean eliminarServicio() {
+
+        String cod_servicio = pedirParaBuscar();
 
         for (Servicio servicio : almacenServicios.getAlmacen()) {
             if (servicio.getCodigo_servicio().equals(cod_servicio)) {
@@ -66,24 +68,57 @@ public class GestorServicio {
         return false;
     }
 
-    public Servicio buscarServicio(String cod_Servicio) throws CodigoNoEncontradoException {
+    public Servicio buscarServicio() throws CodigoNoEncontradoException {
 
-        for (Servicio s : almacenServicios.getAlmacen()) {
-            if (s.getCodigo_servicio().equals(cod_Servicio)) {
-                return s;
+        mostrarServicios();
+
+        while (true){
+            System.out.println("Ingrese el código('salir' si quiere cancelar la operacion): ");
+            String cod_Servicio= scanner.nextLine();
+
+            if (cod_Servicio.equalsIgnoreCase("salir")) {
+                System.out.println("Operación cancelada por el usuario.");
+                return null;
+            }
+
+
+            for (Servicio s : almacenServicios.getAlmacen()) {
+                if (s.getCodigo_servicio().equals(cod_Servicio)) {
+                    return s;
+                }
+            }
+            throw new CodigoNoEncontradoException("El código de servicio no existe: " + cod_Servicio);
+        }
+
+    }
+
+    public void buscarServicioXtipo()
+    {
+        TipoServicio tipoServicio= pedirTipoServicio();
+        for(Servicio s: almacenServicios.getAlmacen())
+        {
+            if(s.getTipoService().equals(tipoServicio))
+            {
+                System.out.println(s.toString());
             }
         }
-        throw new CodigoNoEncontradoException("El código de servicio no existe: " + cod_Servicio);
     }
 
     // Función que permite modificar un servicio existente
-    public void modificarServicio(Servicio servicio) {
+    public void modificarServicio() {
+
+        Servicio servicio= null;
+        try {
+            servicio = buscarServicio();
+        } catch (CodigoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
 
         boolean continuarModificando = true;
         while (continuarModificando) {
             System.out.println("¿Qué te gustaría modificar?");
             System.out.println("1. Tipo de servicio");
-           // System.out.println("2. Precio");
+            // System.out.println("2. Precio");
             System.out.println("3. Duración");
             System.out.println("4. Salir");
             int opcion = scanner.nextInt();
@@ -94,7 +129,7 @@ public class GestorServicio {
                     servicio.setTipoService(pedirTipoServicio());
                     break;
                 case 2:
-                  //  servicio.setPrecio(pedirPrecio());
+                    //  servicio.setPrecio(pedirPrecio());
                     break;
                 case 3:
                     servicio.setDuracion(pedirDuracion());
@@ -135,28 +170,41 @@ public class GestorServicio {
             }
         } while (opcion != 2 && opcion != 1);
     }
-/*
-    public void pedirParaBuscar()
-    {
-        TipoServicio tipoServicio=pedirTipoServicio();
 
-        if(tipoServicio== TipoServicio.DEPILACION)
-        {
-            TipoDepilacion tipoDepilacion=pedirTipoDepilacion();
-            mostrar
+    public String pedirParaBuscar() {
 
+        for (int i = 0; i < almacenServicios.getAlmacen().size(); i++) {
+            System.out.println(i + "- " + almacenServicios.getAlmacen().get(i));
         }
-        else if(tipoServicio== TipoServicio.MANICURA)
-        {
-            TipoManicura tipoManicura= pedirTipoManicura();
-        }
-        else if(tipoServicio== TipoServicio.PESTANIAS)
-        {
-            TipoPestanias tipoPestanias=pedirTipoPestanias();
-        }
-    } public void mostrarServicio(T)
-    */
 
+        int opc = 0;
+        while (true) {
+
+            try {
+                System.out.println("OPCION: (o escriba 'salir' para cancelar) ");
+                String opcElegida = scanner.nextLine();
+
+
+                if (opcElegida.equalsIgnoreCase("salir")) {
+                    System.out.println("Operación cancelada por el usuario.");
+                    return null;
+                }
+
+                ///pasa a int un string
+                opc = Integer.parseInt(opcElegida);
+                if (opc < 0 || opc > almacenServicios.getAlmacen().size()) {
+                    System.out.println("Selección inválida. Inténtelo de nuevo.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no valida. Por favor ingrese un número.");
+                scanner.nextLine();
+            }
+        }
+
+        return almacenServicios.getAlmacen().get(opc).getCodigo_servicio();
+    }
 
     // Validación para el tipo de servicio
     public TipoServicio pedirTipoServicio() {
@@ -359,8 +407,7 @@ public class GestorServicio {
         return disenio;
     }
 
-    public void reportarFalla( GestorPersona gestorCliente, GestorTurno gestorTurno)
-    {///
+    public void reportarFalla(GestorPersona gestorCliente, GestorTurno gestorTurno, String codServicio) {///
 
         gestorTurno.cancelarTurnosXdia(LocalDate.now(), gestorCliente, codServicio);
     }
@@ -378,7 +425,7 @@ public class GestorServicio {
 
     /////////////ARCHIVOS.
     public void EscribirServiciosEnArchivo(String nombreArchivo, List<Servicio> servicios) {
-        try(FileWriter fileWriter = new FileWriter(nombreArchivo)){
+        try (FileWriter fileWriter = new FileWriter(nombreArchivo)) {
             Gson gson = new Gson();
             String json = gson.toJson(servicios);
             fileWriter.write(json);
@@ -394,9 +441,10 @@ public class GestorServicio {
     }
 
     public List<Servicio> LeerArchivo(String nombreArchivo) {
-        try (FileReader fileReader = new FileReader(nombreArchivo)){
+        try (FileReader fileReader = new FileReader(nombreArchivo)) {
             Gson gson = new Gson();
-            Type ListaServicios = new TypeToken<List<Servicio>>() {}.getType();
+            Type ListaServicios = new TypeToken<List<Servicio>>() {
+            }.getType();
             List<Servicio> servicios = gson.fromJson(fileReader, ListaServicios);
 
             return servicios;
