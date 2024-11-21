@@ -12,6 +12,7 @@ import model.Persona;
 import model.Turno;
 
 import javax.xml.transform.Source;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,44 +42,56 @@ public class GestorFactura {
     public void crearFactura() {
         GestorServicio gestor = new GestorServicio();
         GestorTurno turnos = new GestorTurno();
+        GestorPersona persona = new GestorPersona();
+        Scanner scan = new Scanner(System.in);
 
         try {
-            Scanner scan = new Scanner(System.in);
-            //pedir cliente
-            System.out.println("Ingrese el DNI del cliente:");
-            String dni = scan.nextLine();
-            Cliente cliente = pedirCliente(dni); // si se lanza la excepcion de DNI no encontrado, tendria que
-            //tener un bucle para que lo vuelva a ingresar o salir
+            // Pedir cliente por DNI
+            Cliente cliente = null;
+            while (cliente == null) {
+                try {
+                    System.out.println("Ingrese el DNI del cliente:");
+                    String dni = scan.nextLine();
+                    cliente = (Cliente) persona.buscarPersona(dni);
+                } catch (DNInoEncontradoException e) {
+                    System.out.println(e.getMessage());
+                    System.out.println("¿Desea intentar nuevamente? (SI/NO):");
+                    if (!scan.nextLine().equalsIgnoreCase("SI")) {// ese equals ignora si es en mayus o minus
+                        return; //salir si el usuario ingresa NO
+                    }
+                }
+            }
 
             //pedir tipo de pago
             TipoDePago tipo = pedirTipoPago();
             Factura factura = new Factura(tipo, cliente, gestor);
 
-            //mostrarle los turnos del dia de la fecha y los proximos
-            System.out.println("Estos son los turnos recientes del cliente: ");
-            List<Turno> turnosCliente = turnos.buscarTurnosXdniClienteVigentes(dni);
+            //buscamos los turnos de hoy y futuros de ese cliente
+            List<Turno> turnosCliente = turnos.buscarTurnosXdniClienteVigentes(cliente.getDni());
 
             if (turnosCliente.isEmpty()) {
                 System.out.println("No hay turnos reservados para este cliente.");
                 return;
             }
-            System.out.println(turnosCliente); // pero si aca no me los muestra numerados
 
-            //Pedimos que turnos se quieren pagar
+            //mostrarle los turnos del dia de la fecha y los proximos
+            System.out.println("Estos son los turnos recientes del cliente: ");
+            for (int i = 0; i < turnosCliente.size(); i++) {
+                System.out.println((i + 1) + ". " + turnosCliente.get(i));
+            }
 
             boolean continuar = true;
             while (continuar) {
-                System.out.println("Turnos disponibles:");
-                for (int i = 0; i < turnosCliente.size(); i++) { // le agregamos indice a cada turno mostrado
-                    System.out.println((i + 1) + ". " + turnosCliente.get(i));
-                }
+
+                System.out.println(" ");// dejo un espacio
                 System.out.print("Ingrese el número del turno a pagar: ");
-                try {
                     int nroTurno = scan.nextInt();
+
                     if (nroTurno < 1 || nroTurno > turnosCliente.size()) { //corroboramos que el numero esye bien
                         System.out.println("Número de turno inválido. Intente nuevamente.");
                         continue;
                     }
+
                     Turno turnoSeleccionado = turnosCliente.get(nroTurno - 1);
 
                     if (!factura.getTurnosPorCliente().contains(turnoSeleccionado)) {
@@ -88,15 +101,21 @@ public class GestorFactura {
                         System.out.println("El turno ya está en la factura.");
                     }
 
-                } catch (InputMismatchException e) {
-                    System.out.println("Entrada inválida, por favor, ingrese un número.");
-                    scan.nextLine(); // limpiar el buffer del scanner
-                }
+
                 System.out.print("¿Desea agregar otro turno? (SI/NO): ");
                 String rta = scan.next().toLowerCase();
                 continuar = rta.equals("si");
             }
 
+            System.out.println("Aplicar descuento?(SI/NO)");
+            String rta2 = scan.next().toLowerCase();
+
+            if(rta2.equalsIgnoreCase("si")){
+                aplicarDescuento(factura, scan);
+            }
+            else{
+                return;
+            }
 
             // montrar factura y agregarla
             boolean seCargo = agregarFactura(factura);
@@ -105,12 +124,139 @@ public class GestorFactura {
                 System.out.println(factura);
             }
 
-        } catch (TurnoExistenteException | DNInoEncontradoException |
-                 FacturaYaExistenteException e) {
-            e.getMessage();
+        } catch (TurnoExistenteException | FacturaYaExistenteException e) {
+            System.out.println(e.getMessage());
         }
     }
 
+
+    ///aca se entiende que anterior a este metodo se muestran las facturas y de ahi se saca el codigo, todas las del dni de la persona que queremos
+    public void modificarFactura() {
+        Factura facturaModificada = null;
+        Scanner scan = new Scanner(System.in);
+        GestorTurno turnos = new GestorTurno();
+
+        // Bucle para validar el código de la factura
+        while (facturaModificada == null) {
+            System.out.println("Ingrese el código de factura:");
+            String codigo = scan.nextLine();
+
+            try {
+                facturaModificada = buscarFacturaPorCodigo(codigo);
+            } catch (CodigoNoEncontradoException e) {
+                System.out.println(e.getMessage());
+                System.out.println("¿Desea intentarlo de nuevo? (S/N):");
+                if (!scan.nextLine().equalsIgnoreCase("S")) {
+                    return; // Salir del método
+                }
+            }
+        }
+
+        ///Elegir que se modifica
+        int opcion;
+        do {
+            //no te olvides e actualizar la fecha!!
+            System.out.println("Ingrese una opcion...");
+            System.out.println("1. Tipo de pago -");
+            System.out.println("2. Modificar el cliente -");
+            System.out.println("3. Turnos declarados en la factura-");
+            System.out.println("4. Aplicar descuento-"); //Esto puede ser en algun descuento especial o flasheo yo
+            System.out.println("0. Salir");// tendria que haber una opcion para volver para atras
+            System.out.print("Ingrese una opción: ");
+            opcion = scan.nextInt();
+            scan.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    TipoDePago tipo = pedirTipoPago();
+                    facturaModificada.setTipoPago(tipo);
+                    System.out.println("Tipo de pago actualizado.");
+
+                    modificarFechaFactura(facturaModificada);
+                    break;
+                case 2:
+                     modificarCliente(facturaModificada, scan);
+                     //actualizar la fecha a la actual
+                    modificarFechaFactura(facturaModificada);
+
+                    break;
+                case 3:
+
+                     gestionarTurnos(facturaModificada, scan, turnos);
+                     modificarFechaFactura(facturaModificada);
+
+                    break;
+                case 4:
+
+                    aplicarDescuento(facturaModificada, scan);
+                    modificarFechaFactura(facturaModificada);
+                    break;
+                case 0:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+
+        } while (opcion != 0);
+    }
+
+    private void aplicarDescuento(Factura factura, Scanner scan) {
+
+        try{
+            System.out.println("Precio final actual " + factura.getPrecioFinal());
+            // metodo de descuento en gestor precios
+            System.out.println("Ingrese el porcentaje de descuento");
+            double desc = scan.nextDouble();
+           GestorPrecios.aplicarDescuento(factura.getCodigoFactura(), desc, historial.getAlmacen());
+
+        }catch (CodigoNoEncontradoException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void gestionarTurnos(Factura factura, Scanner scan, GestorTurno turnos) {
+        try {
+            System.out.println("Turnos actuales:");
+            for (int i = 0; i < factura.getTurnosPorCliente().size(); i++) {
+                System.out.println((i + 1) + ". " + factura.getTurnosPorCliente().get(i));
+            }
+            System.out.println("Seleccione un turno para eliminar o ingrese 0 para agregar uno nuevo:");
+            int opcion = scan.nextInt();
+            scan.nextLine();
+
+            if (opcion > 0 && opcion <= factura.getTurnosPorCliente().size()) {
+                Turno turno = factura.getTurnosPorCliente().get(opcion - 1);
+                factura.eliminarTurno(turno);
+                System.out.println("Turno eliminado.");
+            } else if (opcion == 0) {
+                System.out.println("Ingrese el código del turno:");
+                String codTurno = scan.nextLine();
+                Turno nuevoTurno = turnos.buscarTurno(codTurno);
+                factura.agregarTurno(nuevoTurno);
+                System.out.println("Turno agregado.");
+            } else {
+                System.out.println("Opción no válida.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
+    private void modificarCliente(Factura factura, Scanner scan) {
+        GestorPersona persona = new GestorPersona();
+
+        try {
+            System.out.println("Ingrese el DNI del cliente:");
+            String dni = scan.nextLine();
+            Cliente cliente = (Cliente) persona.buscarPersona(dni);
+            factura.setCliente(cliente);
+            System.out.println("Cliente actualizado.");
+        } catch (DNInoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     private TipoDePago pedirTipoPago() {
         TipoDePago tipo = null;
         Scanner scan = new Scanner(System.in);
@@ -132,112 +278,15 @@ public class GestorFactura {
         return tipo;
     }
 
-    private Cliente pedirCliente(String dni) throws DNInoEncontradoException {//propago la excepcion
-        GestorPersona persona = new GestorPersona();
 
-        return (Cliente) persona.buscarPersona(dni);
 
+    public void modificarFechaFactura(Factura factura) {
+        LocalDate nuevaFecha = LocalDate.now();
+        factura.setFecha(nuevaFecha);
     }
 
-    ///aca se entiende que anterior a este metodo se muestran las facturas y de ahi se saca el codigo, todas las del dni de la persona que queremos
-    public void modificarFactura() throws CodigoNoEncontradoException {
-        GestorTurno turnos = new GestorTurno();
-        Scanner scan = new Scanner(System.in);
+    private Factura buscarFacturaPorCodigo(String codigo) throws CodigoNoEncontradoException {
 
-        System.out.println("Ingrese el codigo de factura:");
-        String codigo = scan.nextLine();
-
-        Factura facturaModificada = buscarFacturaPorCodigo(codigo);
-
-        if (facturaModificada == null) {
-            throw new CodigoNoEncontradoException("El codigo ingresado no existe, ingrese de nuevo.");
-            //poner bucle para que intente de nuevo
-        }
-        ///Elegir que se modifica
-        int opcion;
-        do {
-            //no te olvides e actualizar la fecha!!
-            System.out.println("Ingrese una opcion...");
-            System.out.println("1. Tipo de pago -");
-            System.out.println("2. Modificar el cliente -");
-            System.out.println("3. Turnos declarados en la factura-");
-            System.out.println("4. Aplicar descuento-"); //Esto puede ser en algun descuento especial o flasheo yo
-            System.out.println("0. Salir");// tendria que haber una opcion para volver para atras
-            System.out.print("Ingrese una opción: ");
-            opcion = scan.nextInt();
-            scan.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    TipoDePago tipo = pedirTipoPago();
-                    facturaModificada.setTipoPago(tipo);
-                    break;
-                case 2:
-                    try {
-                        System.out.println("Ingrese el DNI del cliente: ");
-                        String dni = scan.nextLine();
-                        Cliente cliente = pedirCliente(dni);
-                        facturaModificada.setCliente(cliente);
-                    } catch (DNInoEncontradoException e)
-                    {
-                        System.out.println(e.getMessage());
-                    }
-
-                    break;
-                case 3:
-                    try {
-                        int nro = 0;
-                        System.out.println("Turnos a pagar/pagos del cliente " + facturaModificada.getCliente().getNombre());
-                        System.out.println("------------------------------");
-                        System.out.println((nro + 1) + " " + facturaModificada.getTurnosPorCliente());// la idea es que numere los turnos
-                        System.out.println("------------------------------");
-                        System.out.println("Ingrese un numero de la lista para eliminar o cero(0) para agregar un turno mas:");
-                        int rta = scan.nextInt();
-                        scan.nextLine();
-                        if (rta > 0 && rta < facturaModificada.getTurnosPorCliente().size()) {
-                            Turno turnoSeleccionado = facturaModificada.getTurnosPorCliente().get(rta - 1);
-                            facturaModificada.eliminarTurno(turnoSeleccionado);
-                        }
-                        if (rta == 0) {
-                            System.out.println("Ingrese el codigo del turno: ");
-                            String codTurno = scan.nextLine();
-                            Turno turnoNuevo = turnos.buscarTurno(codTurno);
-
-                            facturaModificada.agregarTurno(turnoNuevo);
-
-                        }
-
-                    } catch (TurnoExistenteException | TurnoNoExistenteException | FacturaSinTurnosException e) {
-                        e.getMessage();
-                    }
-
-                    break;
-                case 4:
-                    System.out.println("Precio final actual " + facturaModificada.getPrecioFinal());
-                    // metodo de descuento en gestor precios
-                    System.out.println("Ingrese el porcentaje de descuento");
-                    double desc = scan.nextDouble();
-                    GestorPrecios.aplicarDescuento(facturaModificada.getCodigoFactura(), desc, historial.getAlmacen());
-                    //por que le paso la lista si ya se que factura es?? arreglar
-                    break;
-                case 5:
-
-                    break;
-                case 6:
-
-                    break;
-                case 0:
-                    System.out.println("Saliendo...");
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-            }
-
-        } while (opcion != 0);
-    }
-
-
-    private Factura buscarFacturaPorCodigo(String codigo) {
 
         for (Factura factu : historial.getAlmacen()) {
 
@@ -276,15 +325,18 @@ public class GestorFactura {
             throw new FacturaNoExistenteException("La factura que desea eliminar no existe.");
         }
 
-        System.out.println("Esta seguro que desea eliminar la factura del cliente " + facturaAEliminar.getCliente().getNombre() + " ?(SI/NO)");
+        System.out.println("¿Está seguro que desea eliminar la factura del cliente "
+                + facturaAEliminar.getCliente().getNombre() + "? (SI/NO)");
         String rta = scan.nextLine().toLowerCase();
 
-        if (rta == "si") {
+        if (rta.equals("si")) {
             historial.eliminar(facturaAEliminar);
+            System.out.println("Factura eliminada exitosamente.");
             seBorro = true;
         } else {
-            System.out.println("no se ahr ");
+            System.out.println("La factura no fue eliminada.");
         }
+
 
         return seBorro;
     }
@@ -327,17 +379,16 @@ public class GestorFactura {
 
     public void leerDesdeGson() {
         try (FileReader file = new FileReader(nombreArchivoGson)) {
-            // Deserializar el archivo JSON a un objeto de tipo GestorAlmacen<Factura>
-            GestorAlmacen<Factura> historialGson = gson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {
-            }.getType());
-            this.historial = historialGson;  // Guardar el resultado en el atributo historial
-        } catch (IOException e) {
-            // Manejo adecuado de la excepción: aquí podrías loggear o imprimir el error
-            System.out.println("Error al leer el archivo: " + e.getMessage());
-            e.printStackTrace(); // Para obtener más detalles de la excepción MIRAR COMO SE MUESTRA SI NO LO SACAMOS
-        } catch (JsonSyntaxException e) {
-            // En caso de que haya un error en el formato del JSON
-            System.out.println("Error de sintaxis en el JSON: " + e.getMessage());
+            this.historial = gson.fromJson(file, new TypeToken<GestorAlmacen<Factura>>() {}.getType());
+            if (this.historial == null) {
+                this.historial = new GestorAlmacen<>();
+            }
+            System.out.println("Historial de facturas cargado exitosamente.");
+        } catch (FileNotFoundException e) {
+            System.out.println("No se encontró el archivo. Se iniciará con un historial vacío.");
+            this.historial = new GestorAlmacen<>();
+        } catch (IOException | JsonSyntaxException e) {
+            System.out.println("Ocurrió un error al cargar el archivo: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -364,7 +415,7 @@ public class GestorFactura {
         }
 
         //para mostrar las facturas ordanadas por fecha
-        Collections.sort(facturasEncontradas, new Comparator<Factura>() {
+        facturasEncontradas.sort(new Comparator<Factura>() {
             @Override
             public int compare(Factura f1, Factura f2) {
                 return f1.getFecha().compareTo(f2.getFecha());
