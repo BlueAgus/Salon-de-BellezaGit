@@ -21,49 +21,50 @@ public class MenuPrincipal {
     String archivoServicios = "servicios.json";
     String archivoTurnos = "turnos.json";
     String archivoFacturas = "facturas.json";
-/*
-    public void inicioMenu(GestorPersona profesionales, GestorPersona clientes, GestorPersona administrador, GestorPersona recepcionistas) {
-        List<Persona> profesionals = profesionales.leerArchivoPersona(archivoProfesionales);
-        List<Profesional> p1 = new ArrayList<>();
-        for (Persona p : profesionals) {
-            p1.add((Profesional) p);
-        }
-        GestorAlmacen<Profesional> profesionalGestorAlmacen = new GestorAlmacen<>();
-        profesionalGestorAlmacen.setAlmacen(p1);
-        profesionales.setAlmacenPersonas(profesionalGestorAlmacen);
+
+    /*
+        public void inicioMenu(GestorPersona profesionales, GestorPersona clientes, GestorPersona administrador, GestorPersona recepcionistas) {
+            List<Persona> profesionals = profesionales.leerArchivoPersona(archivoProfesionales);
+            List<Profesional> p1 = new ArrayList<>();
+            for (Persona p : profesionals) {
+                p1.add((Profesional) p);
+            }
+            GestorAlmacen<Profesional> profesionalGestorAlmacen = new GestorAlmacen<>();
+            profesionalGestorAlmacen.setAlmacen(p1);
+            profesionales.setAlmacenPersonas(profesionalGestorAlmacen);
 
 
-        ///clientes
-        List<Persona> clientes3 = profesionales.leerArchivoPersona(archivoCliente);
-        List<Cliente> clientes1 = new ArrayList<>();
-        for (Persona p : clientes3) {
-            clientes1.add((Cliente) p);
-        }
-        GestorAlmacen<Cliente> clienteGestorAlmacen = new GestorAlmacen<>();
-        profesionalGestorAlmacen.setAlmacen(clientes1);
-        profesionales.setAlmacenPersonas(clienteGestorAlmacen);
+            ///clientes
+            List<Persona> clientes3 = profesionales.leerArchivoPersona(archivoCliente);
+            List<Cliente> clientes1 = new ArrayList<>();
+            for (Persona p : clientes3) {
+                clientes1.add((Cliente) p);
+            }
+            GestorAlmacen<Cliente> clienteGestorAlmacen = new GestorAlmacen<>();
+            profesionalGestorAlmacen.setAlmacen(clientes1);
+            profesionales.setAlmacenPersonas(clienteGestorAlmacen);
 
-        //administrador
-        List<Administrador> admin = profesionales.leerArchivoPersona(archivoAdministradores);
-        List<Administrador> admin2 = new ArrayList<>();
-        for (Persona p : admin) {
-            admin2.add((Administrador) p);
-        }
-        GestorAlmacen<Administrador> AdministradorGestorAlmacen = new GestorAlmacen<>();
-        profesionalGestorAlmacen.setAlmacen(admin2);
-        administrador.setAlmacenPersonas(clienteGestorAlmacen);
+            //administrador
+            List<Administrador> admin = profesionales.leerArchivoPersona(archivoAdministradores);
+            List<Administrador> admin2 = new ArrayList<>();
+            for (Persona p : admin) {
+                admin2.add((Administrador) p);
+            }
+            GestorAlmacen<Administrador> AdministradorGestorAlmacen = new GestorAlmacen<>();
+            profesionalGestorAlmacen.setAlmacen(admin2);
+            administrador.setAlmacenPersonas(clienteGestorAlmacen);
 
-        //recepecionista
-        List<Recepcionista> re1 = profesionales.leerArchivoPersona(archivoAdministradores);
-        List<Recepcionista> re2 = new ArrayList<>();
-        for (Persona p : re1) {
-            re2.add((Administrador) p);
+            //recepecionista
+            List<Recepcionista> re1 = profesionales.leerArchivoPersona(archivoAdministradores);
+            List<Recepcionista> re2 = new ArrayList<>();
+            for (Persona p : re1) {
+                re2.add((Administrador) p);
+            }
+            GestorAlmacen<Recepcionista> RecepcionistaGestorAlmacen = new GestorAlmacen<>();
+            profesionalGestorAlmacen.setAlmacen(re2);
+            recepcionistas.setAlmacenPersonas(clienteGestorAlmacen);
         }
-        GestorAlmacen<Recepcionista> RecepcionistaGestorAlmacen = new GestorAlmacen<>();
-        profesionalGestorAlmacen.setAlmacen(re2);
-        recepcionistas.setAlmacenPersonas(clienteGestorAlmacen);
-    }
-*/
+    */
     public void menuPrincipal() {
         GestorPersona profesionales = new GestorPersona();
         GestorPersona administradores = new GestorPersona();
@@ -96,10 +97,13 @@ public class MenuPrincipal {
             switch (opcion) {
                 case 1:
                     //administrador
-                    System.out.println("Bienvenido administrador ");
-                    if (iniciarSesion(administradores))//si es true tiene su dni registrado
-                    {
-                        menuAdministrador.mostrarMenu(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
+                    if (primerIngreso(administradores)) {
+                        llenarAdministrador(administradores,servicios);
+                    } else {
+                        System.out.println("Bienvenido administrador ");
+                        if (iniciarSesion(administradores)) {
+                            menuAdministrador.mostrarMenu(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
+                        }
                     }
                     break;
                 case 2:
@@ -107,7 +111,7 @@ public class MenuPrincipal {
                     if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        if (iniciarSesion(recepcionistas)){
+                        if (iniciarSesion(recepcionistas)) {
                             System.out.println("Bienvenido Recepcionista !");
                             menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
@@ -131,6 +135,13 @@ public class MenuPrincipal {
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
+    }
+
+    public void llenarAdministrador(GestorPersona personas, GestorServicio servicios) {
+        List<Administrador> aux = new ArrayList<>();
+        aux.add(personas.cargarUnAdministrador(servicios));
+        personas.guardarArchivoAdministradores(aux);
+        System.out.println("Bienvenido administrador ! ");
     }
 
     public boolean pedirDatos(GestorPersona personaQueDeseaIngresar) {
@@ -192,19 +203,19 @@ public class MenuPrincipal {
         return contraseña;
     }
 
-    public boolean primerIngreso(GestorPersona administradores){
-        List<Administrador> adminAux=administradores.leerArchivoAdministradores();
-        boolean primeringreso=false;
-        for( Administrador a:adminAux){
-            if( a.getContraseña().equals("12345678")){
-                primeringreso=true;
+    public boolean primerIngreso(GestorPersona administradores) {
+        List<Administrador> adminAux = administradores.leerArchivoAdministradores();
+        boolean primeringreso = false;
+        for (Administrador a : adminAux) {
+            if (a.getContraseña().equals("12345678")) {
+                primeringreso = true;
             }
         }
         return primeringreso;
     }
 
 
-    //no se que onda esto... NO LO BORREN POR LAS DUDAS.
+//no se que onda esto... NO LO BORREN POR LAS DUDAS.
     /*
     public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
         List<Administrador> e = administradores.leerArchivoPersona("administradores.json");

@@ -1,17 +1,20 @@
 package Menus;
 
+import gestores.GestorPersona;
+import gestores.GestorTurno;
+
 import java.util.Scanner;
 
 public class MenuProfesional {
 
-    public void MenuProfesional() {
+    public void MenuProfesional(GestorPersona cliente, GestorTurno turnos) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
             System.out.println("Bienvenido al menu de Profesional ");
-            System.out.println("1. ");
+            System.out.println("1.Ver historial de turnos ");
             System.out.println("2. ");
             System.out.println("3. ");
             System.out.println("4. ");
@@ -27,7 +30,8 @@ public class MenuProfesional {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-
+                    S
+                    turnos.historialTurnosXprofesional()
                     break;
                 case 2:
 
