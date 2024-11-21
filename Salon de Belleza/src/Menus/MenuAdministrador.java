@@ -18,7 +18,7 @@ public class MenuAdministrador {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void mostrarMenu(Administrador administrador, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void mostrarMenu(String dni, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -39,7 +39,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    menuUsuarios(administrador, clientes, profesionales, recepcionista, administradores, servicios);
+                    menuUsuarios(dni, clientes, profesionales, recepcionista, administradores, servicios);
                     break;
                 case 2:
                     menuServicio(servicios, clientes, turnos);
@@ -57,7 +57,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuUsuarios(Administrador administrador, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio gestorServicio) {
+    public void menuUsuarios(String dni, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -87,7 +87,14 @@ public class MenuAdministrador {
                     subMenuClientes(clientes, gestorServicio);
                     break;
                 case 4:
-                    administradores.modificarPersona(administrador, gestorServicio);
+                    Administrador administrador = null;
+                    try {
+                        administrador = (Administrador) administradores.buscarPersona(dni);
+                        administradores.modificarPersona(administrador, gestorServicio);
+
+                    } catch (DNInoEncontradoException e) {
+                        System.out.println(e.getMessage());
+                    }
 
                     break;
 
@@ -198,9 +205,9 @@ public class MenuAdministrador {
                     System.out.println("¿Cual es el dni del profesional que desea eliminar?");
 
                     String dni = profesionales.pedirDNIsinVerificacion();
-                    if(profesionales.eliminarPersona(dni)) {
+                    if (profesionales.eliminarPersona(dni)) {
                         System.out.println("Profesional eliminado exitosamente!");
-                    }else {
+                    } else {
                         System.out.println("Error al eliminar");
                     }
                     break;
@@ -257,7 +264,7 @@ public class MenuAdministrador {
                         break;
                     }
 
-                break;
+                    break;
                 default:
                     System.out.println("Opción no válida.");
             }
@@ -293,9 +300,9 @@ public class MenuAdministrador {
                     System.out.println("¿Cual es el dni del cliente que desea eliminar?");
 
                     String dni = clientes.pedirDNIsinVerificacion();
-                    if(clientes.eliminarPersona(dni)) {
+                    if (clientes.eliminarPersona(dni)) {
                         System.out.println("Cliente eliminado exitosamente!");
-                    }else {
+                    } else {
                         System.out.println("Error al eliminar el cliente");
                     }
                     break;
@@ -364,9 +371,9 @@ public class MenuAdministrador {
                     break;
 
                 case 2:
-                    if(servicios.eliminarServicio()){
+                    if (servicios.eliminarServicio()) {
                         System.out.println("Servicio eliminado exitosamente");
-                    }else {
+                    } else {
                         System.out.println("Error al eliminar servicio");
                     }
                     break;

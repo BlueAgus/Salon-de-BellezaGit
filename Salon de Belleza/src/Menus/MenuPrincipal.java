@@ -64,7 +64,7 @@ public class MenuPrincipal {
                         System.out.println("Bienvenido administrador ");
                         String dni= iniciarSesion(administradores);
                         if (dni!=null) {
-                            menuAdministrador.mostrarMenu(dni, clientes, profesionales, recepcionistas, servicios, turnos, facturas);
+                            menuAdministrador.mostrarMenu(dni, clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
                     }
                     break;
@@ -88,7 +88,7 @@ public class MenuPrincipal {
                         String dni3= iniciarSesion(profesionales);
                         if (dni3!=null) {
                             System.out.println("Bienvenido profesional! ");
-                            menuProfesional.menuProfesional(clientes, turnos, dni3);
+                            menuProfesional.menuProfesional(clientes, turnos, dni3, servicios);
                         }
                     }
                     break;
