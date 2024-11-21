@@ -42,7 +42,7 @@ public class GestorFactura {
     public void crearFactura() {
         GestorServicio gestor = new GestorServicio();
         GestorTurno turnos = new GestorTurno();
-        GestorPersona persona = new GestorPersona();
+        GestorCliente clientes = new GestorCliente();
         Scanner scan = new Scanner(System.in);
 
         try {
@@ -52,7 +52,8 @@ public class GestorFactura {
                 try {
                     System.out.println("Ingrese el DNI del cliente:");
                     String dni = scan.nextLine();
-                    cliente = (Cliente) persona.buscarPersona(dni);
+                    cliente = clientes.buscarPersona(dni);
+
                 } catch (DNInoEncontradoException e) {
                     System.out.println(e.getMessage());
                     System.out.println("¿Desea intentar nuevamente? (SI/NO):");
@@ -327,12 +328,12 @@ public class GestorFactura {
     }
 
     private void modificarCliente(Factura factura, Scanner scan) {
-        GestorPersona persona = new GestorPersona();
+        GestorCliente clientes = new GestorCliente();
 
         try {
             System.out.println("Ingrese el DNI del cliente:");
             String dni = scan.nextLine();
-            Cliente cliente = (Cliente) persona.buscarPersona(dni);
+            Cliente cliente = clientes.buscarPersona(dni);
             factura.setCliente(cliente);
             System.out.println("Cliente actualizado.");
         } catch (DNInoEncontradoException e) {
@@ -420,8 +421,8 @@ public class GestorFactura {
         });
 
         // info del cliente
-        GestorPersona persona = new GestorPersona();
-        Cliente cliente = (Cliente) persona.buscarPersona(dni);
+        GestorCliente clientes = new GestorCliente();
+        Cliente cliente = clientes.buscarPersona(dni);
 
         // mostrar las facturas
         System.out.println("Historial de facturas para el cliente con DNI " + dni +
