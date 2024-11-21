@@ -486,7 +486,7 @@ public class GestorTurno {
         boolean valido = false;
         while (!valido) {
             /// agregar filtros
-            System.out.println("Ingrese la fecha del turno (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
+            System.out.println("Ingrese la fecha (YYYY-MM-DD): (o escriba 'salir' para cancelar)");
 
             ///lo guarda en un string para verificar que no haya escrito salir
             String fechaIngresada = scanner.nextLine();
