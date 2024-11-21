@@ -245,7 +245,6 @@ public class GestorServicio {
         }
 
         return almacenServicios.getAlmacen().get(opc).getCodigo_servicio();
-
     }
 
     // Validación para el tipo de servicio

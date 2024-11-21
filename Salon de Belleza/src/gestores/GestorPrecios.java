@@ -13,17 +13,17 @@ import java.util.Map;
 
 
 public final class GestorPrecios {
-    private static final double precioDepiCera = 10.0;
-    private static final double precioDepiLaser = 10.0;
+    private static final double precioDepiCera = 12000.0;
+    private static final double precioDepiLaser = 18000.0;
 
-    private static final double precioManiGel = 10.0;
-    private static final double precioManiEsculpidas = 10.0;
-    private static final double precioManiSemi = 10.0;
-    private static double precioDisenio = 10.0;
+    private static final double precioManiGel = 13000.0;
+    private static final double precioManiEsculpidas = 20000.0;
+    private static final double precioManiSemi = 10000.0;
+    private static double       precioDisenio = 2000.0;
 
-    private static final double precioPestanias3D = 10.0;
-    private static final double precioPestanias2D = 10.0;
-    private static final double precioPestaniasClasic = 10.0;
+    private static final double precioPestanias3D = 20000.0;
+    private static final double precioPestanias2D = 16000.0;
+    private static final double precioPestaniasClasic = 14000.0;
 
     // mapa anidado
     private static final Map<Class<?>, Map<Enum<?>, Double>> precios = new HashMap<>();
