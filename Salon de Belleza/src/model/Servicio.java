@@ -54,7 +54,6 @@ public abstract class Servicio implements CrearID {
         this.tipoService = tipoService;
     }
 
-
     public LocalTime getDuracion() {
         return duracion;
     }

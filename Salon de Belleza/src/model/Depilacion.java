@@ -24,7 +24,6 @@ public class Depilacion extends Servicio {
    public void programarMantenimiento(LocalDate fecha){
        GestorTurno turnos = new GestorTurno();
 
-
    }
 
     public double calcularPrecio() {
@@ -45,8 +44,8 @@ public class Depilacion extends Servicio {
 
     @Override
     public String toString() {
-        return "DEPILACIÓN " + tipoDepilacion +
-                " \nPrecio= " + calcularPrecio() +
-                " \nDuracion=" + duracion;
+        return "| DEPILACIÓN " + tipoDepilacion +
+                "\n | Precio: " + calcularPrecio() +
+                "\n | Duracion: " + duracion;
     }
 }
