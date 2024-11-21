@@ -1,6 +1,5 @@
 package model;
 
-import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoManicura;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;
