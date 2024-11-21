@@ -2,6 +2,7 @@ package gestores;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import excepciones.DNInoEncontradoException;
 import excepciones.DNIyaCargadoException;
@@ -14,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -494,7 +496,9 @@ public class GestorAdministrador {
     }
 
     public List<Administrador> leerArchivoAdministradores() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
         List<Administrador> listaAdministradores = new ArrayList<>();
 
         try (FileReader fileReader = new FileReader(archivoAdministradores)) {
