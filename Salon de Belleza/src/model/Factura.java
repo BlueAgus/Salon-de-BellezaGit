@@ -50,7 +50,7 @@ public class Factura implements CrearID {
         for (Turno turno : turnosPorCliente) {
             try {
                 // Obtener el servicio correspondiente al código
-                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                Servicio servicio = gestorServicio.bus(turno.getCodigo_servicio());
                 TipoServicio tipoServicio = servicio.getTipoService();
 
                 // Incrementar la cantidad de este servicio
