@@ -395,7 +395,7 @@ public class GestorTurno {
     public String pedirDNIcliente(GestorPersona gestorCliente) {
         String dniCliente;
         while (true) {
-            ///para ponerle que presione ESC hay que usar libreras
+
             System.out.println("Ingrese el DNI del cliente (o escriba 'salir' para cancelar):");
             dniCliente = scanner.nextLine();
 
@@ -624,7 +624,6 @@ public class GestorTurno {
         }
         return disponibles.get(opc).getDni();
     }
-
 
     public boolean verificarProfesionalXhorario(String dniProfesional, LocalTime horario, LocalDate fecha) {
         List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);

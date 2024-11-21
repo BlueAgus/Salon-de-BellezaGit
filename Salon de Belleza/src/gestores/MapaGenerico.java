@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapaGenerico<K, V>{
-    //Esto se puede usar para el manejo de turnos
-
     private Map<K, V> mapa;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -13,7 +11,6 @@ public class MapaGenerico<K, V>{
         this.mapa = new HashMap<>();
     }
     //La clave es unica y el valor puede repetirse
-
     ////////////////////////////////////////////////////////AGREGAR, BUSCAR Y ELIMINAR ////////////////////////////////////////////////////
     public void agregar(K clave, V valor){
         mapa.put(clave, valor);
@@ -35,6 +32,5 @@ public class MapaGenerico<K, V>{
     public Map<K, V> getMapa() {
         return mapa;
     }
-
 
 }
