@@ -127,6 +127,51 @@ public final class GestorPrecios {
     }
 
     public static void aplicarDescuento(String codigoFactura, double porcentajeDescuento, List<Factura> facturas) throws CodigoNoEncontradoException {
+        // Validar el porcentaje de descuento
+        if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+            throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100.");
+        }
+        Factura facturaEncontrada = null;
+
+        for (Factura factura : facturas) {
+            if (factura.getCodigoFactura().equals(codigoFactura)) {
+                facturaEncontrada = factura;
+                break; // Salimos del bucle al encontrar la factura
+            }
+        }
+        if (facturaEncontrada == null) {
+            throw new CodigoNoEncontradoException("Factura con código " + codigoFactura + " no encontrada.");
+        }
+
+        double precioOriginal = facturaEncontrada.getPrecioFinal();
+        double descuento = precioOriginal * (porcentajeDescuento / 100);
+
+        // Actualizar el precio final en la factura
+        double nuevoPrecioFinal = precioOriginal - descuento;
+        facturaEncontrada.setPrecioFinal(nuevoPrecioFinal);
+        facturaEncontrada.setDescuento(descuento);
+
+        // Mostrar mensaje informativo (opcional)
+        System.out.println("Descuento del " + porcentajeDescuento + "% aplicado. Descuento: " + descuento + ". Nuevo precio final: " + nuevoPrecioFinal);
+
+        // Retornar el valor del descuento aplicado
+    }
+
+
+
+    ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
+/*
+    public static double ajustarPrecioPorTipoPago(double precioBase, TipoDePago tipoPago) {
+        int porcentajeAjuste = tipoPago.getPorcentajeAjuste();
+        double ajuste = (porcentajeAjuste / 100.0) * precioBase;
+        return precioBase + ajuste;
+    }*/
+    // no estoy segura si manejar lo de tipos de pago aca porque tendria que hacer otros atributos cargarlo
+    //con mas cosas y capaz asi como esta en el enum esta bien.
+
+    /*
+     public static void aplicarDescuento(String codigoFactura, double porcentajeDescuento, List<Factura> facturas) throws CodigoNoEncontradoException {
+
         if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
             throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100.");
         }
@@ -146,17 +191,6 @@ public final class GestorPrecios {
         factura.setPrecioFinal(nuevoPrecioFinal);
 
         System.out.println("Descuento del " + porcentajeDescuento + "% aplicado. Nuevo precio final: " + nuevoPrecioFinal);
-    }
-
-
-    ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
-/*
-    public static double ajustarPrecioPorTipoPago(double precioBase, TipoDePago tipoPago) {
-        int porcentajeAjuste = tipoPago.getPorcentajeAjuste();
-        double ajuste = (porcentajeAjuste / 100.0) * precioBase;
-        return precioBase + ajuste;
     }*/
-    // no estoy segura si manejar lo de tipos de pago aca porque tendria que hacer otros atributos cargarlo
-    //con mas cosas y capaz asi como esta en el enum esta bien.
 
 }
