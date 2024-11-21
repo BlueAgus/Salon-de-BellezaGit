@@ -22,7 +22,7 @@ import static model.TurnoArchivo.convertirTurno;
 
 public class GestorTurno {
 
-    private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
+    private MapaGenerico<String, List<Turno>> listaTurnos;
     private static final String archivoTurnos = "turnos.json";
     private static Scanner scanner = new Scanner(System.in);
   Gson gson = new Gson();
@@ -140,7 +140,7 @@ public class GestorTurno {
         return turnosDelCliente.get(opc).getCod_turno();
     }
 
-    public void cancelarTurnosXdia(LocalDate fecha, GestorCliente clientes, String codServicio) {
+    public void cancelarTurnosXdia(String fecha, GestorCliente clientes, String codServicio) {
         List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
 
         System.out.println("Avisar a los siguientes clientes que su turno del dia " + fecha + "ha sido cancelado");
@@ -281,7 +281,8 @@ public class GestorTurno {
 
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getFecha().isAfter(LocalDate.now()) || t.getFecha().isEqual(LocalDate.now())) {
+                LocalDate fecha=Turno.convertirStringALocalDate(t.getFecha());
+                if (fecha.isAfter(LocalDate.now()) || fecha.isEqual(LocalDate.now())) {
                     System.out.println(i + "-" + t.toString());
                     turnosVigentes.add(t);
                     i++;
@@ -295,7 +296,8 @@ public class GestorTurno {
         int i = 0;
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getFecha().isBefore(LocalDate.now())) {
+                LocalDate fecha=Turno.convertirStringALocalDate(t.getFecha());
+                if (fecha.isBefore(LocalDate.now())) {
                     System.out.println(i + "-" + t.toString());
                     i++;
                 }
@@ -309,7 +311,8 @@ public class GestorTurno {
 
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getDni_cliente().equals(dniCliente) && (t.getFecha().isAfter(LocalDate.now()) || t.getFecha().isEqual(LocalDate.now()))) {
+                LocalTime horario=Turno.convertirStringALocalTime(t.getHorario());
+                if (t.getDni_cliente().equals(dniCliente) && (horario.isAfter(LocalTime.now()) || horario.equals(LocalTime.now()))) {
                     turnos.add(t);
                 }
             }
@@ -323,7 +326,8 @@ public class GestorTurno {
 
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getDni_profesional().equals(dniProfesional) && (t.getFecha().isAfter(LocalDate.now()) || t.getFecha().isEqual(LocalDate.now()))) {
+                LocalDate fecha=Turno.convertirStringALocalDate(t.getFecha());
+                if (t.getDni_profesional().equals(dniProfesional) && (fecha.isAfter(LocalDate.now()) || fecha.isEqual(LocalDate.now()))) {
                     turnos.add(t);
                 }
             }
@@ -337,7 +341,8 @@ public class GestorTurno {
 
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getDni_cliente().equals(dniCliente) && t.getFecha().isBefore(LocalDate.now())) {
+                LocalDate fecha=Turno.convertirStringALocalDate(t.getFecha());
+                if (t.getDni_cliente().equals(dniCliente) && fecha.isBefore(LocalDate.now())) {
                     turnos.add(t);
                 }
             }
@@ -351,7 +356,8 @@ public class GestorTurno {
 
         for (List<Turno> list : listaTurnos.getMapa().values()) {
             for (Turno t : list) {
-                if (t.getDni_profesional().equals(dniProfesional) && t.getFecha().isBefore(LocalDate.now())) {
+                LocalDate fecha=Turno.convertirStringALocalDate(t.getFecha());
+                if (t.getDni_profesional().equals(dniProfesional) && fecha.isBefore(LocalDate.now())) {
                     turnos.add(t);
                 }
             }
@@ -416,7 +422,7 @@ public class GestorTurno {
         ///tendriamos que verificar que el cliente no tenga más turnos en el mismo horario y dia?? o podriamos decir que puede reservar turnos para otra persona
     }
 
-    public boolean verificarClienteXHorario(String dni, LocalTime horario, LocalDate fecha) {
+    public boolean verificarClienteXHorario(String dni, String horario, String fecha) {
         List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
 
         for (Turno t : turnos) {
@@ -432,7 +438,7 @@ public class GestorTurno {
     ///retorna un turno con la fecha y el horario elegido
     public Turno elegirFechaYhorario(String cod_servicio, GestorServicio gestorServicio) {
 
-        LocalDate fecha = pedirFecha();
+        String fecha =Turno.convertirLocalDateAString(pedirFecha());
         if (fecha == null) {
             return null;
         }
@@ -475,7 +481,8 @@ public class GestorTurno {
             }
         }
 
-        Turno turno = new Turno(fecha, horariosDisponibles.get(indiceHorario));
+        String horario= Turno.convertirLocalTimeAString(horariosDisponibles.get(indiceHorario));
+        Turno turno = new Turno(fecha,horario );
         ///System.out.println(turno);
         return turno;
     }
@@ -498,7 +505,7 @@ public class GestorTurno {
 
             try {
 
-                fecha = LocalDate.parse(fechaIngresada);
+                 fecha=Turno.convertirStringALocalDate(fechaIngresada);
 
                 if (fecha.isBefore(LocalDate.now())) {
                     System.out.println("Error: La fecha debe ser en el futuro.");
@@ -515,7 +522,7 @@ public class GestorTurno {
     }
 
     ///retorna una lista con los horarios disponibles x fecha especifica y servicio
-    public List<LocalTime> mostrarTurnosDisponiblesXfecha(LocalDate fecha, String cod_servicio, GestorServicio gestorServicio) {
+    public List<LocalTime> mostrarTurnosDisponiblesXfecha(String fecha, String cod_servicio, GestorServicio gestorServicio) {
         List<Turno> turnosReservados = obtenerTurnosReservadosXfecha(fecha);///retorna la lista de turnos reservados para una fecha
 
         List<LocalTime> horariosDisponibles = new ArrayList<>();///en esta lista guardamos horarios disponibles
@@ -557,7 +564,7 @@ public class GestorTurno {
     }
 
     /// retorna lista de turnos RESERVADOS por fecha específica
-    public List<Turno> obtenerTurnosReservadosXfecha(LocalDate fecha) {
+    public List<Turno> obtenerTurnosReservadosXfecha(String fecha) {
         return listaTurnos.obtener(fecha);
     }
 
@@ -579,7 +586,7 @@ public class GestorTurno {
 
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
-    public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorProfesional gestorProfesional) {
+    public String pedirDNIprofesionalXservicio(String codServicio, String horario, String fecha, GestorProfesional gestorProfesional) {
         List<Profesional> profesionales = gestorProfesional.leerArchivoProfesionales();
 
         if (profesionales == null || profesionales.isEmpty()) {
@@ -625,7 +632,7 @@ public class GestorTurno {
         return disponibles.get(opc).getDni();
     }
 
-    public boolean verificarProfesionalXhorario(String dniProfesional, LocalTime horario, LocalDate fecha) {
+    public boolean verificarProfesionalXhorario(String dniProfesional, String horario, String fecha) {
         List<Turno> turnos = obtenerTurnosReservadosXfecha(fecha);
 
         for (Turno t : turnos) {
