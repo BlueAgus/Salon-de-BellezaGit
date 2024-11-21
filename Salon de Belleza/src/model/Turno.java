@@ -17,7 +17,7 @@ public class Turno {
     private LocalTime horario;       // Hora del turno
     private String codigo_servicio;       // El servicio a realizar
     private String dni_profesional; // Profesional que atenderá el servicio
-    private String dni_cliente;         // Cliente que recibirá el servicio
+    private String dni_cliente;       // Cliente que r
 
     //////////////////////////////////////////////////////// CONSTRUCTORes ////////////////////////////////////////////////////
 
