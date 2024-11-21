@@ -82,9 +82,9 @@ public class GestorTurno {
         return true;
     }
 
-    public boolean eliminarTurno() {
+    public boolean eliminarTurno(GestorPersona gestorCliente) {
 
-        String codTurno= buscarCodigoTurno();
+        String codTurno= buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
                 if (t.getCod_turno().equals(codTurno)) {
@@ -96,9 +96,9 @@ public class GestorTurno {
         return false;
     }
 
-    public String buscarCodigoTurno() {
-        System.out.println("Ingrese el DNI del cliente: ");
-        String dniCliente = scanner.nextLine();
+    public String buscarCodigoTurno(GestorPersona gestorCliente) {
+
+        String dniCliente = gestorCliente.pedirDNIsinVerificacion();
 
         int i = 0;
         List<Turno> turnosDelCliente = new ArrayList<>();
@@ -160,11 +160,12 @@ public class GestorTurno {
         turnos.clear();
     }
 
-    public Turno buscarTurnoXclienteFechaHorario(String dniCliente, LocalDate fecha, LocalTime horario) {
+    public Turno buscarTurnoXclienteFechaHorario(GestorPersona gestorCliente) {
 
+        String codigoTurno= buscarCodigoTurno(gestorCliente);
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
-                if (t.getDni_cliente().equals(dniCliente) && t.getFecha().equals(fecha) && t.getHorario().equals(horario)) {
+                if (t.getCod_turno().equals(codigoTurno)) {
                     return t;
                 }
             }
@@ -173,7 +174,7 @@ public class GestorTurno {
         return null;
     }
 
-    public Turno buscarTurno(String codTurno) {
+    public Turno buscarTurnoXcodigo(String codTurno) {
 
         for (List<Turno> e : listaTurnos.getMapa().values()) {
             for (Turno t : e) {
@@ -182,7 +183,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return null;
     }
 
@@ -293,7 +293,6 @@ public class GestorTurno {
         }
         return turnosVigentes;
     }
-
 
     public void mostrarHistorialTurnos() {
         int i = 0;
