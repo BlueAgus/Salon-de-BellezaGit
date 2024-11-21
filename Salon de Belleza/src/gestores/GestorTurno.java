@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import model.Cliente;
+import model.LocalTimeAdapter;
 import model.Profesional;
 import model.Turno;
 
@@ -24,7 +25,9 @@ public class GestorTurno {
 
     private MapaGenerico<LocalDate, List<Turno>> listaTurnos;
     private static Scanner scanner = new Scanner(System.in);
-
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .create();
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
     public GestorTurno() {
@@ -639,7 +642,6 @@ public class GestorTurno {
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
 
     public HashMap<LocalDate, List<Turno>> leerArchivoTurnos() {
-        Gson gson = new Gson();
         try (FileReader reader = new FileReader("turnos.json")) {
             // Deserializar como HashMap<String, List<Turno>>
             Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {
@@ -662,7 +664,7 @@ public class GestorTurno {
     }
 
     public void guardarEnArchivoTurnos(MapaGenerico<LocalDate, List<Turno>> listaTurnos) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
+       /// Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
         try (FileWriter writer = new FileWriter("turnos.json")) {
             gson.toJson(listaTurnos, writer);
             System.out.println("Usuarios guardados en el archivo");

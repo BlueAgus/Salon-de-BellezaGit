@@ -14,32 +14,35 @@ public class MenuPrincipal {
     Scanner scanner = new Scanner(System.in);
 
     static String archivoProfesionales = "profesionales.json";
-   static String archivoAdministradores = "administradores.json";
-   static String archivoRecepcionista = "recepcionistas.json";
-   static String archivoCliente = "clientes.json";
-   static String archivoPrecios = "precios.json";
-   static String archivoServicios = "servicios.json";
-   static String archivoTurnos = "turnos.json";
-   static String archivoFacturas = "facturas.json";
+    static String archivoAdministradores = "administradores.json";
+    static String archivoRecepcionista = "recepcionistas.json";
+    static String archivoCliente = "clientes.json";
+    static String archivoPrecios = "precios.json";
+    static String archivoServicios = "servicios.json";
+    static String archivoTurnos = "turnos.json";
+    static String archivoFacturas = "facturas.json";
+
+    GestorProfesional profesionales = new GestorPersona<>();
+    GestorPersona<Administrador> administradores = new GestorPersona<>();
+    GestorPersona<Recepcionista> recepcionistas = new GestorPersona<>();
+    GestorPersona<Cliente> clientes = new GestorPersona<>();
+
+
+    GestorServicio servicios = new GestorServicio();
+    GestorTurno turnos = new GestorTurno();
+    GestorFactura facturas = new GestorFactura();
+
 
     public void menuPrincipal() {
-        GestorPersona profesionales = new GestorPersona();
-        GestorPersona administradores = new GestorPersona();
-        GestorPersona recepcionistas = new GestorPersona();
-        GestorPersona clientes = new GestorPersona();
-
-
-        GestorServicio servicios = new GestorServicio();
-        GestorTurno turnos = new GestorTurno();
-        GestorFactura facturas = new GestorFactura();
-
-
 
         MenuAdministrador menuAdministrador = new MenuAdministrador();
         MenuRecepcionista menuRecepcionista = new MenuRecepcionista();
         MenuProfesional menuProfesional = new MenuProfesional();
 
-        inicioSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
+        List<Administrador> aux=  administradores.leerArchivoAdministradores(archivoAdministradores);
+
+        administradores.setAlmacenPersonas(aux);
+        ///inicioSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
 
         int opcion;
         do {
@@ -60,11 +63,11 @@ public class MenuPrincipal {
                 case 1:
                     //administrador
                     if (primerIngreso(administradores)) {
-                        llenarAdministrador(administradores,servicios);
+                        llenarAdministrador(administradores, servicios);
                     } else {
                         System.out.println("Bienvenido administrador ");
-                        String dni= iniciarSesion(administradores);
-                        if (dni!=null) {
+                        String dni = iniciarSesion(administradores);
+                        if (dni != null) {
                             menuAdministrador.mostrarMenu(dni, clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
                     }
@@ -74,8 +77,8 @@ public class MenuPrincipal {
                     if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        String dni1=iniciarSesion(recepcionistas);
-                        if (dni1!=null) {
+                        String dni1 = iniciarSesion(recepcionistas);
+                        if (dni1 != null) {
                             System.out.println("Bienvenido Recepcionista !");
                             menuRecepcionista.menuRecepcionistas(clientes, profesionales, recepcionistas, administradores, servicios, turnos, facturas);
                         }
@@ -86,15 +89,15 @@ public class MenuPrincipal {
                     if (primerIngreso(administradores)) {
                         System.out.println("Un administrador debe ingresar por primera vez al sistema. ");
                     } else {
-                        String dni3= iniciarSesion(profesionales);
-                        if (dni3!=null) {
+                        String dni3 = iniciarSesion(profesionales);
+                        if (dni3 != null) {
                             System.out.println("Bienvenido profesional! ");
                             menuProfesional.menuProfesional(clientes, turnos, dni3, servicios);
                         }
                     }
                     break;
                 case 0:
-                    boolean salir=false;
+                    boolean salir = false;
                     do {
                         System.out.println("Deseas guardar los cambios realizados?");
                         System.out.println("1.Salir sin guardar. ");
@@ -105,12 +108,12 @@ public class MenuPrincipal {
                         if (opcion == 1) {
                             cerrarSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
                             System.out.println("Se ha guardado con exito.");
-                            salir=true;
+                            salir = true;
                         } else if (opcion == 2) {
                             System.out.println("saliendo...");
-                            salir=true;
+                            salir = true;
                         }
-                    }while(!salir);
+                    } while (!salir);
 
                     break;
                 default:
@@ -119,11 +122,11 @@ public class MenuPrincipal {
         } while (opcion != 0);
     }
 
-    public void inicioSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas){
+    public void inicioSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         //inicializar personas
         profesionales.leerArchivoProfesionales();
-        admin.leerArchivoAdministradores();
+        admin.leerArchivoAdministradores(archivoAdministradores);
         recepcionista.leerArchivoRecepcionistas();
         clientes.leerArchivoClientes();
         //inicializar servicio
@@ -136,15 +139,14 @@ public class MenuPrincipal {
         GestorPrecios.leerPreciosDesdeArchivo(archivoPrecios);
     }
 
-    public void cerrarSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas)
-    {
+    public void cerrarSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
         //gaurda tooodo en archivos.
         profesionales.guardarArchivoProfesionales(profesionales.getAlmacenPersonas().getAlmacen());
         admin.guardarArchivoAdministradores(admin.getAlmacenPersonas().getAlmacen());
         recepcionista.guardarArchivoAdministradores(recepcionista.getAlmacenPersonas().getAlmacen());
         clientes.guardarArchivoClientes(clientes.getAlmacenPersonas().getAlmacen());
 
-        servicios.EscribirServiciosEnArchivo(archivoServicios,servicios.getAlmacenServicios().getAlmacen());
+        servicios.EscribirServiciosEnArchivo(archivoServicios, servicios.getAlmacenServicios().getAlmacen());
         //turnos
         turnos.guardarEnArchivoTurnos(turnos.getListaTurnos());
         //factura
@@ -153,6 +155,7 @@ public class MenuPrincipal {
         GestorPrecios.guardarPreciosEnArchivo(archivoPrecios);
         System.out.println("Se ha cerrado el sistema. ");
     }
+
     public void llenarAdministrador(GestorPersona personas, GestorServicio servicios) {
         List<Administrador> aux = new ArrayList<>();
         aux.add(personas.cargarUnAdministrador(servicios));
@@ -188,20 +191,18 @@ public class MenuPrincipal {
         } catch (DNInoEncontradoException e) {
             System.out.println(e.getMessage());
         }
-        if(valido)
-        {
+        if (valido) {
             return dni;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     public String iniciarSesion(GestorPersona personas) {
 
-        String dni=pedirDatos(personas);
+        String dni = pedirDatos(personas);
 
-        if (dni!=null) {
+        if (dni != null) {
             System.out.println("Entrando..");
         } else {
             System.out.println("No tienes cuenta aun...");
@@ -228,17 +229,16 @@ public class MenuPrincipal {
     }
 
     public boolean primerIngreso(GestorPersona administradores) {
-        List<Administrador> adminAux = administradores.leerArchivoAdministradores();
+        List<Administrador> adminAux = administradores.leerArchivoAdministradores(archivoAdministradores);
         boolean primeringreso = false;
         for (Administrador a : adminAux) {
-            if (a.getContraseña().equals("12345678")) {
+            if (a.getContraseña().equals("12345678") && a.getDni().equals("12345678")) {
                 primeringreso = true;
             }
         }
         return primeringreso;
     }
-
-
+    
 //no se que onda esto... NO LO BORREN POR LAS DUDAS.
     /*
     public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
