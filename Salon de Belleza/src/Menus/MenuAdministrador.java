@@ -1,8 +1,7 @@
 package Menus;
 
-import com.sun.java.accessibility.util.AccessibilityListenerList;
+import enumeraciones.TipoServicio;
 import excepciones.DNInoEncontradoException;
-import excepciones.DNIyaCargadoException;
 import gestores.GestorFactura;
 import gestores.GestorPersona;
 import gestores.GestorServicio;
@@ -14,18 +13,16 @@ import java.util.Scanner;
 
 public class MenuAdministrador {
 
-
     public void mostrarMenu(GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administrador, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("Bienvenido al menu de Administrador");
-            System.out.println("1.Menu de usuarios ");
+            System.out.println("1.Menu de usuarios");
             System.out.println("2.Menu de servicios");
-            System.out.println("3.Menu de turnos ");
-            System.out.println("4.Menu de facturas ");
+            System.out.println("3.Menu de turnos");
+            System.out.println("4.Menu de facturas");
             System.out.println("5. ");
             System.out.println("6. ");
             System.out.println("0. Salir");
@@ -47,7 +44,7 @@ public class MenuAdministrador {
                     menuTurnos(turnos, clientes, profesionales, servicios);
                     break;
                 case 4:
-
+                    menuFacturas(facturas,clientes);
                     break;
                 case 5:
 
@@ -68,6 +65,7 @@ public class MenuAdministrador {
         int opcion;
 
         do {
+            ///esta bien no tener un admnistrador??
             System.out.println("1.Recepcionista");
             System.out.println("2.Profesionales");
             System.out.println("3.Clientes");
@@ -164,7 +162,6 @@ public class MenuAdministrador {
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
-
                     break;
                 case 5:
 
@@ -310,7 +307,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuServicio(GestorServicio gestorServicio) {
+    public void menuServicio(GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -332,12 +329,12 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-
-                    gestorServicio.agregarServicio();
-
+                    servicios.agregarServicio();
                     break;
                 case 2:
-                    gestorServicio.eliminarServicio();
+                    TipoServicio tipoServicio= servicios.pedirTipoServicio();
+
+                    ///servicios.eliminarServicio();
                     break;
                 case 3:
 
@@ -349,7 +346,7 @@ public class MenuAdministrador {
 
                     break;
                 case 6:
-                    gestorServicio.mostrarServicios();
+                    servicios.mostrarServicios();
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -369,9 +366,9 @@ public class MenuAdministrador {
             System.out.println("3.Modificar datos ");
             System.out.println("4.Buscar un turno");
             System.out.println("5.Listar turnos proximos ");
-            System.out.println("6.Turnos segun profesional");
-            System.out.println("7.Turnos segun cliente");
-
+            System.out.println("6.Listar historial de turnos");
+            System.out.println("7.Turnos segun profesional");
+            System.out.println("8.Turnos segun cliente");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -413,9 +410,12 @@ public class MenuAdministrador {
                     }
                     break;
                 case 6:
-                    turnosXprofesional(turnos, profesionales);
+                    turnos.mostrarHistorialTurnos();
                     break;
                 case 7:
+                    turnosXprofesional(turnos, profesionales);
+                    break;
+                case 8:
                     turnosXcliente(turnos, clientes);
                     break;
                 default:
@@ -579,8 +579,6 @@ public class MenuAdministrador {
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
-
-
     }
 
 }

@@ -7,13 +7,10 @@ import model.Depilacion;
 import model.Factura;
 import model.Manicura;
 import model.Pestanias;
-
 import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class GestorPrecios {
     private static final double precioDepiCera = 10.0;

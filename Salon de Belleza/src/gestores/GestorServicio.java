@@ -135,9 +135,31 @@ public class GestorServicio {
             }
         } while (opcion != 2 && opcion != 1);
     }
+/*
+    public void pedirParaBuscar()
+    {
+        TipoServicio tipoServicio=pedirTipoServicio();
+
+        if(tipoServicio== TipoServicio.DEPILACION)
+        {
+            TipoDepilacion tipoDepilacion=pedirTipoDepilacion();
+            mostrar
+
+        }
+        else if(tipoServicio== TipoServicio.MANICURA)
+        {
+            TipoManicura tipoManicura= pedirTipoManicura();
+        }
+        else if(tipoServicio== TipoServicio.PESTANIAS)
+        {
+            TipoPestanias tipoPestanias=pedirTipoPestanias();
+        }
+    } public void mostrarServicio(T)
+    */
+
 
     // Validación para el tipo de servicio
-    private TipoServicio pedirTipoServicio() {
+    public TipoServicio pedirTipoServicio() {
 
         TipoServicio tipo = null;
         while (tipo == null) {
@@ -355,7 +377,7 @@ public class GestorServicio {
 
 
     /////////////ARCHIVOS.
-    public void EscribirPersonasEnArchivo(String nombreArchivo, List<Servicio> servicios) {
+    public void EscribirServiciosEnArchivo(String nombreArchivo, List<Servicio> servicios) {
         try(FileWriter fileWriter = new FileWriter(nombreArchivo)){
             Gson gson = new Gson();
             String json = gson.toJson(servicios);

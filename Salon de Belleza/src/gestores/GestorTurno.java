@@ -92,7 +92,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return false;
     }
 
@@ -170,7 +169,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return null;
     }
 
@@ -274,7 +272,6 @@ public class GestorTurno {
                 break;
             ///no pongo default pq ya está verificado arriba
         }
-
         return true;
     }
 
@@ -306,7 +303,6 @@ public class GestorTurno {
         }
     }
 
-
     ///turnos vigentes del cliente
     public List<Turno> buscarTurnosXdniClienteVigentes(String dniCliente) {
         List<Turno> turnos = new ArrayList<>();
@@ -318,7 +314,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return turnos;
     }
 
@@ -333,7 +328,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return turnos;
     }
 
@@ -362,7 +356,6 @@ public class GestorTurno {
                 }
             }
         }
-
         return turnos;
     }
 
@@ -432,7 +425,6 @@ public class GestorTurno {
             }
         }
         return true;//si no hay ningun turno con el mismo horario y cliente retorna true
-
     }
 
     /////////////////////////////////////////////MANEJO DE FECHAS!!!!////////////////////////////////////////
@@ -587,7 +579,6 @@ public class GestorTurno {
 
 /////////////////////////////////////////////MANEJO DE PROFESIONALES!!!!////////////////////////////////////////
 
-
     ///devuelve el DNI del profesional
 ///filtra por servicio, por horario y fecha
     public String pedirDNIprofesionalXservicio(String codServicio, LocalTime horario, LocalDate fecha, GestorPersona gestorProfesional) {
@@ -597,7 +588,6 @@ public class GestorTurno {
             System.out.println("No hay profesionales disponibles.");
             return null;
         }
-
 
         int opc = 0;
         List<Profesional> disponibles = new ArrayList<>();
@@ -634,8 +624,6 @@ public class GestorTurno {
                 scanner.nextLine();
             }
         }
-
-
         return disponibles.get(opc).getDni();
     }
 
@@ -649,7 +637,6 @@ public class GestorTurno {
             }
         }
         return true;//si no hay ningun turno con el mismo horario y profesional retorna true
-
     }
 
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
@@ -664,16 +651,15 @@ public class GestorTurno {
 
             // Convertir las claves de String a LocalDate
             HashMap<LocalDate, List<Turno>> listaTurnos = new HashMap<>();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
 
             for (Map.Entry<String, List<Turno>> entry : mapaTemporal.entrySet()) {
                 LocalDate fecha = LocalDate.parse(entry.getKey(), formatter);
                 listaTurnos.put(fecha, entry.getValue());
             }
-
             return listaTurnos;
         } catch (IOException e) {
-            System.err.println("Error al cargar el archivo JSON: " + e.getMessage());
+            System.err.println("Error al cargar el archivo");
             return new HashMap<>(); // Devuelve un mapa vacío en caso de error
         }
     }
@@ -682,9 +668,9 @@ public class GestorTurno {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();//esto es para que se lea mejor
         try (FileWriter writer = new FileWriter("turnos.json")) {
             gson.toJson(listaTurnos, writer);
-            System.out.println("Usuarios guardados en el archivo JSON: turnos.json");
+            System.out.println("Usuarios guardados en el archivo");
         } catch (IOException e) {
-            System.err.println("Error al guardar el archivo JSON: " + e.getMessage());
+            System.err.println("Error al guardar el archivo");
         }
     }
 
