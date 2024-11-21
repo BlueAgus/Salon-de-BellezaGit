@@ -436,7 +436,6 @@ public class GestorTurno {
         if (fecha == null) {
             return null;
         }
-
         ///guarda los horarios disponibles y los muestra
         List<LocalTime> horariosDisponibles = mostrarTurnosDisponiblesXfecha(fecha, cod_servicio, gestorServicio);
 
@@ -444,7 +443,6 @@ public class GestorTurno {
         ///seleccion de horario
         while (true) {
             try {
-
                 if (horariosDisponibles.isEmpty()) {
                     System.out.println("No hay turnos disponibles en la fecha seleccionada");
                     ///NO HAY HORARIOS DISPONIBLES

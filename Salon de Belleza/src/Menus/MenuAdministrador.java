@@ -1,6 +1,7 @@
 package Menus;
 
 import enumeraciones.TipoServicio;
+import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import excepciones.FacturaNoExistenteException;
 import gestores.GestorFactura;
@@ -9,6 +10,7 @@ import gestores.GestorServicio;
 import gestores.GestorTurno;
 import model.*;
 
+import javax.imageio.stream.FileCacheImageInputStream;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Scanner;
@@ -558,19 +560,37 @@ public class MenuAdministrador {
                     break;
                 case 2:
                     System.out.println("Para eliminar una factura, se solicita el DNI del cliente");
-                    String dni = clientes.pedirDNIsinVerificacion();
-                    try {
-                        facturas.historialFacturasPorCliente(dni);
-                        System.out.println("Ingrese el codigo de la factura que quiere modificar");
-                        String codigo = scanner.nextLine();
+                    while (true) {
+                        String dni = clientes.pedirDNIsinVerificacion();
+                        try {
+                            facturas.historialFacturasPorCliente(dni);
 
-                        facturas.eliminarFactura(codigo);
+                            while (true) {
+                                System.out.println("Ingrese el codigo de la factura que quiere eliminar:");
+                                String codigo = scanner.nextLine();
 
-                    } catch (DNInoEncontradoException | FacturaNoExistenteException a) {
-                        System.out.println(a.getMessage());
-                        System.out.println("¿Desea intentar de nuevo? S/N");
-                        if (!scanner.nextLine().equalsIgnoreCase("S")) {
-                            return;
+                                try {
+                                    facturas.eliminarFactura(codigo);
+                                    break;
+                                } catch (FacturaNoExistenteException e) {
+                                    System.out.println(e.getMessage());
+                                    System.out.println("¿Desea intentar de nuevo? S/N");
+                                    String respuesta = scanner.nextLine();
+                                    if (!respuesta.equalsIgnoreCase("S")) {
+                                        System.out.println("Operación cancelada.");
+                                        return;
+                                    }
+                                }
+                            }
+                            break;
+                        } catch (DNInoEncontradoException e) {
+                            System.out.println(e.getMessage());
+                            System.out.println("¿Desea intentar de nuevo? S/N");
+                            String respuesta = scanner.nextLine();
+                            if (!respuesta.equalsIgnoreCase("S")) {
+                                System.out.println("Operación cancelada.");
+                                return;
+                            }
                         }
                     }
                     break;
@@ -586,7 +606,7 @@ public class MenuAdministrador {
 
                     break;
                 case 4:
-                    buscarFacturas(facturas,clientes);
+                    buscarFacturas(facturas, clientes);
                     break;
                 case 5:
 
@@ -625,13 +645,38 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    System.out.println("Ingrese el codigo de la factura");
-                    String codigo= scanner.nextLine();
-
-                    Factura factura= facturas.
+                    while (true) {
+                        System.out.println("Ingrese el codigo de la factura:");
+                        String codigo = scanner.nextLine();
+                        try {
+                            Factura factura = facturas.buscarFacturaPorCodigo(codigo);
+                            System.out.println(factura);
+                            break;
+                        } catch (CodigoNoEncontradoException a) {
+                            System.out.println(a.getMessage());
+                            System.out.println("¿Desea intentar de nuevo? S/N");
+                            String respuesta = scanner.nextLine();
+                            if (!respuesta.equalsIgnoreCase("S")) {
+                                System.out.println("Operación cancelada.");
+                                return;
+                            }
+                        }
+                    }
                     break;
                 case 2:
+                    while (true) {
+                        System.out.println("Ingrese la fecha (YYYY-MM-DD):");
+                        String fecha = scanner.nextLine();
 
+                        List<Factura> facturasXfecha = facturas.verHistorialPorFecha(fecha);
+
+                        if (facturasXfecha == null || facturasXfecha.isEmpty()) {
+                            System.out.println("Intente nuevamente.");
+                            continue;
+                        }
+                        System.out.println(facturasXfecha);
+                        break;
+                    }
                     break;
                 case 3:
 
