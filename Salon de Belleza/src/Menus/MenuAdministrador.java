@@ -18,7 +18,7 @@ public class MenuAdministrador {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void mostrarMenu(String dni, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
+    public void mostrarMenu(String dni, GestorCliente clientes, GestorProfesional profesionales, GestorRecepcionista recepcionista, GestorAdministrador administradores, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -57,7 +57,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuUsuarios(String dni, GestorPersona clientes, GestorPersona profesionales, GestorPersona recepcionista, GestorPersona administradores, GestorServicio gestorServicio) {
+    public void menuUsuarios(String dni, GestorCliente clientes, GestorProfesional profesionales, GestorRecepcionista recepcionista, GestorAdministrador administradores, GestorServicio gestorServicio) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -87,10 +87,11 @@ public class MenuAdministrador {
                     subMenuClientes(clientes, gestorServicio);
                     break;
                 case 4:
-                    Administrador administrador = null;
+
                     try {
-                        administrador = (Administrador) administradores.buscarPersona(dni);
-                        administradores.modificarPersona(administrador, gestorServicio);
+                        Administrador administrador = administradores.buscarPersona(dni);
+
+                        administradores.modificarAdministrador(administrador);
 
                     } catch (DNInoEncontradoException e) {
                         System.out.println(e.getMessage());
@@ -105,7 +106,7 @@ public class MenuAdministrador {
     }
 
 
-    public void subMenuRecepcionista(GestorPersona recepcionistas, GestorServicio servicios) {
+    public void subMenuRecepcionista(GestorRecepcionista recepcionistas, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -127,7 +128,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    recepcionistas.agregarPersona(3, servicios);
+                    recepcionistas.agregarPersona(servicios);
                     break;
                 case 2:
                     System.out.println("¿Cual es el dni del Recepcionista que desea eliminar?");
@@ -159,10 +160,9 @@ public class MenuAdministrador {
 
                     String dni2 = recepcionistas.pedirDNIsinVerificacion();
                     try {
-                        Recepcionista recepcionista = (Recepcionista) recepcionistas.buscarPersona(dni2);
+                        Recepcionista recepcionista = recepcionistas.buscarPersona(dni2);
                         System.out.println(recepcionista);
-                        recepcionistas.modificarPersona(recepcionista, servicios);
-
+                        recepcionistas.modificarPersona(recepcionista);
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
@@ -174,7 +174,7 @@ public class MenuAdministrador {
     }
 
 
-    public void subMenuProfesionales(GestorPersona profesionales, GestorServicio servicios) {
+    public void subMenuProfesionales(GestorProfesional profesionales, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -199,7 +199,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    profesionales.agregarPersona(2, servicios);
+                    profesionales.agregarPersona(servicios);
                     break;
                 case 2:
                     System.out.println("¿Cual es el dni del profesional que desea eliminar?");
@@ -218,7 +218,7 @@ public class MenuAdministrador {
                     String dni2 = profesionales.pedirDNIsinVerificacion();
 
                     try {
-                        Profesional profesional = (Profesional) profesionales.buscarPersona(dni2);
+                        Profesional profesional = profesionales.buscarPersona(dni2);
 
                         System.out.println(profesional);
 
@@ -254,16 +254,16 @@ public class MenuAdministrador {
                             servicio = servicios.buscarServicio();
                         } catch (CodigoNoEncontradoException e) {
                             System.out.println(e.getMessage());
+                            continue;
                         }
 
-                        for (Profesional p : (List<Profesional>) profesionales.getAlmacenPersonas()) {
+                        for (Profesional p : profesionales.getProfesionales()) {
                             if (p.verificarProfesion(servicio.getCodigo_servicio())) {
                                 System.out.println(p.toString());
                             }
                         }
                         break;
                     }
-
                     break;
                 default:
                     System.out.println("Opción no válida.");
@@ -271,7 +271,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void subMenuClientes(GestorPersona clientes, GestorServicio servicios) {
+    public void subMenuClientes(GestorCliente clientes, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -294,7 +294,7 @@ public class MenuAdministrador {
                     System.out.println("Saliendo...");
                     break;
                 case 1:
-                    clientes.agregarPersona(1, servicios);
+                    clientes.agregarPersona(servicios);
                     break;
                 case 2:
                     System.out.println("¿Cual es el dni del cliente que desea eliminar?");
@@ -313,8 +313,8 @@ public class MenuAdministrador {
                     String dni1 = clientes.pedirDNIsinVerificacion();
 
                     try {
-                        Persona persona = clientes.buscarPersona(dni1);
-                        System.out.println(persona);
+                        Cliente cliente = clientes.buscarPersona(dni1);
+                        System.out.println(cliente);
 
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
@@ -325,10 +325,11 @@ public class MenuAdministrador {
 
                     String dni2 = clientes.pedirDNIsinVerificacion();
                     try {
-                        Persona persona = clientes.buscarPersona(dni2);
-                        System.out.println(persona);
+                        Cliente cliente = clientes.buscarPersona(dni2);
+                        System.out.println(cliente);
 
-                        clientes.modificarPersona(persona, servicios);
+                        clientes.modificarPersona(cliente);
+
                     } catch (DNInoEncontradoException a) {
                         System.out.println(a.getMessage());
                     }
@@ -342,7 +343,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuServicio(GestorServicio servicios, GestorPersona cliente, GestorTurno turnos) {
+    public void menuServicio(GestorServicio servicios, GestorCliente cliente, GestorTurno turnos) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -396,7 +397,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuTurnos(GestorTurno turnos, GestorPersona clientes, GestorPersona profesionales, GestorServicio servicios) {
+    public void menuTurnos(GestorTurno turnos, GestorCliente clientes, GestorProfesional profesionales, GestorServicio servicios) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -467,7 +468,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void turnosXprofesional(GestorTurno turnos, GestorPersona profesionales) {
+    public void turnosXprofesional(GestorTurno turnos, GestorProfesional profesionales) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -521,7 +522,7 @@ public class MenuAdministrador {
         while (opcion != 0);
     }
 
-    public void turnosXcliente(GestorTurno turnos, GestorPersona clientes) {
+    public void turnosXcliente(GestorTurno turnos, GestorCliente clientes) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -571,7 +572,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void menuFacturas(GestorFactura facturas, GestorPersona clientes, GestorTurno gestorTurno) {
+    public void menuFacturas(GestorFactura facturas, GestorCliente clientes, GestorTurno gestorTurno) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -607,6 +608,7 @@ public class MenuAdministrador {
                             while (true) {
                                 System.out.println("Ingrese el codigo de la factura que quiere eliminar:");
                                 String codigo = scanner.nextLine();
+                                scanner.nextLine();
 
                                 try {
                                     facturas.eliminarFactura(codigo);
@@ -769,7 +771,7 @@ public class MenuAdministrador {
         } while (opcion != 0);
     }
 
-    public void buscarFacturas(GestorFactura facturas, GestorPersona clientes) {
+    public void buscarFacturas(GestorFactura facturas, GestorCliente clientes) {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -875,7 +877,6 @@ public class MenuAdministrador {
                             System.out.println(e.getMessage());
                         }
                     }
-
                     double precio;
 
                     while (true) {
@@ -980,10 +981,8 @@ public class MenuAdministrador {
                     break;
             }
 
-
         } while (opcion != 0);
     }
-
 }
 
 

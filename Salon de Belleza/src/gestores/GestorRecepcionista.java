@@ -125,7 +125,7 @@ public class GestorRecepcionista {
         return null;
     }
 
-    public void modificarPersona(Recepcionista persona, GestorServicio gestorServicio) {
+    public void modificarPersona(Recepcionista persona) {
         int opcion;
         boolean continuarModificando = true;
 

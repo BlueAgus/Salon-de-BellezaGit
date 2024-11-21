@@ -124,7 +124,7 @@ public class GestorAdministrador {
         return null;
     }
 
-    public void modificarAdministrador(Administrador persona, List<Administrador> administradors) {
+    public void modificarAdministrador(Administrador persona) {
         int opcion;
         boolean continuarModificando = true;
         while (continuarModificando) {
@@ -149,7 +149,7 @@ public class GestorAdministrador {
                         break;
                     case 3:
                         try {
-                            persona.setDni(pedirDNI(administradors));
+                            persona.setDni(pedirDNI(administradores));
                         } catch (DNIyaCargadoException e) {
                             System.out.println(e.getMessage());
                         }
