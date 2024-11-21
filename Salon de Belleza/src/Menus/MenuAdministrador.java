@@ -344,7 +344,7 @@ public class MenuAdministrador {
                     servicios.modificarServicio();
                     break;
                 case 4:
-                    servicios.mostrarServiciosXtipo();
+                    servicios.mostrarServicioXtipo();
                     break;
                 case 5:
                     servicios.mostrarServicios();
@@ -540,12 +540,9 @@ public class MenuAdministrador {
         do {
             System.out.println("1.Agregar ");
             System.out.println("2.Eliminar ");
-            ///estos no estan
             System.out.println("3.Modificar ");
             System.out.println("4.Buscar");
-
             System.out.println("5.Ver historial de facturas");
-            System.out.println("6.Historial de facturas por un cliente");
             System.out.println("0. Salir");
             System.out.print("Ingrese una opción: ");
 
@@ -609,7 +606,7 @@ public class MenuAdministrador {
                     buscarFacturas(facturas, clientes);
                     break;
                 case 5:
-
+                    System.out.println(facturas.getHistorial().getAlmacen());
                     break;
                 case 6:
                     String dni = clientes.pedirDNIsinVerificacion();
@@ -679,11 +676,57 @@ public class MenuAdministrador {
                     }
                     break;
                 case 3:
-
+                    while (true) {
+                        String dni = clientes.pedirDNIsinVerificacion();
+                        try {
+                            facturas.historialFacturasPorCliente(dni);
+                            break;
+                        } catch (DNInoEncontradoException e) {
+                            System.out.println(e.getMessage());
+                            System.out.println("¿Desea intentar de nuevo? S/N");
+                            String respuesta = scanner.nextLine();
+                            if (!respuesta.equalsIgnoreCase("S")) {
+                                System.out.println("Operación cancelada.");
+                                return;
+                            }
+                        }
+                    }
                     break;
                 default:
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
+    }
+
+    public void menuPrecios() {
+
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("1. ");
+            System.out.println("2. ");
+
+            System.out.println("0. Salir");
+            System.out.print("Ingrese una opción: ");
+
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 0:
+                    System.out.println("Saliendo...");
+                    break;
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+               
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 0);
+
     }
 }
