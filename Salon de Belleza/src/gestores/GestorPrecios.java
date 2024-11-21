@@ -167,7 +167,7 @@ public final class GestorPrecios {
         }
     }
 
-    public static void cargarPreciosDesdeArchivo(String nombreArchivo) {
+    public static void leerPreciosDesdeArchivo(String nombreArchivo) {
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(nombreArchivo)) {
             Type tipoMapa = new TypeToken<Map<Class<?>, Map<Enum<?>, Double>>>() {

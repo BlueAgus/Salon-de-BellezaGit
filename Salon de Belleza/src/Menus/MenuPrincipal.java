@@ -13,14 +13,14 @@ import java.util.Scanner;
 public class MenuPrincipal {
     Scanner scanner = new Scanner(System.in);
 
-    String archivoProfesionales = "profesionales.json";
-    String archivoAdministradores = "administradores.json";
-    String archivoRecepcionista = "recepcionistas.json";
-    String archivoCliente = "clientes.json";
-
-    String archivoServicios = "servicios.json";
-    String archivoTurnos = "turnos.json";
-    String archivoFacturas = "facturas.json";
+    static String archivoProfesionales = "profesionales.json";
+   static String archivoAdministradores = "administradores.json";
+   static String archivoRecepcionista = "recepcionistas.json";
+   static String archivoCliente = "clientes.json";
+   static String archivoPrecios = "precios.json";
+   static String archivoServicios = "servicios.json";
+   static String archivoTurnos = "turnos.json";
+   static String archivoFacturas = "facturas.json";
 
     /*
         public void inicioMenu(GestorPersona profesionales, GestorPersona clientes, GestorPersona administrador, GestorPersona recepcionistas) {
@@ -71,14 +71,17 @@ public class MenuPrincipal {
         GestorPersona recepcionistas = new GestorPersona();
         GestorPersona clientes = new GestorPersona();
 
+
         GestorServicio servicios = new GestorServicio();
         GestorTurno turnos = new GestorTurno();
-        GestorFactura facturas = new GestorFactura(archivoFacturas);
+        GestorFactura facturas = new GestorFactura();
 
 
         MenuAdministrador menuAdministrador = new MenuAdministrador();
         MenuRecepcionista menuRecepcionista = new MenuRecepcionista();
         MenuProfesional menuProfesional = new MenuProfesional();
+
+        inicioSistema(administradores, clientes, recepcionistas, profesionales, servicios, turnos, facturas);
 
         int opcion;
         do {
@@ -138,6 +141,24 @@ public class MenuPrincipal {
                     System.out.println("Opción no válida.");
             }
         } while (opcion != 0);
+    }
+
+    public void inicioSistema(GestorPersona admin, GestorPersona clientes, GestorPersona recepcionista, GestorPersona profesionales, GestorServicio servicios, GestorTurno turnos, GestorFactura facturas){
+
+        //inicializar personas
+        profesionales.leerArchivoProfesionales();
+        admin.leerArchivoAdministradores();
+        recepcionista.leerArchivoRecepcionistas();
+        clientes.leerArchivoClientes();
+        //inicializar servicio
+        servicios.LeerArchivo(archivoServicios);
+        //turnos
+        turnos.leerArchivoTurnos();
+        //factura
+        facturas.leerDesdeGson();
+        // precios
+        GestorPrecios.leerPreciosDesdeArchivo(archivoPrecios);
+
     }
 
     public void llenarAdministrador(GestorPersona personas, GestorServicio servicios) {
