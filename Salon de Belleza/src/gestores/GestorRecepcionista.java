@@ -1,5 +1,4 @@
 package gestores;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import excepciones.DNInoEncontradoException;
@@ -8,22 +7,37 @@ import excepciones.GeneroInvalidoException;
 import excepciones.TelefonoInvalidoException;
 import model.*;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
-public class GestorCliente {
-    public List<Cliente> clientes = new ArrayList<>();
+public class GestorRecepcionista {
     private static Scanner scanner = new Scanner(System.in);
-    Gson gson = new Gson();
-    private static String archivoClientes= "clientes.json";
+    private List<Recepcionista> almacenPersonas;
+    private static final String archivoRecepcionista= "recepcionistas.json";
 
-    public GestorCliente() {
+
+    ////////////////////////////////////////////////////////Setter, getter, constructor ///////////
+
+    public GestorRecepcionista() {
+        this.almacenPersonas = new ArrayList<>();
     }
 
+    public List<Recepcionista> getAlmacenPersonas() {
+        return almacenPersonas;
+    }
+
+    public void setAlmacenPersonas(List<Recepcionista> almacenPersonas) {
+        this.almacenPersonas = almacenPersonas;
+    }
+
+    // ////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ///////////////////////////////////////////////////
     public boolean agregarPersona(GestorServicio gestorServicio) {
         boolean cargado = false;
 
@@ -59,39 +73,59 @@ public class GestorCliente {
                 System.out.println(e.getMessage());
             }
         }
-        Cliente cliente = new Cliente(nombre, apellido, dni, genero, telefono);
 
-        if (clientes.add(cliente)) {
-            System.out.printf("\nCLIENTE AGREGADO EXITOSAMENTE \n");
+        String contra2 = pedirContraseña();
+        Recepcionista recepcionista = new Recepcionista(nombre, apellido, dni, genero, telefono, contra2);
+        cargado = true;
+        if (almacenPersonas.add(recepcionista)) {
+            System.out.printf("\nRECEPCIONISTA AGREGADO EXITOSAMENTE \n");
         } else {
-            System.out.printf("\nERROR AL AGREGAR CLIENTE\n");
+            System.out.printf("\nERROR AL AGREGAR RECEPCIONISTA\n");
         }
-        System.out.println(cliente);
-        verificarCarga(cliente, gestorServicio);
+        System.out.println(recepcionista);
+        verificarCarga(recepcionista, gestorServicio);
 
         return cargado;
     }
 
+    public boolean eliminarPersona(String dni) {
+        try {
+            Recepcionista p = buscarPersona(dni);
+            return almacenPersonas.remove(p);
+        } catch (DNInoEncontradoException e) {
+            System.out.printf(e.getMessage());
+        }
+        return false;
+    }
 
-    public Cliente buscarPersona(String dni) throws DNInoEncontradoException {
-        for (Cliente cliente : clientes) {
-            if (cliente.getDni().equals(dni)) {
-                return cliente;
+    public Recepcionista buscarPersona(String dni) throws DNInoEncontradoException {
+        for (Recepcionista p : almacenPersonas) {
+            if (p.getDni().equals(dni)) {
+                return p;
             }
         }
         throw new DNInoEncontradoException("\nDNI no encontrado!!");
     }
 
     public boolean buscarPersonas(String dni) throws DNInoEncontradoException {
-        for (Cliente cliente : clientes) {
-            if (cliente.getDni().equals(dni)) {
+        for (Recepcionista p : almacenPersonas) {
+            if (p.getDni().equals(dni)) {
                 return true;
             }
         }
         throw new DNInoEncontradoException("DNI no encontrado!!");
     }
 
-    public void modificarPersona(Cliente cliente, GestorServicio gestorServicio) {
+    public String buscarContraseña(String dni) {
+        for (Recepcionista p : almacenPersonas) {
+            if (p.getDni().equals(dni)) {
+                return p.getContraseña();
+            }
+        }
+        return null;
+    }
+
+    public void modificarPersona(Recepcionista persona, GestorServicio gestorServicio) {
         int opcion;
         boolean continuarModificando = true;
 
@@ -102,41 +136,45 @@ public class GestorCliente {
             System.out.println("3. DNI");
             System.out.println("4. Genero");
             System.out.println("5. Telefono");
-            System.out.println("6. Salir");
+            System.out.println("6. Contraseña");
+            System.out.println("0. Salir");
             try {
                 opcion = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (opcion) {
                     case 1:
-                        cliente.setNombre(pedirNombre());
+                        persona.setNombre(pedirNombre());
                         break;
                     case 2:
-                        cliente.setApellido(pedirApellido());
+                        persona.setApellido(pedirApellido());
                         break;
                     case 3:
                         try {
-                            cliente.setDni(pedirDNI());
+                            persona.setDni(pedirDNI());
                         } catch (DNIyaCargadoException e) {
                             System.out.println(e.getMessage());
                         }
                         break;
                     case 4:
                         try {
-                            cliente.setGenero(pedirGenero());
+                            persona.setGenero(pedirGenero());
                         } catch (GeneroInvalidoException e) {
                             System.out.println(e.getMessage());
                         }
                         break;
                     case 5:
                         try {
-                            cliente.setTelefono(pedirTelefono());
+                            persona.setTelefono(pedirTelefono());
                         } catch (TelefonoInvalidoException e) {
                             System.out.println(e.getMessage());
                         }
                         break;
                     case 6:
                         continuarModificando = false;
+                        break;
+                    case 7:
+                        persona.setContraseña(pedirContraseñaNueva(persona.getContraseña()));
                         break;
                     default:
                         System.out.println("Opción no válida.");
@@ -147,16 +185,17 @@ public class GestorCliente {
             }
         }
         System.out.println("¡MODIFICADO EXITOSAMENTE!");
-        System.out.println(cliente.toString());
+        System.out.println(persona.toString());
+
     }
 
     public void mostrarTodos() {
-        for (Cliente cliente : clientes) {
-            System.out.println(cliente.toString());
+        for (Recepcionista p : almacenPersonas) {
+            System.out.println(p.toString());
         }
     }
 
-    public void verificarCarga(Cliente cliente, GestorServicio gestorServicio) {
+    public void verificarCarga(Recepcionista persona, GestorServicio gestorServicio) {
         int opcion;
         do {
             System.out.println("¿Deseas modificar algo de la persona?");
@@ -168,7 +207,7 @@ public class GestorCliente {
 
             switch (opcion) {
                 case 1:
-                    modificarPersona(cliente, gestorServicio);
+                    modificarPersona(persona, gestorServicio);
                     break;
                 case 2:
                     System.out.println("....");
@@ -186,8 +225,8 @@ public class GestorCliente {
 
         while (!telefonoValido) {
             System.out.print("Ingrese el teléfono: ");
-            telefono = scanner.nextLine().trim();
             scanner.nextLine();
+            telefono = scanner.nextLine().trim();
 
             // Validar que el número tenga exactamente 10 dígitos y solo contenga números
             if (!telefono.matches("\\d{10}")) {
@@ -207,7 +246,6 @@ public class GestorCliente {
         while (!nombreValido) {
             System.out.print("Ingrese el nombre: ");
             nombre = scanner.nextLine();
-            scanner.nextLine();
 
             // Validar que el nombre no esté vacío y que contenga solo letras y espacios
             if (nombre.isEmpty()) {
@@ -284,8 +322,8 @@ public class GestorCliente {
             // Verificar si el DNI ya está cargado en el sistema
             else {
                 boolean dniRepetido = false;
-                for (Cliente cliente : clientes) {
-                    if (cliente.getDni().equals(dni)) {
+                for (Recepcionista a : almacenPersonas) {
+                    if (a.getDni().equals(dni)) {
                         dniRepetido = true;
                         break;
                     }
@@ -355,9 +393,9 @@ public class GestorCliente {
         String contraseña = "";
 
         do {
+
             System.out.println("Ingresa una contraseña (entre 6 y 12 caracteres, debe contener al menos un número):");
             contraseña = scanner.nextLine();
-            scanner.nextLine();
 
             // Validación de longitud de la contraseña y de que contenga al menos un número
             if (contraseña.length() < 6 || contraseña.length() > 12) {
@@ -387,74 +425,84 @@ public class GestorCliente {
         return contraseña;
     }
 
+    public String pedirContraseñaNueva(String contraseniaVieja) {
+        String nuevaContrasenia = "";
+        int opcion;
 
-    public boolean verificarSiExisteCliente(String dni) throws DNInoEncontradoException {
-        List<Cliente> aux = leerArchivoClientes();
+        do {
+            System.out.println("La contraseña actual es: " + contraseniaVieja);
+            pedirContraseña();
+
+            // Validación: Contraseña no puede ser vacía y debe ser diferente
+            if (nuevaContrasenia.equals(contraseniaVieja)) {
+                System.out.println("Has ingresado la misma contraseña. Intenta de nuevo.");
+            } else if (nuevaContrasenia.isEmpty()) {
+                System.out.println("La contraseña no puede estar vacía. Intenta de nuevo.");
+            } else if (!nuevaContrasenia.matches(".\\d.")) {//tiene al menos un num?
+                System.out.println("La contraseña debe contener al menos un número. Intenta de nuevo.");
+            } else if (nuevaContrasenia.length() < 6 || nuevaContrasenia.length() > 12) {
+                System.out.println("La contraseña debe tener entre 6 y 12 caracteres. Intenta de nuevo.");
+            } else {
+                System.out.println("Has establecido la nueva contraseña: " + nuevaContrasenia);
+                System.out.println("¿Deseas modificarla de nuevo?");
+                System.out.println("1. Sí, deseo modificarla de nuevo.");
+                System.out.println("2. No, estoy satisfecho.");
+
+                // Validar entrada del usuario
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Por favor, selecciona una opción válida (1 o 2):");
+                    scanner.next();
+                }
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+                if (opcion == 2) {
+                    System.out.println("Contraseña definitiva establecida.");
+                    break;
+                } else if (opcion != 1) {
+                    System.out.println("Opción no válida. Intenta de nuevo.");
+                }
+            }
+        } while (true);
+
+        return nuevaContrasenia;
+    }
+
+    ///////VERIFICACIONES
+
+    public boolean verificarSiExisteRecepcionista(String dni) throws DNInoEncontradoException {
+        List<Recepcionista> aux = leerArchivoRecepcionistas();
         if (aux == null || aux.isEmpty()) {
-            throw new DNInoEncontradoException("\nNo hay registros de clientes en el archivo especificado.");
+            throw new DNInoEncontradoException("\nNo hay registros de recepcionistas en el archivo especificado.");
         }
         for (Persona p : aux) {
             if (p.getDni().equals(dni)) {
                 return true; // alguien del archivo tiene ese DNI
             }
         }
-        throw new DNInoEncontradoException("\nDNI no encontrado en clientes del archivo especificado.");
+        throw new DNInoEncontradoException("\nDNI no encontrado en recepcionistas del archivo especificado.");
     }
 
-    public boolean eliminarPersona(String dni) {
-        try {
-            Cliente cliente = buscarPersona(dni);
-            return clientes.remove(cliente);
-
-        } catch (DNInoEncontradoException e) {
-            System.out.printf(e.getMessage());
-        }
-        return false;
-    }
-
-
-    public void guardarArchivoClientes(List<Cliente> clientes) {
-
-        try (FileWriter fileWriter = new FileWriter(archivoClientes)) {
-            gson.toJson(clientes, fileWriter); // Convertir la lista a JSON
-            System.out.println("Archivo de clientes guardado exitosamente.");
-
+    /////////////////////////MANEJO DE ARCHIVOS DE PERSONAS.//////////////////////////
+    public List<Recepcionista> leerArchivoRecepcionistas() {
+        Gson gson = new Gson();
+        List<Recepcionista> listaRecepcionistas = new ArrayList<>();
+        try (FileReader fileReader = new FileReader(archivoRecepcionista)) {
+            Type listType = new TypeToken<List<Recepcionista>>() {
+            }.getType();
+            listaRecepcionistas = gson.fromJson(fileReader, listType);
         } catch (IOException e) {
-            System.out.println("No se puede guardar el archivo de clientes: " + e.getMessage());
+            System.out.println("No se puede leer el archivo: " + e.getMessage());
         }
+        return listaRecepcionistas;
     }
 
-    public List<Cliente> leerArchivoClientes1() {
-
-        List<Cliente> listaClientes = null;
-
-        try (FileReader fileReader = new FileReader(archivoClientes)) {
-            Type listType = new TypeToken<List<Cliente>>() {}.getType();
-            listaClientes = gson.fromJson(fileReader, listType); // Leer y convertir desde JSON
-        } catch (FileNotFoundException e) {
-            System.out.println("Archivo de clientes no encontrado: " + e.getMessage());
+    public void guardarArchivoRecepcionistas(List<Recepcionista> recepcionistas) {
+        Gson gson = new Gson();
+        try (FileWriter fileWriter = new FileWriter(archivoRecepcionista)) {
+            gson.toJson(recepcionistas, fileWriter);
         } catch (IOException e) {
-            System.out.println("Error al leer el archivo de clientes: " + e.getMessage());
+            System.out.println("No se puede guardar el archivo: " + e.getMessage());
         }
-
-        return listaClientes;
     }
 
-    public List<Cliente> leerArchivoClientes() {
-
-        try (FileReader reader = new FileReader(archivoClientes)) {
-
-            Cliente[] clientesArray = gson.fromJson(reader, Cliente[].class);
-            List<Cliente> clientesCargados = Arrays.asList(clientesArray);
-
-            for (Cliente cliente : clientesCargados) {
-                clientes.add(cliente);
-            }
-            return clientesCargados;
-        } catch (IOException e) {
-            System.out.println("Error al cargar los archivos" + e.getMessage());
-        }
-        return null;
-    }
 }
-
