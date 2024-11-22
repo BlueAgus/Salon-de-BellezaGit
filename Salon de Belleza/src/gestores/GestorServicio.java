@@ -1,28 +1,58 @@
 package gestores;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+
 import com.google.gson.reflect.TypeToken;
 import enumeraciones.*;
 import excepciones.CodigoNoEncontradoException;
 import model.*;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
 import java.util.InputMismatchException;
-import java.util.List;
+
 import java.util.Scanner;
 
 public class GestorServicio {
 
     private static Scanner scanner = new Scanner(System.in);
-    private GestorAlmacen<Servicio> almacenServicios = new GestorAlmacen<>();
-    Gson gson = new Gson();
+    public GestorAlmacen<Servicio> listaServicios = new GestorAlmacen<>();
+    public static final String archivoServicios = "servicios.json";
+
+    public GestorServicio() {
+
+        this.listaServicios = cargarServiciosDesdeArchivo();
+
+        if (this.listaServicios == null) {
+            this.listaServicios = new GestorAlmacen<>();
+        }
+    }
+    ////////////////////////////////////////////////////////jesonA ////////////////////////////////////////////////////
+
+    // Guardar turnos en archivo
+    public void guardarServiciosEnArchivo() {
+        GestorJson.guardarEnArchivo(archivoServicios, listaServicios);
+    }
+
+    // Cargar servicios desde archivo
+   private GestorAlmacen<Servicio> cargarServiciosDesdeArchivo() {
+        Type type = new TypeToken<GestorAlmacen<Servicio>>() {}.getType();
+        return GestorJson.cargarDeArchivoType(archivoServicios, type);
+        //usamos el que pide Type en caso de que usemos gestor generico
+    }
+
+   /* private GestorAlmacen<Servicio> cargarServiciosDesdeArchivo() {
+        Type type = new TypeToken<GestorAlmacen<Servicio>>() {}.getType();
+        GestorAlmacen<Servicio> almacen = GestorJson.cargarDeArchivoType(archivoServicios, type);
+
+        if (almacen == null) {
+            System.out.println("Creando un archivo nuevo: " + archivoServicios);
+            guardarServiciosEnArchivo(); // Crear un archivo vacío
+            almacen = new GestorAlmacen<>();
+        }
+
+        return almacen;
+    }*/
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
@@ -31,26 +61,30 @@ public class GestorServicio {
         TipoServicio tipoService = pedirTipoServicio();
         double precio = pedirPrecio();
         LocalTime duracion = pedirDuracion();
-        boolean disenio = pedirDisenio();
 
         if (tipoService == TipoServicio.DEPILACION) {
             TipoDepilacion tipoDepilacion = pedirTipoDepilacion();
             Depilacion depilacion = new Depilacion(duracion, tipoDepilacion);
-            almacenServicios.agregar(depilacion);
+            GestorPrecios.modificarPrecio(Depilacion.class, tipoDepilacion, precio);
+            listaServicios.agregar(depilacion);
             System.out.println(depilacion);
             verificarCarga(depilacion);
 
         } else if (tipoService == TipoServicio.PESTANIAS) {
             TipoPestanias tipoPestanias = pedirTipoPestanias();
             Pestanias pestanias = new Pestanias(duracion, tipoPestanias);
-            almacenServicios.agregar(pestanias);
+            GestorPrecios.modificarPrecio(Pestanias.class, tipoPestanias, precio); // ponemos el precio en el gestor
+            listaServicios.agregar(pestanias);
             System.out.println(pestanias);
             verificarCarga(pestanias);
 
         } else if (tipoService == TipoServicio.MANICURA) {
+            boolean disenio = pedirDisenio();
             TipoManicura tipoManicura = pedirTipoManicura();
             Manicura manicura = new Manicura(duracion, tipoManicura);
-            almacenServicios.agregar(manicura);
+            manicura.setDisenio(disenio);
+            GestorPrecios.modificarPrecio(Manicura.class, tipoManicura, precio);
+            listaServicios.agregar(manicura);
             System.out.println(manicura);
             verificarCarga(manicura);
         }
@@ -60,9 +94,9 @@ public class GestorServicio {
 
         String cod_servicio = pedirParaBuscar();
 
-        for (Servicio servicio : almacenServicios.getAlmacen()) {
+        for (Servicio servicio : listaServicios.getAlmacen()) {
             if (servicio.getCodigo_servicio().equals(cod_servicio)) {
-                return almacenServicios.eliminar(servicio);
+                return listaServicios.eliminar(servicio);
             }
         }
         return false;
@@ -82,7 +116,7 @@ public class GestorServicio {
             }
 
 
-            for (Servicio s : almacenServicios.getAlmacen()) {
+            for (Servicio s : listaServicios.getAlmacen()) {
                 if (s.getCodigo_servicio().equals(cod_Servicio)) {
                     return s;
                 }
@@ -94,7 +128,7 @@ public class GestorServicio {
 
     public Servicio buscarServicioCodigo(String codServicio)throws CodigoNoEncontradoException {
         Servicio servicio = null;
-        for (Servicio s : almacenServicios.getAlmacen()) {
+        for (Servicio s : listaServicios.getAlmacen()) {
             if (s.getCodigo_servicio().equals(codServicio)) {
                 servicio = s;
             }
@@ -107,7 +141,7 @@ public class GestorServicio {
 
     public void mostrarServicioXtipo() {
         TipoServicio tipoServicio = pedirTipoServicio();
-        for (Servicio s : almacenServicios.getAlmacen()) {
+        for (Servicio s : listaServicios.getAlmacen()) {
             if (s.getTipoService().equals(tipoServicio)) {
                 System.out.println(s.toString());
             }
@@ -189,32 +223,37 @@ public class GestorServicio {
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
     public void verificarCarga(Servicio servicio) {
-        int opcion;
+        int opcion = -1; // Valor inicial inválido
         do {
-            System.out.println("¿Deseas modificar algo del servicio?");
-            System.out.println("1. Sí");
-            System.out.println("2. No");
+            try {
+                System.out.println("¿Deseas modificar algo del servicio?");
+                System.out.println("1. Sí");
+                System.out.println("2. No");
 
-            opcion = scanner.nextInt();
-            scanner.nextLine();
+                opcion = scanner.nextInt();
+                scanner.nextLine(); // Limpia el buffer
 
-            switch (opcion) {
-                case 1:
-                    modificarServicioParametro(servicio);
-                    break;
-                case 2:
-                    System.out.println("....");
-                    break;
-                default:
-                    System.out.println("Opción no válida, selecciona nuevamente.");
+                switch (opcion) {
+                    case 1:
+                        modificarServicioParametro(servicio);
+                        break;
+                    case 2:
+                        System.out.println("No se realizarán cambios.");
+                        break;
+                    default:
+                        System.out.println("Opción no válida, selecciona nuevamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no válida. Por favor, introduce un número (1 o 2).");
+                scanner.nextLine(); // Limpia el buffer para evitar un bucle infinito
             }
-        } while (opcion != 2 && opcion != 1);
+        } while (opcion != 2);
     }
 
     public String pedirParaBuscar() {
 
-        for (int i = 0; i < almacenServicios.getAlmacen().size(); i++) {
-            System.out.println(i + "- " + almacenServicios.getAlmacen().get(i));
+        for (int i = 0; i < listaServicios.getAlmacen().size(); i++) {
+            System.out.println(i + "- " + listaServicios.getAlmacen().get(i));
         }
         int opc = 0;
         while (true) {
@@ -231,7 +270,7 @@ public class GestorServicio {
 
                 ///pasa a int un string
                 opc = Integer.parseInt(opcElegida);
-                if (opc < 0 || opc > almacenServicios.getAlmacen().size()) {
+                if (opc < 0 || opc > listaServicios.getAlmacen().size()) {
                     System.out.println("Selección inválida. Inténtelo de nuevo.");
                 } else {
                     break;
@@ -241,7 +280,7 @@ public class GestorServicio {
                 scanner.nextLine();
             }
         }
-        return almacenServicios.getAlmacen().get(opc).getCodigo_servicio();
+        return listaServicios.getAlmacen().get(opc).getCodigo_servicio();
     }
 
     // Validación para el tipo de servicio
@@ -421,7 +460,7 @@ public class GestorServicio {
 
         do {
             try {
-                System.out.println("Desea agregar un diseño al servicio? El valor es .. ");
+                System.out.println("Desea agregar un diseño al servicio? El valor es .. "+ GestorPrecios.getPrecioDisenio());
                 System.out.println("1. Si");
                 System.out.println("2. No");
                 opcion = scanner.nextInt();
@@ -453,53 +492,20 @@ public class GestorServicio {
         } catch (CodigoNoEncontradoException e) {
             System.out.println(e.getMessage());
         }
-        /*
-        LocalDate hoy=Turno.convertirStringALocalDate(LocalDate.now());
-        gestorTurno.cancelarTurnosXdia(hoy, cliente, servicio.getCodigo_servicio());*/
+        String ahora = Turno.convertirLocalDateAString(LocalDate.now());
+        gestorTurno.cancelarTurnosXdia(ahora, cliente, servicio.getCodigo_servicio());
     }
 
    ////////////////////////////////////////GET ////////////////////////////////////////////////////
 
-    public GestorAlmacen<Servicio> getAlmacenServicios() {
-        return almacenServicios;
+    public GestorAlmacen<Servicio> getServicios() {
+        return listaServicios;
     }
 
     public void mostrarServicios() {
-        almacenServicios.mostrar();
+        listaServicios.mostrar();
     }
 
-
-    /////////////ARCHIVOS.
-    public void EscribirServiciosEnArchivo(String nombreArchivo, List<Servicio> servicios) {
-        try (FileWriter fileWriter = new FileWriter(nombreArchivo)) {
-            Gson gson = new Gson();
-            String json = gson.toJson(servicios);
-            fileWriter.write(json);
-            // System.out.println("Archivo escrito correctamente.");
-
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public List<Servicio> LeerArchivo(String nombreArchivo) {
-        try (FileReader fileReader = new FileReader(nombreArchivo)) {
-            Gson gson = new Gson();
-            Type ListaServicios = new TypeToken<List<Servicio>>() {
-            }.getType();
-            List<Servicio> servicios = gson.fromJson(fileReader, ListaServicios);
-
-            return servicios;
-
-        }catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
 
 }
 

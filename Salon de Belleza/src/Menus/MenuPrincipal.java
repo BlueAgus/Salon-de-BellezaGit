@@ -5,7 +5,7 @@ import gestores.*;
 import gestores.GestorProfesional;
 import model.*;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,7 +27,7 @@ public class MenuPrincipal {
     GestorTurno turnos = new GestorTurno();
     GestorFactura facturas = new GestorFactura();
 
-
+/*
     public void menuPrincipal() {
 
         MenuAdministrador menuAdministrador = new MenuAdministrador();
@@ -147,7 +147,7 @@ public class MenuPrincipal {
         facturas.guardarEnArchivo(facturas.getHistorial().getAlmacen());
         // precios
         GestorPrecios.guardarPreciosEnArchivo(archivoPrecios);
-        System.out.println("Se ha cerrado el sistema. ");*/
+        System.out.println("Se ha cerrado el sistema. ");
     }
 
     public void llenarAdministrador() {
@@ -244,7 +244,7 @@ public class MenuPrincipal {
     }
 
 //no se que onda esto... NO LO BORREN POR LAS DUDAS.
-    /*
+
     public boolean verificarDniAdministradores(String dni, GestorPersona administradores) {
         List<Administrador> e = administradores.leerArchivoPersona("administradores.json");
         boolean a = false;

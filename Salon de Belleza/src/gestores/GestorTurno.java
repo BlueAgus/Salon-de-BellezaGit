@@ -1,45 +1,59 @@
 package gestores;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import excepciones.CodigoNoEncontradoException;
 import excepciones.DNInoEncontradoException;
 import model.*;
-
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
 public class GestorTurno {
 
+
     private MapaGenerico<String, List<Turno>> listaTurnos;
     private static final String archivoTurnos = "turnos.json";
-    private static Scanner scanner = new Scanner(System.in);
-  Gson gson = new Gson();
+    Scanner scanner = new Scanner(System.in);
+
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+
     public GestorTurno() {
-        this.listaTurnos = new MapaGenerico<>();
+
+        this.listaTurnos = cargarTurnosDesdeArchivo();
+
+        if (this.listaTurnos == null) {
+            this.listaTurnos = new MapaGenerico<>();
+        }
     }
+
+    ////////////////////////////////////////////////////////Json ////////////////////////////////////////////////////
+
+    // Guardar turnos en archivo
+    public void guardarTurnosEnArchivo() {
+        GestorJson.guardarEnArchivo(archivoTurnos, listaTurnos);
+    }
+
+    // Cargar turnos desde archivo
+    private MapaGenerico<String, List<Turno>> cargarTurnosDesdeArchivo() {
+        return GestorJson.cargarDeArchivo(archivoTurnos, MapaGenerico.class);
+    }
+
+
+
 
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR Y MODIFICAR ////////////////////////////////////////////////////
 
     public boolean agregarTurno(GestorCliente gestorCliente, GestorProfesional gestorProfesional, GestorServicio gestorServicio) {
 
-        String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
+        try{
+            String dniCliente = pedirDNIcliente(gestorCliente);//METODO pedir dni cliente
 
-        if (dniCliente == null) {
-            return false;
-        }
+            if (dniCliente == null) {
+                return false;
+            }
+
 
         String codServicio = pedirCodServicio(gestorServicio);//METODO pedir cod servicio
 
@@ -78,6 +92,10 @@ public class GestorTurno {
             turnos.add(turno);
 
             listaTurnos.agregar(turno.getFecha(), turnos);
+        }
+
+        }catch (DNInoEncontradoException e){
+            System.out.println(e.getMessage());
         }
         return true;
     }
@@ -261,15 +279,19 @@ public class GestorTurno {
                 t.setDni_profesional(dniProfesional);
                 break;
             case 3:
-                String dniCliente = pedirDNIcliente(gestorCliente);
+                try{
+                    String dniCliente = pedirDNIcliente(gestorCliente);
+                    if (dniCliente == null) {
+                        break;
+                    }
+                    t.setDni_cliente(dniCliente);
+                    break;
 
-                if (dniCliente == null) {
+                }catch (DNInoEncontradoException e){
+                    System.out.println(e.getMessage());
                     break;
                 }
 
-                t.setDni_cliente(dniCliente);
-                break;
-            ///no pongo default pq ya está verificado arriba
         }
         return true;
     }
@@ -369,8 +391,8 @@ public class GestorTurno {
     public String pedirCodServicio(GestorServicio gestorServicio) {
         int opc = 0;
         while (true) {
-            for (int i = 0; i < gestorServicio.getAlmacenServicios().getAlmacen().size(); i++) {
-                System.out.println(i + "- " + gestorServicio.getAlmacenServicios().getAlmacen().get(i).toString());
+            for (int i = 0; i < gestorServicio.getServicios().getAlmacen().size(); i++) {
+                System.out.println(i + "- " + gestorServicio.getServicios().getAlmacen().get(i).toString());
             }
 
             System.out.println("OPCIÓN: (o escriba 'salir' para cancelar) ");
@@ -387,17 +409,17 @@ public class GestorTurno {
                 System.out.println("Entrada inválida. Debe ingresar un número.");
             }
 
-            if (opc < 0 || opc >= gestorServicio.getAlmacenServicios().getAlmacen().size()) {
+            if (opc < 0 || opc >= gestorServicio.getServicios().getAlmacen().size()) {
                 System.out.println("Opcion no valida");
             } else {
-                return gestorServicio.getAlmacenServicios().getAlmacen().get(opc).getCodigo_servicio();
+                return gestorServicio.getServicios().getAlmacen().get(opc).getCodigo_servicio();
             }
         }
     }
 
     /////////////////////////////////////////////MANEJO DE CLIENTES!!!!////////////////////////////////////////
 
-    public String pedirDNIcliente(GestorCliente gestorCliente) {
+    public String pedirDNIcliente(GestorCliente gestorCliente) throws DNInoEncontradoException {
         String dniCliente;
         while (true) {
 
@@ -409,13 +431,15 @@ public class GestorTurno {
                 return null; // Devuelve null o lanza una excepción según el diseño
             }
 
-            try {
-                gestorCliente.verificarSiExisteCliente(dniCliente);
+
+            boolean esta = gestorCliente.verificarSiExisteCliente(dniCliente);
+
+              if(!esta){
+                  throw new DNInoEncontradoException("El DNI no fue encontrado..");
+              }
+
                 return dniCliente;
 
-            } catch (DNInoEncontradoException e) {
-                System.out.println(e.getMessage());
-            }
         }
 
         ///tendriamos que verificar que el cliente no tenga más turnos en el mismo horario y dia?? o podriamos decir que puede reservar turnos para otra persona
@@ -644,50 +668,7 @@ public class GestorTurno {
 
     /////////////////////////////////////////////MANEJO DE ARCHIVO TURNOS!!!!////////////////////////////////////////
 
-    public HashMap<String, List<Turno>> leerArchivoTurnos() {
 /*
-        try (FileReader reader = new FileReader(archivoTurnos)) {
-            // Deserializar como HashMap<String, List<Turno>>
-            Type tipoMapa = new TypeToken<HashMap<String, List<Turno>>>() {}.getType();
-
-            // Convertir las claves de String a LocalDate
-            HashMap<LocalDate, List<Turno>> listaTurnos = new HashMap<>();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
-
-            for (Map.Entry<String, List<Turno>> entry : listaTurnos.entrySet()) {
-                LocalDate fecha = LocalDate.parse(entry.getKey(), formatter);
-                listaTurnos.put(fecha, entry.getValue());
-            }
-            return listaTurnos;
-        } catch (IOException e) {
-            System.err.println("Error al cargar el archivo");
-            return new HashMap<>(); // Devuelve un mapa vacío en caso de error
-        }*/
-        return null
-
-
-
-                ;
-    }
-
-    public void guardarEnArchivoTurnos(HashMap<String, List<Turno>> listaTurnos) {
-        // Crear instancia de Gson para convertir a JSON con formato bonito
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        try (FileWriter writer = new FileWriter("turnos.json")) {
-
-
-            // Convertir la lista de TurnoArchivo a formato JSON
-            String json = gson.toJson(listaTurnos);
-
-            // Escribir el JSON en el archivo
-            writer.write(json);
-
-        } catch (IOException e) {
-            System.err.println("Error al guardar el archivo: " + e.getMessage());
-        }
-    }
-
     public List<TurnoArchivo> convertirMapa(HashMap<LocalDate, List<Turno>> mapa) {
         List<TurnoArchivo> turnosConvertidos = new ArrayList<>();
 
@@ -700,9 +681,9 @@ public class GestorTurno {
             }
         }
         return turnosConvertidos;
-    }
+    }*/
 
-    public TurnoArchivo convertirTurno(Turno turnoOriginal) {
+   /* public TurnoArchivo convertirTurno(Turno turnoOriginal) {
         // Formateadores para fecha y hora
         DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");

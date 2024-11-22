@@ -14,7 +14,7 @@ public class Pestanias extends Servicio{
     public Pestanias(LocalTime duracion, TipoPestanias tipoPestanias) {
         super(TipoServicio.PESTANIAS, duracion);
         this.tipoPestanias = tipoPestanias;
-        this.precio=calcularPrecio();
+        this.precio= calcularPrecio();
     }
 
     ////////////////////////////////// metodos extr //////////////////////////////////////////////

@@ -1,9 +1,4 @@
 package gestores;
-
-import com.google.gson.Gson;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -12,7 +7,7 @@ public class GestorAlmacen<T> {
 
     private List<T> almacen = new ArrayList<>();
 
-    private Gson gson = new Gson();
+
     ////////////////////////////////////////////////////////AGREGAR, ELIMINAR, BUSCAR////////////////////////////////////////////////////
 
     public boolean agregar(T elemento) {

@@ -1,4 +1,5 @@
-import Menus.MenuPrincipal;
+//import Menus.MenuPrincipal;
+import com.google.gson.Gson;
 import enumeraciones.TipoManicura;
 
 import excepciones.DNInoEncontradoException;
@@ -17,9 +18,17 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
 
-        MenuPrincipal menuPrincipal = new MenuPrincipal();
+        //MenuPrincipal menuPrincipal = new MenuPrincipal();
 
-        menuPrincipal.menuPrincipal();
+       // menuPrincipal.menuPrincipal();
+
+        GestorServicio servicios = new GestorServicio();
+        servicios.agregarServicio();
+
+      servicios.guardarServiciosEnArchivo();
+
+
+
 
     }
 }

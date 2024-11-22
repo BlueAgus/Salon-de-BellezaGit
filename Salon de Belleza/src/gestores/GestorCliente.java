@@ -18,15 +18,38 @@ import java.util.*;
 public class GestorCliente {
     public List<Cliente> clientes = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
-    Gson gson = new Gson();
-    private static String archivoClientes= "clientes.json";
+    private static final String archivoClientes= "clientes.json";
 
     public GestorCliente() {
+
+        this.clientes = cargarClientesDesdeArchivo();
+
+        if (this.clientes == null) {
+            this.clientes = new ArrayList<>();
+        }
     }
+
+    ////////////////////////////////////////////////////////Json ////////////////////////////////////////////////////
+
+    // Guardar turnos en archivo
+    public void guardarClientesEnArchivo() {
+        GestorJson.guardarEnArchivo(archivoClientes, clientes);
+    }
+
+    // Cargar turnos desde archivo
+    private List<Cliente> cargarClientesDesdeArchivo() {
+        return GestorJson.cargarDeArchivo(archivoClientes, List.class);
+    }
+
+
+    ////////////////////////////////////////////////////////GET SET ////////////////////////////////////////////////////
 
     public List<Cliente> getClientes() { return clientes; }
 
     public void setClientes(List<Cliente> clientes) { this.clientes = clientes; }
+
+
+///////////////////////////////////////////////////////AGREGRA, MODIFICAR, ELIMINAR ////////////////////////////////////////////////////
 
     public boolean agregarPersona(GestorServicio gestorServicio) {
 
@@ -184,6 +207,39 @@ public class GestorCliente {
             }
         } while (opcion != 2 && opcion != 1);
     }
+
+   /* public boolean verificarSiExisteCliente(String dni) throws DNInoEncontradoException {
+        List<Cliente> aux = clientes;
+        if (aux == null || aux.isEmpty()) {
+            throw new DNInoEncontradoException("\nNo hay registros de clientes en el archivo especificado.");
+        }
+        for (Persona p : aux) {
+            if (p.getDni().equals(dni)) {
+                return true; // alguien del archivo tiene ese DNI
+            }
+        }
+        throw new DNInoEncontradoException("\nDNI no encontrado en clientes del archivo especificado.");
+    }*/
+
+    public boolean verificarSiExisteCliente(String dni) {
+    return clientes.stream().anyMatch(cliente -> cliente.getDni().equals(dni));
+}
+
+
+    public boolean eliminarPersona(String dni) {
+        try {
+            Cliente cliente = buscarPersona(dni);
+            return clientes.remove(cliente);
+
+        } catch (DNInoEncontradoException e) {
+            System.out.printf(e.getMessage());
+        }
+        return false;
+    }
+
+
+    ////////////////////////////////////////////////////////metodos auxiliares ////////////////////////////////////////////////////
+
 
     public String pedirTelefono() throws TelefonoInvalidoException {
         String telefono = "";
@@ -356,6 +412,7 @@ public class GestorCliente {
         return genero;  // Retornar el String que contiene el género válido
     }
 
+
     //contraseña entre 6 y 12 caracteres!!
     public String pedirContraseña() {
         boolean confirmado = false;
@@ -393,76 +450,6 @@ public class GestorCliente {
         } while (!confirmado);
 
         return contraseña;
-    }
-
-
-    public boolean verificarSiExisteCliente(String dni) throws DNInoEncontradoException {
-        List<Cliente> aux = leerArchivoClientes();
-        if (aux == null || aux.isEmpty()) {
-            throw new DNInoEncontradoException("\nNo hay registros de clientes en el archivo especificado.");
-        }
-        for (Persona p : aux) {
-            if (p.getDni().equals(dni)) {
-                return true; // alguien del archivo tiene ese DNI
-            }
-        }
-        throw new DNInoEncontradoException("\nDNI no encontrado en clientes del archivo especificado.");
-    }
-
-    public boolean eliminarPersona(String dni) {
-        try {
-            Cliente cliente = buscarPersona(dni);
-            return clientes.remove(cliente);
-
-        } catch (DNInoEncontradoException e) {
-            System.out.printf(e.getMessage());
-        }
-        return false;
-    }
-
-
-    public void guardarArchivoClientes(List<Cliente> clientes) {
-
-        try (FileWriter fileWriter = new FileWriter(archivoClientes)) {
-            gson.toJson(clientes, fileWriter); // Convertir la lista a JSON
-            System.out.println("Archivo de clientes guardado exitosamente.");
-
-        } catch (IOException e) {
-            System.out.println("No se puede guardar el archivo de clientes: " + e.getMessage());
-        }
-    }
-
-    public List<Cliente> leerArchivoClientes1() {
-
-        List<Cliente> listaClientes = null;
-
-        try (FileReader fileReader = new FileReader(archivoClientes)) {
-            Type listType = new TypeToken<List<Cliente>>() {}.getType();
-            listaClientes = gson.fromJson(fileReader, listType); // Leer y convertir desde JSON
-        } catch (FileNotFoundException e) {
-            System.out.println("Archivo de clientes no encontrado: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error al leer el archivo de clientes: " + e.getMessage());
-        }
-
-        return listaClientes;
-    }
-
-    public List<Cliente> leerArchivoClientes() {
-
-        try (FileReader reader = new FileReader(archivoClientes)) {
-
-            Cliente[] clientesArray = gson.fromJson(reader, Cliente[].class);
-            List<Cliente> clientesCargados = Arrays.asList(clientesArray);
-
-            for (Cliente cliente : clientesCargados) {
-                clientes.add(cliente);
-            }
-            return clientesCargados;
-        } catch (IOException e) {
-            System.out.println("Error al cargar los archivos" + e.getMessage());
-        }
-        return null;
     }
 }
 
