@@ -1,6 +1,4 @@
 package model;
-
-import enumeraciones.Disponibilidad;
 import enumeraciones.TipoPestanias;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;
@@ -8,36 +6,38 @@ import gestores.GestorPrecios;
 import java.time.LocalTime;
 
 public class Pestanias extends Servicio{
+
     private TipoPestanias tipoPestanias;
 
-    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-
+  //////////////////////////////////// CONSTRUCTOR ///////////////////////////////////////////////
 
     public Pestanias(LocalTime duracion, TipoPestanias tipoPestanias) {
         super(TipoServicio.PESTANIAS, duracion);
         this.tipoPestanias = tipoPestanias;
+        this.precio=calcularPrecio();
     }
 
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+    ////////////////////////////////// metodos extr //////////////////////////////////////////////
+
     @Override
     public double calcularPrecio() {
         return GestorPrecios.obtenerPrecio(Pestanias.class, this.tipoPestanias);
     }
 
+   /////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public TipoPestanias getTipoPestanias() {return tipoPestanias;}
 
     public void setTipoPestanias(TipoPestanias tipoPestanias) {
         this.tipoPestanias = tipoPestanias;
     }
 
-    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+ /////////////////////////////// TO STRING ////////////////////////////////////////////////////
 
     @Override
     public String toString() {
-        return "PESTAÑAS " + this.tipoPestanias +
-                " \nPrecio= " + calcularPrecio() +
-                " \nDuracion=" + duracion ;
+        return "\n| PESTAÑAS:" + this.tipoPestanias +
+                " \n| Precio: " + calcularPrecio() +
+                " \n| Duracion:" + duracion ;
     }
 }

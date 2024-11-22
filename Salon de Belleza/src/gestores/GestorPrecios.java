@@ -1,31 +1,38 @@
 package gestores;
 //Capaz la logica de poner precio directamente en los enum no esta tan buena, entonces es mejor manejarlo de aca
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import enumeraciones.*;
+import excepciones.CodigoNoEncontradoException;
 import model.Depilacion;
+import model.Factura;
 import model.Manicura;
 import model.Pestanias;
 
+import javax.swing.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class GestorPrecios {
-    private static final double precioDepiCera = 10.0;
-    private static final double precioDepiLaser = 10.0;
 
-    private static final double precioManiGel = 10.0;
-    private static final double precioManiEsculpidas = 10.0;
-    private static final double precioManiSemi = 10.0;
-    private static double precioDisenio = 10.0;
+    private static final double precioDepiCera = 12000.0;
+    private static final double precioDepiLaser = 18000.0;
 
-    private static final double precioPestanias3D = 10.0;
-    private static final double precioPestanias2D = 10.0;
-    private static final double precioPestaniasClasic = 10.0;
+    private static final double precioManiGel = 13000.0;
+    private static final double precioManiEsculpidas = 20000.0;
+    private static final double precioManiSemi = 10000.0;
+    private static double precioDisenio = 2000.0;
+
+    private static final double precioPestanias3D = 20000.0;
+    private static final double precioPestanias2D = 16000.0;
+    private static final double precioPestaniasClasic = 14000.0;
 
     // mapa anidado
     private static final Map<Class<?>, Map<Enum<?>, Double>> precios = new HashMap<>();
@@ -35,7 +42,7 @@ public final class GestorPrecios {
         precios.put(Depilacion.class, new HashMap<>());
         precios.put(Manicura.class, new HashMap<>());
         precios.put(Pestanias.class, new HashMap<>());
-                                                      //clave   vaaaaloooooor
+        //clave   vaaaaloooooor
         // aca le asignamos su otro mapa anidado Mapa(  clase, (enum, precio) );
         //depilacion                                           clave, valor
         precios.get(Depilacion.class).put(TipoDepilacion.CERA, precioDepiCera);
@@ -69,7 +76,6 @@ public final class GestorPrecios {
         mapaPrecios.put(tipo, nuevoPrecio);
     }
 
-
     // solo va a usarse para  manicura
     public static double agregarDisenio(Enum<?> tipo) {
         if (!(tipo instanceof TipoManicura)) {
@@ -91,13 +97,9 @@ public final class GestorPrecios {
         precioDisenio = nuevoPrecioDisenio;
     }
 
-
-
     public static void aumentarTodosLosPrecios(double porcentaje) {
-        if (porcentaje < 0) {
-            throw new ArithmeticException("El porcentaje de aumento no puede ser negativo.");
-        }
-        double aumento = 1 + (porcentaje/100);
+
+        double aumento = 1 + (porcentaje / 100);
 
         // se usa este en vez de un for porque no es facil de usar con un mapa anidado y no queda lindo
 
@@ -125,14 +127,95 @@ public final class GestorPrecios {
         }
     }
 
-    ///////////////////////////////Manejo de los tipos de pago//////////////////////////////////////////////
-/*
-    public static double ajustarPrecioPorTipoPago(double precioBase, TipoDePago tipoPago) {
-        int porcentajeAjuste = tipoPago.getPorcentajeAjuste();
-        double ajuste = (porcentajeAjuste / 100.0) * precioBase;
-        return precioBase + ajuste;
-    }*/
-    // no estoy segura si manejar lo de tipos de pago aca porque tendria que hacer otros atributos cargarlo
-    //con mas cosas y capaz asi como esta en el enum esta bien.
+    public static void aplicarDescuento(String codigoFactura, double porcentajeDescuento, List<Factura> facturas) throws CodigoNoEncontradoException {
+        // Validar el porcentaje de descuento
+        if (porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+            throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100.");
+        }
+        Factura facturaEncontrada = null;
 
+        for (Factura factura : facturas) {
+            if (factura.getCodigoFactura().equals(codigoFactura)) {
+                facturaEncontrada = factura;
+                break; // Salimos del bucle al encontrar la factura
+            }
+        }
+        if (facturaEncontrada == null) {
+            throw new CodigoNoEncontradoException("Factura con código " + codigoFactura + " no encontrada.");
+        }
+
+        double precioOriginal = facturaEncontrada.getPrecioFinal();
+        double descuento = precioOriginal * (porcentajeDescuento / 100);
+
+        // Actualizar el precio final en la factura
+        double nuevoPrecioFinal = precioOriginal - descuento;
+        facturaEncontrada.setPrecioFinal(nuevoPrecioFinal);
+        facturaEncontrada.setDescuento(descuento);
+
+        // Mostrar mensaje informativo (opcional)
+        System.out.println("Descuento del " + porcentajeDescuento + "% aplicado. Descuento: " + descuento + ". Nuevo precio final: " + nuevoPrecioFinal);
+
+        // Retornar el valor del descuento aplicado
+    }
+
+    public static void guardarPreciosEnArchivo(String nombreArchivo) {
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            gson.toJson(precios, writer);
+        } catch (IOException e) {
+            System.out.println("Error al guardar archivo");
+        }
+    }
+
+    public static void leerPreciosDesdeArchivo(String nombreArchivo) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(nombreArchivo)) {
+            Type tipoMapa = new TypeToken<Map<Class<?>, Map<Enum<?>, Double>>>() {
+            }.getType();
+            Map<Class<?>, Map<Enum<?>, Double>> preciosCargados = gson.fromJson(reader, tipoMapa);
+            if (preciosCargados != null) {
+                precios.clear();
+                precios.putAll(preciosCargados);
+            }
+        } catch (IOException e) {
+            System.out.println("Error al cargar archivo ");
+        }
+    }
+
+    public static String verPrecios() {
+        return
+                "Depilacion con cera: " + precioDepiCera +
+                        "Depilacion con Laser: " + precioDepiLaser +
+                        "Manicura con gel : " + precioManiGel +
+                        "Manicura con esculpidas: " + precioManiEsculpidas +
+                        "Manicura semipermanentes: " + precioManiSemi +
+                        "Precio extra diseño : " + precioDisenio +
+                        "Pestañas 2D: " + precioPestanias2D +
+                        "Pestañas 3d: " + precioPestanias3D +
+                        "Pestañas clasicas: " + precioPestaniasClasic;
+    }
+
+    public static String verPrecioDepi() {
+        return
+                "Depilacion con cera: " + precioDepiCera +
+                        "Depilacion con Laser: " + precioDepiLaser;
+
+    }
+
+    public static String verPrecioPestanias() {
+        return
+                "Pestañas 2D: " + precioPestanias2D +
+                        "Pestañas 3d: " + precioPestanias3D +
+                        "Pestañas clasicas: " + precioPestaniasClasic;
+    }
+
+    public static String verPreciosManicura() {
+        return "Manicura con gel : " + precioManiGel +
+                "Manicura con esculpidas: " + precioManiEsculpidas +
+                "Manicura semipermanentes: " + precioManiSemi +
+                "Precio extra diseño : " + precioDisenio;
+
+    }
 }
+
+

@@ -1,22 +1,23 @@
 package model;
 
-import enumeraciones.TipoDeProfesional;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Profesional extends Persona {
+    private String contraseña;
+    private List<String> cod_servicios;
 
-    private List<String > cod_servicios;
+   ///////////////////////////// CONSTRUCTOR //////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Profesional(String nombre, String apellido, String dni, String genero, String telefono) {
+    public Profesional(String nombre, String apellido, String dni, String genero, String telefono,String contraseña) {
         super(nombre, apellido, dni, genero, telefono);
         this.cod_servicios = new ArrayList<>();
+        this.contraseña=contraseña;
     }
 
-    ////////////////////////////////////////////////////////GET ////////////////////////////////////////////////////
-    public List<TipoDeProfesional> getProfesiones() {
+  /////////////////////////////////GET ////////////////////////////////////////////////////
+
+    public List<String> getProfesiones() {
         return cod_servicios;
     }
 
@@ -28,7 +29,18 @@ public class Profesional extends Persona {
         return cod_servicios.contains(cod_servicio);
     }
 
+    public String getContraseña() {
+        return contraseña;
+    }
 
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
 
 

@@ -10,7 +10,7 @@ public abstract class Persona {
     protected String nombre;
     protected String apellido;
     protected String dni;
-    protected String genero; // esto si no se hace con un enum
+    protected String genero;
     protected String telefono;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
@@ -20,15 +20,6 @@ public abstract class Persona {
         this.dni = dni;
         this.genero = genero;
         this.telefono = telefono;
-    }
-
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Persona persona = (Persona) o;
-        return Objects.equals(dni, persona.dni);
     }
 
 //////////////////////////////////////GETTERS Y SETTERS//////////////////////////////////////////////////////////////////////////////////
@@ -77,4 +68,14 @@ public abstract class Persona {
                         "| Telefono : " + telefono + "\n" +
                         "=========================================\n";
     }
+
+    public String datosClienteSinGenero(){
+        return "------------------"+
+                "Nombre: "+ getNombre()+"\n"+
+                "Apellido: "+ getApellido()+"\n"+
+                "DNI: "+ getDni()+"\n"+
+                "Telefono: " + getTelefono() +"\n"+
+                "-----------------\n";
+    }
+
 }

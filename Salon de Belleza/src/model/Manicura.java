@@ -1,6 +1,5 @@
 package model;
 
-import Interfaces.MantenimientoMaquinas;
 import enumeraciones.TipoManicura;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;
@@ -11,9 +10,7 @@ public class Manicura extends Servicio  {
 
     private TipoManicura tipoManicura;
     private static boolean disenio;
-
-    ///si TipoServicio es por defecto no lo pedimos
-    // hay un precio base? VER PRECIO DEPILACION
+    private static double precioDisenio = GestorPrecios.getPrecioDisenio();
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
@@ -21,16 +18,19 @@ public class Manicura extends Servicio  {
         super(TipoServicio.MANICURA, duracion);
         this.tipoManicura = tipoManicura;
         this.disenio = false;
+        this.precioDisenio = precioDisenio;
+        this.precio=calcularPrecio();
     }
-
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
 
-    //implementacion interfaz, faltaaaaaaaaaaaa
-   /* @Override
-    public void MantenimientoMaquinas(Servicio servicio) {
-        System.out.println("aca ira el metodo ");
-    }*/
+    public static double getPrecioDisenio() {
+        return precioDisenio;
+    }
+
+    public static void setPrecioDisenio(double precioDisenio) {
+        Manicura.precioDisenio = precioDisenio;
+    }
 
 
     @Override
@@ -44,8 +44,7 @@ public class Manicura extends Servicio  {
         return precioBase;
     }
 
-    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
-
+   ////////////////////////////////////GET Y SET //////////////////////////////////////////////////
 
     public TipoManicura getTipoManicura() {return tipoManicura;}
 
@@ -59,13 +58,14 @@ public class Manicura extends Servicio  {
         Manicura.disenio = disenio;
     }
 
-    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+   ////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+
     @Override
     public String toString() {
-        return " MANICURA " + tipoManicura +
-                (disenio ? " con diseño " : " sin diseño ")+
-                " \nPrecio= " + calcularPrecio() +
-                " \nDuracion= " + duracion ;
+        return "| MANICURA: " + tipoManicura +
+                (disenio ? " con diseño "+ GestorPrecios.getPrecioDisenio() : " sin diseño ")+
+                " \n| Precio: " + calcularPrecio() +
+                " \n| Duracion: " + duracion ;
     }
 
 

@@ -25,8 +25,6 @@ public class GestorAlmacen<T> {
         return almacen.remove(elemento);
     }
 
-    //public T buscarElemento(int indice){return almacen.get(indice);}
-
     public void mostrar() {
         if (almacen.isEmpty()) {
             System.out.println("No hay elementos en el almacén.");
@@ -35,19 +33,7 @@ public class GestorAlmacen<T> {
                 System.out.println(item);
             }
         }
-        ///quedaria mejor personalizado en cada gestor me parece
     }
-
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
-    public void guardarServicioAJSON(String nombreArchivo) {
-        try (FileWriter writer = new FileWriter(nombreArchivo)) {
-            gson.toJson(almacen, writer);
-            System.out.println("Datos guardados en el archivo " + nombreArchivo);
-        } catch (IOException e) {
-            System.out.println("Error al guardar datos al archivo" + e.getMessage());
-        }
-    }
-
 
     public ArrayList<T> filtrarPorCondicion(Predicate<T> condicion) {
         ArrayList<T> resultado = new ArrayList<>();
@@ -66,7 +52,7 @@ public class GestorAlmacen<T> {
         return almacen;
     }
 
-    //public void setAlmacen(List<T> almacen) {this.almacen = almacen;}
+    public void setAlmacen(List<T> almacen) {this.almacen = almacen;}
 
 
 }

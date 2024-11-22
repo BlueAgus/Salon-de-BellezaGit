@@ -3,43 +3,49 @@ package model;
 import enumeraciones.TipoDePago;
 import enumeraciones.TipoServicio;
 import excepciones.*;
-import gestores.GestorPersona;
 import gestores.GestorServicio;
 import interfaces.CrearID;
 
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Factura implements CrearID {
 
     private String codigoFactura;
     private TipoDePago tipoPago;
-    private double precioFinal;
+    private double precioFinal = 0.0;
     private Cliente cliente;
     private List<Turno> turnosPorCliente;
-    private LocalDate fecha; // fecha y hora de la creacion de la factura
-    private LocalTime hora;
-
+    private double descuento;
+    private double ajuste = 0.0;
+    private String fecha;
     private GestorServicio gestorServicio;
-    private GestorPersona gestorPersona;
 
     //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
-    public Factura(TipoDePago tipoPago, Cliente cliente, GestorPersona gestorPersona, GestorServicio gestorServicio) {
+
+    public Factura(TipoDePago tipoPago, Cliente cliente, GestorServicio gestorServicio) {
 
         this.codigoFactura = this.generarIDEunico(); // aca usamos el metodo de la interfaz directamente
         this.tipoPago = tipoPago;
         this.precioFinal = 0.0;
+        this.descuento = 0.0;
+        this.ajuste = 0.0;
         this.turnosPorCliente = new ArrayList<>();
         this.cliente = cliente;
-        this.fecha = LocalDate.now();
-        this.hora = LocalTime.now();
-        this.gestorPersona = gestorPersona;
+        this.fecha = convertirFechaAString(LocalDate.now());
+       // this.hora = LocalTime.now();
         this.gestorServicio = gestorServicio;
     }
 
     //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+
+    public static String convertirFechaAString(LocalDate fecha) {
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Puedes ajustar el formato según necesites
+        return fecha.format(formatoFecha);
+    }
 
     public String detallesDeServicios() {
         StringBuilder detalles = new StringBuilder();
@@ -48,7 +54,7 @@ public class Factura implements CrearID {
         for (Turno turno : turnosPorCliente) {
             try {
                 // Obtener el servicio correspondiente al código
-                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                Servicio servicio = gestorServicio.buscarServicioCodigo(turno.getCodigo_servicio());
                 TipoServicio tipoServicio = servicio.getTipoService();
 
                 // Incrementar la cantidad de este servicio
@@ -75,14 +81,17 @@ public class Factura implements CrearID {
         for (Turno turno : turnosPorCliente) {
             try {
                 // Obtener el servicio correspondiente al código
-                Servicio servicio = gestorServicio.buscarServicio(turno.getCodigo_servicio());
+                Servicio servicio = gestorServicio.buscarServicioCodigo(turno.getCodigo_servicio());
                 precioBase += servicio.calcularPrecio();
             } catch (CodigoNoEncontradoException e) {
                 System.out.println("Servicio no encontrado para el código: " + turno.getCodigo_servicio());
             }
         }
-
         this.precioFinal = tipoPago.calcularPagoTotal(precioBase);
+
+        // Calcula explícitamente el ajuste para mostrarlo en la factura
+        this.ajuste = this.precioFinal - precioBase;
+
         return this.precioFinal;
     }
 
@@ -91,7 +100,6 @@ public class Factura implements CrearID {
             throw new TurnoExistenteException("El turno ya está ingresado en la factura.");
         }
         turnosPorCliente.add(turno);
-        System.out.println("El turno se agregó correctamente a la factura.");
     }
 
     public void eliminarTurno(Turno turno) throws TurnoNoExistenteException, FacturaSinTurnosException {
@@ -100,8 +108,8 @@ public class Factura implements CrearID {
         }
         // opcion 1: no permitimos que se elimine un turno en el caso de que haya solo uno.
         if (turnosPorCliente.size() == 1) {
-            throw new FacturaSinTurnosException("La factura debe contener al menos un turno");
-        }
+            throw new FacturaSinTurnosException("La factura debe contener al menos un turno, en caso contrario eliminar la factura completa");
+        } //
 
         turnosPorCliente.remove(turno);
         System.out.println("El turno fue quitado de la factura final");
@@ -114,20 +122,17 @@ public class Factura implements CrearID {
 
     @Override
     public String generarIDEunico() {
-            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            return uuid.substring(0, 15 );
-        }
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        return uuid.substring(0, 15);
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Factura factura = (Factura) o;
-        return Objects.equals(fecha, factura.fecha) && Objects.equals(hora, factura.hora);
+        return Objects.equals(codigoFactura, factura.codigoFactura);
     }
-
-
-
 
     ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
     public String getCodigoFactura() {
@@ -158,20 +163,20 @@ public class Factura implements CrearID {
         this.turnosPorCliente = turnosPorCliente;
     }
 
-    public LocalDate getFecha() {
+    public double getAjuste() {
+        return ajuste;
+    }
+
+    public void setAjuste(double ajuste) {
+        this.ajuste = ajuste;
+    }
+
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
-    }
-
-    public LocalTime getHora() {
-        return hora;
-    }
-
-    public void setHora(LocalTime hora) {
-        this.hora = hora;
     }
 
     public Cliente getCliente() {
@@ -182,28 +187,38 @@ public class Factura implements CrearID {
         this.cliente = cliente;
     }
 
+    public double getDescuento() {
+        return descuento;
+    }
 
-    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
+
+
+    ////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+
     @Override
     public String toString() {
         return
                 "| Detalles Factura: " +
                         "| Metodo de pago: " + tipoPago + "\n" +
                         "| Precio final : " + precioFinal + "\n" +
+                        "| Descuento aplicado : " + descuento + "\n" +
+                        "| Ajuste aplicado : " + mostrarAjuste() + "\n" +
                         "| Servicios aplicados : " + detallesDeServicios() + "\n" +
-                        "| Datos del cliente : " + datosClienteParaFactura() + "\n" +
+                        "| Datos del cliente : " + cliente.datosClienteSinGenero() + "\n" +
                         "| Fecha : " + fecha + "\n" +
-                        "| Hora : " + hora + "\n" +
+
                         "=========================================\n";
     }
-// esto lo hice solo para omitir el genero, porque me parece que eso no va en una factura, no se
-    //si es la mejor forma, salvo que pongamos otro toString en cliente o no se, despues se ve y se cambia si es necesario
-   private String datosClienteParaFactura(){
-        return "------------------"+
-                "Nombre: "+this.cliente.getNombre()+"\n"+
-                "Apellido: "+this.cliente.getApellido()+"\n"+
-                "DNI: "+this.cliente.getDni()+"\n"+
-                "Telefono: "+this.cliente.getTelefono()+"\n"+
-                "-----------------\n";
-   }
+
+    private String mostrarAjuste() {
+        if (ajuste == 0) {
+            return "Sin ajuste";
+        }
+        // aca muestra el signo del numero , si es posi o negativo
+        return String.format("%+.2f", ajuste);
+    }
 }
+

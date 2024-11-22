@@ -1,30 +1,37 @@
 package model;
 
-import Interfaces.MantenimientoMaquinas;
+
 import enumeraciones.TipoDepilacion;
 import enumeraciones.TipoServicio;
 import gestores.GestorPrecios;
+import gestores.GestorTurno;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Depilacion extends Servicio {
+
     private TipoDepilacion tipoDepilacion;
 
-    //////////////////////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
+    //////////////////////////////////////// CONSTRUCTOR ////////////////////////////////////////////////////
 
     public Depilacion(LocalTime duracion, TipoDepilacion tipoDepilacion) {
         super(TipoServicio.DEPILACION, duracion);
         this.tipoDepilacion = tipoDepilacion;
+        this.precio=calcularPrecio();
     }
 
+   /////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+   public void programarMantenimiento(LocalDate fecha){
+       GestorTurno turnos = new GestorTurno();
 
-    //////////////////////////////////////////////////////// metodos extr ////////////////////////////////////////////////////
+   }
 
     public double calcularPrecio() {
         return GestorPrecios.obtenerPrecio(Depilacion.class, this.tipoDepilacion);
     }
 
-    ////////////////////////////////////////////////////////GET Y SET ////////////////////////////////////////////////////
+    /////////////////////////////////GET Y SET ////////////////////////////////////////////////////
 
     public TipoDepilacion getTipoDepilacion() {
         return tipoDepilacion;
@@ -34,19 +41,12 @@ public class Depilacion extends Servicio {
         this.tipoDepilacion = tipoDepilacion;
     }
 
-    ///uso interfaz
-  /*  @Override
-    public void MantenimientoMaquinas(Servicio servicio) {
-        System.out.println("aca ira el metodo");
-    }*/
-
-
-    //////////////////////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
+   ////////////////////////////////////// TO STRING ////////////////////////////////////////////////////
 
     @Override
     public String toString() {
-        return "DEPILACIÓN " + tipoDepilacion +
-                " \nPrecio= " + calcularPrecio() +
-                " \nDuracion=" + duracion;
+        return "| DEPILACIÓN " + tipoDepilacion +
+                "\n | Precio: " + calcularPrecio() +
+                "\n | Duracion: " + duracion;
     }
 }

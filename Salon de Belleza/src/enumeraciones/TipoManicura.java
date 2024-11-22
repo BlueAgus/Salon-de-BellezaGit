@@ -4,6 +4,5 @@ public enum TipoManicura {
         GEL(),
         ESCULPIDAS(),
         SEMIPERMANENTE();
-
     }
 
